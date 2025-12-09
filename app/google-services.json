@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "913965663150",
+    "project_id": "partylife-db9c3",
+    "storage_bucket": "partylife-db9c3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:913965663150:android:df42351df37a5e01fbfe3f",
+        "android_client_info": {
+          "package_name": "lior.razlevi.partylife"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADj1vdSc-U6OCAidhkgt3SwgW0LKPaVxw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
