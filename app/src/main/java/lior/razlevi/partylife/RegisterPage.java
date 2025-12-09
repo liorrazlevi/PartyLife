@@ -28,14 +28,17 @@ private TextInputEditText etConfirmPassword;
 private TextView tvLoginLink;
 
 
-public void login(){
+public void registerFB(){
 
+    String fullName=etFullName.getText().toString();
             String email=etEmail.getText().toString();
             String password=etPassword.getText().toString();
             Auth.signUp(RegisterPage.this, email, password, task -> {
                 if (task.isSuccessful()) {
                     Toast.makeText(RegisterPage.this, "Signup Successful", Toast.LENGTH_SHORT).show();
+
                     startActivity(new Intent(RegisterPage.this, OpenPage.class));
+
                 }
                 else {
                     try {
@@ -56,7 +59,7 @@ public void login(){
                     }
                 }
         });
-
+          //
 }
 
     @Override
@@ -76,7 +79,7 @@ public void login(){
             } else if (!password.equals(confirmPassword)) {
 
             } else {
-             login();
+             registerFB();
             }
 
         });
