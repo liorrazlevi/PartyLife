@@ -17,6 +17,9 @@ import com.google.firebase.FirebaseNetworkException;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 
 public class RegisterPage extends AppCompatActivity {
 private MaterialButton btnRegister;
@@ -26,6 +29,8 @@ private TextInputEditText etPhone;
 private TextInputEditText etPassword;
 private TextInputEditText etConfirmPassword;
 private TextView tvLoginLink;
+    private FirebaseDatabase database;
+    private DatabaseReference userRef;
 
 
 public void registerFB(){
@@ -75,7 +80,7 @@ public void registerFB(){
             String password = etPassword.getText().toString();
             String confirmPassword = etConfirmPassword.getText().toString();
             if (fullName.isEmpty() || email.isEmpty() || phone.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
-
+                Toast.makeText(RegisterPage.this, "נא למלא את כל הפרטים המתבקשים", Toast.LENGTH_LONG).show();
             } else if (!password.equals(confirmPassword)) {
 
             } else {
@@ -100,6 +105,8 @@ public void registerFB(){
         etPassword = findViewById(R.id.etPassword);
         etConfirmPassword= findViewById(R.id.etConfirmPassword);
         tvLoginLink = findViewById(R.id.tvLoginLink);
+        database = FirebaseDatabase.getInstance();
+        userRef = database.getReference("Users");
 
     }
 }
