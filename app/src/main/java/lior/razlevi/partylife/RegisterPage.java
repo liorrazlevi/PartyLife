@@ -2,6 +2,7 @@ package lior.razlevi.partylife;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,55 +18,55 @@ import com.google.firebase.FirebaseNetworkException;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 
 public class RegisterPage extends AppCompatActivity {
-private MaterialButton btnRegister;
-private TextInputEditText etFullName;
-private TextInputEditText etEmail;
-private TextInputEditText etPhone;
-private TextInputEditText etPassword;
-private TextInputEditText etConfirmPassword;
-private TextView tvLoginLink;
+    private MaterialButton btnRegister;
+    private TextInputEditText etFullName;
+    private TextInputEditText etEmail;
+    private TextInputEditText etPhone;
+    private TextInputEditText etPassword;
+    private TextInputEditText etConfirmPassword;
+    private TextView tvLoginLink;
     private FirebaseDatabase database;
     private DatabaseReference userRef;
 
 
-public void registerFB(){
+    public void registerFB() {
 
-    String fullName=etFullName.getText().toString();
-            String email=etEmail.getText().toString();
-            String password=etPassword.getText().toString();
-            Auth.signUp(RegisterPage.this, email, password, task -> {
-                if (task.isSuccessful()) {
-                    Toast.makeText(RegisterPage.this, "Signup Successful", Toast.LENGTH_SHORT).show();
+        String fullName = etFullName.getText().toString();
+        String email = etEmail.getText().toString();
+        String password = etPassword.getText().toString();
+        Auth.signUp(RegisterPage.this, email, password, task -> {
+            if (task.isSuccessful()) {
+                Toast.makeText(RegisterPage.this, "Signup Successful", Toast.LENGTH_SHORT).show();
 
-                    startActivity(new Intent(RegisterPage.this, OpenPage.class));
+                startActivity(new Intent(RegisterPage.this, OpenPage.class));
 
+            } else {
+                try {
+                    throw task.getException();
+                } catch (FirebaseAuthWeakPasswordException e) {
+                    etPassword.setError("הסיסמה חלשה מדי");
+                    etPassword.requestFocus();
+                } catch (FirebaseAuthInvalidCredentialsException e) {
+                    etEmail.setError("כתובת האימייל לא תקינה");
+                    etEmail.requestFocus();
+                } catch (FirebaseAuthUserCollisionException e) {
+                    // שגיאה קריטית: המשתמש כבר קיים!
+                    Toast.makeText(RegisterPage.this, "האימייל הזה כבר רשום במערכת", Toast.LENGTH_LONG).show();
+                } catch (FirebaseNetworkException e) {
+                    Toast.makeText(RegisterPage.this, "אין חיבור לאינטרנט", Toast.LENGTH_LONG).show();
+                } catch (Exception e) {
+                    Toast.makeText(RegisterPage.this, "שגיאה בהרשמה: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 }
-                else {
-                    try {
-                        throw task.getException();
-                    } catch (FirebaseAuthWeakPasswordException e) {
-                        etPassword.setError("הסיסמה חלשה מדי");
-                        etPassword.requestFocus();
-                    } catch (FirebaseAuthInvalidCredentialsException e) {
-                        etEmail.setError("כתובת האימייל לא תקינה");
-                        etEmail.requestFocus();
-                    } catch (FirebaseAuthUserCollisionException e) {
-                        // שגיאה קריטית: המשתמש כבר קיים!
-                        Toast.makeText(RegisterPage.this, "האימייל הזה כבר רשום במערכת", Toast.LENGTH_LONG).show();
-                    } catch (FirebaseNetworkException e) {
-                        Toast.makeText(RegisterPage.this, "אין חיבור לאינטרנט", Toast.LENGTH_LONG).show();
-                    } catch (Exception e) {
-                        Toast.makeText(RegisterPage.this, "שגיאה בהרשמה: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                }
+            }
         });
-          //
-}
+        //
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +85,7 @@ public void registerFB(){
             } else if (!password.equals(confirmPassword)) {
 
             } else {
-             registerFB();
+                registerFB();
             }
 
         });
@@ -97,16 +98,35 @@ public void registerFB(){
             return insets;
         });
     }
-    public void init(){
+
+    public void init() {
         btnRegister = findViewById(R.id.btnRegister);
         etFullName = findViewById(R.id.etFullName);
-       etEmail = findViewById(R.id.etEmail);
+        etEmail = findViewById(R.id.etEmail);
         etPhone = findViewById(R.id.etPhone);
         etPassword = findViewById(R.id.etPassword);
-        etConfirmPassword= findViewById(R.id.etConfirmPassword);
+        etConfirmPassword = findViewById(R.id.etConfirmPassword);
         tvLoginLink = findViewById(R.id.tvLoginLink);
         database = FirebaseDatabase.getInstance();
         userRef = database.getReference("Users");
+
+    }
+
+    public void SaveUserInDBS() {
+        FirebaseUser firebaseUser = Auth.getCurrentUser();
+        if (firebaseUser == null) return;
+        String uid = firebaseUser.getUid();
+      UserProperties userProperties = new UserProperties(Integer.parseInt(etPhone.getText().toString()), uid);
+        // שמירת ההמשתמש  במסד הנתונים
+        userRef.child(uid).setValue(userProperties)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("MARIELA", "User saved successfully");
+                    // כאן אפשר לעבור מסך, אבל אנחנו עושים את זה למטה ב-OnClickListener
+                })
+                //כשלון בשמירה
+                .addOnFailureListener(e -> {
+                    Log.e("MARIELA", "Failed to save user", e);
+                });
 
     }
 }
