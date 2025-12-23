@@ -11,6 +11,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PartyLife">
         <activity
+            android:name=".UserSettingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".UserSetting"
+            android:exported="false" />
+        <activity
             android:name=".RegisterPage"
             android:exported="false" />
         <activity

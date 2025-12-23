@@ -117,7 +117,7 @@ public class RegisterPage extends AppCompatActivity {
         FirebaseUser firebaseUser = Auth.getCurrentUser();
         if (firebaseUser == null) return;
         String uid = firebaseUser.getUid();
-      UserProperties userProperties = new UserProperties(Integer.parseInt(etPhone.getText().toString()), uid);
+      UserProperties userProperties = new UserProperties(etPhone.getText().toString(), uid, etFullName.getText().toString());
         // שמירת ההמשתמש  במסד הנתונים
         userRef.child(uid).setValue(userProperties)
                 .addOnSuccessListener(aVoid -> {
