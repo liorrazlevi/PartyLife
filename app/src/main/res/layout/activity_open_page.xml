@@ -43,18 +43,18 @@
         app:tint="#E91E63" />
 
     <!-- Settings Button - Moved to Right Side -->
-    <ImageButton
+
+
+    <ImageView
         android:id="@+id/btnSettings"
         android:layout_width="40dp"
         android:layout_height="40dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
         android:src="@drawable/logo"
-        android:contentDescription="הגדרות"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:tint="#FFFFFF" />
+        app:tint="#FFFFFF"/>
 
     <!-- Welcome Text -->
     <TextView

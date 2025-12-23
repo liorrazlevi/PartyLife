@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
                 if (email.isEmpty()) {
                     emailInputLogin.setError("עלייך למלא אימייל");
                 }
-                else  if ( password.isEmpty()) {
+                else  if (password.isEmpty()) {
                     passwordInput.setError("סיסמא אינה יכולה להיות ריקה");
                 }
                 else {
@@ -45,10 +45,8 @@ public class MainActivity extends AppCompatActivity {
                                 } else {
                                     try {
                                         throw task.getException();
-                                    } catch (FirebaseAuthInvalidUserException e) {
-                                        Toast.makeText(MainActivity.this, "משתמש לא קיים, נסה להירשם", Toast.LENGTH_LONG).show();
-                                    } catch (FirebaseAuthInvalidCredentialsException e) {
-                                        Toast.makeText(MainActivity.this, "סיסמה שגויה או אימייל לא תקין", Toast.LENGTH_LONG).show();
+                                    } catch (FirebaseAuthInvalidUserException | FirebaseAuthInvalidCredentialsException e) {
+                                        Toast.makeText(MainActivity.this, "אימייל או סיסמה שגויים. ניתן להירשם אם אין לך חשבון.", Toast.LENGTH_LONG).show();
                                     } catch (FirebaseNetworkException e) {
                                         Toast.makeText(MainActivity.this, "אין חיבור לאינטרנט", Toast.LENGTH_LONG).show();
                                     } catch (Exception e) {

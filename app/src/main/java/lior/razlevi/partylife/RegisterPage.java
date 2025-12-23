@@ -44,6 +44,7 @@ public class RegisterPage extends AppCompatActivity {
             if (task.isSuccessful()) {
                 Toast.makeText(RegisterPage.this, "Signup Successful", Toast.LENGTH_SHORT).show();
 
+                SaveUserInDBS();
                 startActivity(new Intent(RegisterPage.this, OpenPage.class));
 
             } else {
