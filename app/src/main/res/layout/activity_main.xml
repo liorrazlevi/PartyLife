@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android/tools"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/main"
@@ -41,6 +41,7 @@
         android:layout_marginTop="4dp"
         android:text="התחבר כדי להמשיך"
         android:textSize="14sp"
+        
         android:textColor="@color/white"
         app:layout_constraintTop_toBottomOf="@id/titleText"
         app:layout_constraintStart_toStartOf="parent"
@@ -70,7 +71,6 @@
         android:layout_marginEnd="32dp"
         android:layout_marginTop="8dp"
         android:hint="הכניסו אימייל"
-        android:textColorHint="#666666"
         android:layoutDirection="rtl"
         app:boxBackgroundColor="#2D1B2E"
         app:boxBackgroundMode="filled"
@@ -79,18 +79,16 @@
         app:boxCornerRadiusTopEnd="25dp"
         app:boxCornerRadiusTopStart="25dp"
         app:boxStrokeWidth="0dp"
-        app:hintTextColor="#666666"
         app:layout_constraintTop_toBottomOf="@id/nameLabel"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        style="@style/ThemeOverlay.App.TextInputLayout.WhiteText">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/emailInputLogin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#666666"
             android:textSize="14sp"
             android:textStyle="bold"
             android:gravity="right"
@@ -124,7 +122,6 @@
         android:layout_marginEnd="32dp"
         android:layout_marginTop="8dp"
         android:hint="הכניסו את הסיסמה שלכם"
-        android:textColorHint="#666666"
         android:layoutDirection="rtl"
         app:boxBackgroundColor="#2D1B2E"
         app:boxBackgroundMode="filled"
@@ -135,18 +132,16 @@
         app:boxStrokeWidth="0dp"
         app:endIconMode="password_toggle"
         app:endIconTint="#999999"
-        app:hintTextColor="#666666"
         app:layout_constraintTop_toBottomOf="@id/passwordLabel"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintEnd_toEndOf="parent"
+        style="@style/ThemeOverlay.App.TextInputLayout.WhiteText">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/passwordInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword|textNoSuggestions"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#666666"
             android:textSize="14sp"
             android:textStyle="bold"
             android:gravity="right"
@@ -163,7 +158,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         android:layout_marginTop="32dp"
-        android:text="התחבר"
+        android:text="התחברו"
         android:textSize="16sp"
         android:textStyle="bold"
         android:textColor="#FFFFFF"

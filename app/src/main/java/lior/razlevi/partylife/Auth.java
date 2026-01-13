@@ -29,4 +29,17 @@ public class Auth {
         return auth.getCurrentUser();
     }
 
+    public static void updatePassword(String newPassword, OnCompleteListener<Void> onCompleteListener){
+        FirebaseUser user = auth.getCurrentUser();
+        if (user != null) {
+            user.updatePassword(newPassword).addOnCompleteListener(onCompleteListener);
+        }
+    }
+
+    public static void updateEmail(String newEmail, OnCompleteListener<Void> onCompleteListener){
+        FirebaseUser user = auth.getCurrentUser();
+        if (user != null) {
+            user.verifyBeforeUpdateEmail(newEmail).addOnCompleteListener(onCompleteListener);
+        }
+    }
 }

@@ -84,11 +84,11 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilFullName"
+            style="@style/ThemeOverlay.App.TextInputLayout.WhiteText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:hint="הזינו את שמכם המלאי"
-            android:textColorHint="#6D6D6D"
+            android:hint="הזינו את שמכם המלא"
             app:boxBackgroundColor="#2D1B2E"
             app:boxBackgroundMode="filled"
             app:boxCornerRadiusBottomEnd="12dp"
@@ -96,7 +96,6 @@
             app:boxCornerRadiusTopEnd="12dp"
             app:boxCornerRadiusTopStart="12dp"
             app:boxStrokeWidth="0dp"
-            app:hintTextColor="#6D6D6D"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvNameLabel">
@@ -106,8 +105,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPersonName"
-                android:textColor="#FFFFFF"
-                android:textColorHint="#6D6D6D"
                 android:gravity="start" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -128,11 +125,11 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilEmail"
+            style="@style/ThemeOverlay.App.TextInputLayout.WhiteText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:hint="israel@email.com"
-            android:textColorHint="#6D6D6D"
             app:boxBackgroundColor="#2D1B2E"
             app:boxBackgroundMode="filled"
             app:boxCornerRadiusBottomEnd="12dp"
@@ -140,7 +137,6 @@
             app:boxCornerRadiusTopEnd="12dp"
             app:boxCornerRadiusTopStart="12dp"
             app:boxStrokeWidth="0dp"
-            app:hintTextColor="#6D6D6D"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvEmailLabel">
@@ -150,8 +146,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
-                android:textColor="#FFFFFF"
-                android:textColorHint="#6D6D6D"
                 android:gravity="start" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -172,11 +166,11 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilPhone"
+            style="@style/ThemeOverlay.App.TextInputLayout.WhiteText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:hint="הזינו מספר טלפון"
-            android:textColorHint="#6D6D6D"
             app:boxBackgroundColor="#2D1B2E"
             app:boxBackgroundMode="filled"
             app:boxCornerRadiusBottomEnd="12dp"
@@ -184,7 +178,6 @@
             app:boxCornerRadiusTopEnd="12dp"
             app:boxCornerRadiusTopStart="12dp"
             app:boxStrokeWidth="0dp"
-            app:hintTextColor="#6D6D6D"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvPhoneLabel">
@@ -194,8 +187,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="phone"
-                android:textColor="#FFFFFF"
-                android:textColorHint="#6D6D6D"
                 android:gravity="start" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -216,11 +207,11 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilPassword"
+            style="@style/ThemeOverlay.App.TextInputLayout.WhiteText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:hint="••••••••"
-            android:textColorHint="#6D6D6D"
             app:boxBackgroundColor="#2D1B2E"
             app:boxBackgroundMode="filled"
             app:boxCornerRadiusBottomEnd="12dp"
@@ -230,7 +221,6 @@
             app:boxStrokeWidth="0dp"
             app:endIconMode="password_toggle"
             app:endIconTint="#9575CD"
-            app:hintTextColor="#6D6D6D"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvPasswordLabel">
@@ -240,8 +230,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
-                android:textColor="#FFFFFF"
-                android:textColorHint="#6D6D6D"
                 android:gravity="start" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -262,11 +250,11 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilConfirmPassword"
+            style="@style/ThemeOverlay.App.TextInputLayout.WhiteText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:hint="••••••••"
-            android:textColorHint="#6D6D6D"
             app:boxBackgroundColor="#2D1B2E"
             app:boxBackgroundMode="filled"
             app:boxCornerRadiusBottomEnd="12dp"
@@ -276,7 +264,6 @@
             app:boxStrokeWidth="0dp"
             app:endIconMode="password_toggle"
             app:endIconTint="#9575CD"
-            app:hintTextColor="#6D6D6D"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvConfirmPasswordLabel">
@@ -286,8 +273,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
-                android:textColor="#FFFFFF"
-                android:textColorHint="#6D6D6D"
                 android:gravity="start" />
 
         </com.google.android.material.textfield.TextInputLayout>

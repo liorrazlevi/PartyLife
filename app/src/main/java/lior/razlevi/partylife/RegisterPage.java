@@ -84,7 +84,8 @@ public class RegisterPage extends AppCompatActivity {
             if (fullName.isEmpty() || email.isEmpty() || phone.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
                 Toast.makeText(RegisterPage.this, "נא למלא את כל הפרטים המתבקשים", Toast.LENGTH_LONG).show();
             } else if (!password.equals(confirmPassword)) {
-
+                etConfirmPassword.setError("נא להזין סיסמא תואמת");
+                Toast.makeText(RegisterPage.this, "ווידוא הסיסמא לא תואם את הסיסמא שהזנת", Toast.LENGTH_LONG).show();
             } else {
                 registerFB();
             }

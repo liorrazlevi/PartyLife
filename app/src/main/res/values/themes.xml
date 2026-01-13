@@ -1,10 +1,14 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.PartyLife" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    <style name="Base.Theme.PartyLife" parent="Theme.Material3.Dark.NoActionBar">
+      
 
     </style>
 
     <style name="Theme.PartyLife" parent="Base.Theme.PartyLife" />
+
+    <style name="ThemeOverlay.App.TextInputLayout.WhiteText" parent="">
+        <item name="android:textColorPrimary">#FFFFFF</item>
+        <item name="android:textColorHint">#FFFFFF</item> <!-- Color for the hint text -->
+    </style>
 </resources>
