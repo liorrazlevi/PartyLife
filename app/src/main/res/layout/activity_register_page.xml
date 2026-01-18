@@ -89,12 +89,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:hint="הזינו את שמכם המלא"
+            android:layoutDirection="rtl"
             app:boxBackgroundColor="#2D1B2E"
             app:boxBackgroundMode="filled"
-            app:boxCornerRadiusBottomEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusBottomEnd="25dp"
+            app:boxCornerRadiusBottomStart="25dp"
+            app:boxCornerRadiusTopEnd="25dp"
+            app:boxCornerRadiusTopStart="25dp"
             app:boxStrokeWidth="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -105,7 +106,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPersonName"
-                android:gravity="start" />
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:gravity="right"
+                android:textDirection="rtl"
+                android:imeOptions="actionNext"
+                android:minHeight="50dp" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -130,12 +136,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:hint="israel@email.com"
+            android:layoutDirection="rtl"
             app:boxBackgroundColor="#2D1B2E"
             app:boxBackgroundMode="filled"
-            app:boxCornerRadiusBottomEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusBottomEnd="25dp"
+            app:boxCornerRadiusBottomStart="25dp"
+            app:boxCornerRadiusTopEnd="25dp"
+            app:boxCornerRadiusTopStart="25dp"
             app:boxStrokeWidth="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -146,7 +153,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
-                android:gravity="start" />
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:gravity="right"
+                android:textDirection="rtl"
+                android:imeOptions="actionNext"
+                android:minHeight="50dp" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -171,12 +183,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:hint="הזינו מספר טלפון"
+            android:layoutDirection="rtl"
             app:boxBackgroundColor="#2D1B2E"
             app:boxBackgroundMode="filled"
-            app:boxCornerRadiusBottomEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusBottomEnd="25dp"
+            app:boxCornerRadiusBottomStart="25dp"
+            app:boxCornerRadiusTopEnd="25dp"
+            app:boxCornerRadiusTopStart="25dp"
             app:boxStrokeWidth="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -187,7 +200,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="phone"
-                android:gravity="start" />
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:gravity="right"
+                android:textDirection="rtl"
+                android:imeOptions="actionNext"
+                android:minHeight="50dp" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -212,12 +230,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:hint="••••••••"
+            android:layoutDirection="rtl"
             app:boxBackgroundColor="#2D1B2E"
             app:boxBackgroundMode="filled"
-            app:boxCornerRadiusBottomEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusBottomEnd="25dp"
+            app:boxCornerRadiusBottomStart="25dp"
+            app:boxCornerRadiusTopEnd="25dp"
+            app:boxCornerRadiusTopStart="25dp"
             app:boxStrokeWidth="0dp"
             app:endIconMode="password_toggle"
             app:endIconTint="#9575CD"
@@ -230,7 +249,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
-                android:gravity="start" />
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:gravity="right"
+                android:textDirection="rtl"
+                android:imeOptions="actionNext"
+                android:minHeight="50dp" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -255,12 +279,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:hint="••••••••"
+            android:layoutDirection="rtl"
             app:boxBackgroundColor="#2D1B2E"
             app:boxBackgroundMode="filled"
-            app:boxCornerRadiusBottomEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusBottomEnd="25dp"
+            app:boxCornerRadiusBottomStart="25dp"
+            app:boxCornerRadiusTopEnd="25dp"
+            app:boxCornerRadiusTopStart="25dp"
             app:boxStrokeWidth="0dp"
             app:endIconMode="password_toggle"
             app:endIconTint="#9575CD"
@@ -273,7 +298,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
-                android:gravity="start" />
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:gravity="right"
+                android:textDirection="rtl"
+                android:imeOptions="actionDone"
+                android:minHeight="50dp" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
