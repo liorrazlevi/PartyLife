@@ -14,7 +14,8 @@
         android:layout_height="40dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:src="@drawable/logo"
+        android:src="@drawable/partyicon"
+        app:tint="#8A304F"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -51,7 +52,7 @@
         android:layout_height="40dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:src="@drawable/logo"
+        android:src="@drawable/personimeg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:tint="#FFFFFF"/>
@@ -62,7 +63,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="80dp"
-        android:text="ברוך שובך, ליאל"
+        android:text="ברוך הבא, ליאל"
         android:textColor="#FFFFFF"
         android:textSize="28sp"
         android:textStyle="bold"
@@ -75,7 +76,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="מה היא לי ליום הולדתך?"
+        android:text="מה תרצה לעשות היום?"
         android:textColor="#B39DDB"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -104,9 +105,11 @@
 
             <ImageView
                 android:id="@+id/ivCreateIcon"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/logo"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:padding="16dp"
+                android:background="@drawable/circle_icon_background"
+                android:src="@drawable/add_circle_24dp_ffffff_fill0_wght400_grad0_opsz24"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -163,9 +166,11 @@
 
             <ImageView
                 android:id="@+id/ivPlanIcon"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/logo"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:padding="16dp"
+                android:background="@drawable/circle_icon_background"
+                android:src="@drawable/planicon"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
