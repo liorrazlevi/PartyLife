@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#1A0F1B"
+    android:id="@+id/partySearch"
     android:layoutDirection="rtl">
 
     <TextView
@@ -58,7 +59,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_search_card"
+                android:background="@drawable/button_outline"
                 android:orientation="vertical"
                 android:padding="24dp">
 
@@ -72,16 +73,17 @@
                     android:textColor="#CCCCCC"
                     android:textSize="14sp" />
 
-                <EditText
+                <AutoCompleteTextView
                     android:id="@+id/inputLocation"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-                    android:background="@drawable/bg_search_input"
+                    android:background="@drawable/button_outline"
                     android:drawableStart="@drawable/locationicon"
                     android:drawablePadding="12dp"
                     android:drawableTint="#999999"
                     android:gravity="center_vertical|right"
-                    android:hint="לדוגמה: תל אביב-יפו"
+                    android:inputType="none"
+                    android:hint="בחר איזור"
                     android:textStyle="bold"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
@@ -103,7 +105,7 @@
                     android:id="@+id/inputDate"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-                    android:background="@drawable/bg_search_input"
+                    android:background="@drawable/button_outline"
                     android:drawableStart="@drawable/date_icon"
                     android:drawablePadding="12dp"
                     android:drawableTint="#999999"
@@ -132,7 +134,7 @@
                     android:id="@+id/inputTime"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-                    android:background="@drawable/bg_search_input"
+                    android:background="@drawable/button_outline"
                     android:drawableStart="@drawable/time_icon"
                     android:drawablePadding="12dp"
                     android:drawableTint="#999999"
@@ -161,7 +163,7 @@
                     android:id="@+id/inputAge"
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
-                    android:background="@drawable/bg_search_input"
+                    android:background="@drawable/button_outline"
                     android:drawableStart="@drawable/groups_icon"
                     android:drawablePadding="12dp"
                     android:textStyle="bold"

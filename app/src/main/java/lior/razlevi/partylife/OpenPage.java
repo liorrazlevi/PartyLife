@@ -23,10 +23,10 @@ public class OpenPage extends AppCompatActivity {
         setContentView(R.layout.activity_open_page);
         init();
         cvCreateParty.setOnClickListener(view -> {
-            startActivity(new Intent(this, MainActivity.class));
+            startActivity(new Intent(this, PartySearchPage.class));
         });
         cvPlanParty.setOnClickListener(view -> {
-            startActivity(new Intent(this, MainActivity.class));
+            startActivity(new Intent(this, PartySearchPage.class));
         });
         ivSettings.setOnClickListener(view -> {
             startActivity(new Intent(this, UserSettingActivity.class));
