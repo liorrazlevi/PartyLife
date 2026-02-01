@@ -1,8 +1,10 @@
 package lior.razlevi.partylife;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -17,19 +19,19 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
 public class PartySearchPage extends AppCompatActivity {
-    private AutoCompleteTextView inputLocation;
+    private AutoCompleteTextView inputLocation,inputAge;
     private EditText inputDate;
     private EditText inputTime;
-    private EditText inputAge;
+
     private AppCompatButton btnSearch;
-private int selectedHour;
+    private int selectedHour;
     private int selectedMinute;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +50,23 @@ private int selectedHour;
             String selection = (String) inputLocation.getText().toString();
             inputLocation.showDropDown();
         });
+        // 1. הרשימה שלך
+        String[] ageRange = {"18-25", "25-35", "35-45"};
+
+// 2. מציאת הרכיב (שימי לב לסוג: AutoCompleteTextView)
+        AutoCompleteTextView inputAge = findViewById(R.id.inputAge);
+
+// 3. יצירת האדפטר (המקשר בין הרשימה למראה שלה)
+        ArrayAdapter<String> adapter2 = new ArrayAdapter<>(this,
+                android.R.layout.simple_dropdown_item_1line, ageRange);
+
+        inputAge.setAdapter(adapter2);
+
+// 4. מה קורה כשלוחצים? הרשימה נפתחת מתחת לשדה
+        inputAge.setOnClickListener(v -> {
+            inputAge.showDropDown();
+        });
+
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         String date = sdf.format(new Date());
         inputDate.setText(date);
@@ -92,15 +111,14 @@ private int selectedHour;
         final Calendar c = Calendar.getInstance();
         int currentHour = c.get(Calendar.HOUR_OF_DAY);
         int currentMinute = c.get(Calendar.MINUTE);
-      selectedHour=currentHour;
-selectedMinute=currentMinute;
+        selectedHour = currentHour;
+        selectedMinute = currentMinute;
 
-       TimePickerDialog timePickerDialog = new TimePickerDialog(PartySearchPage.this, (view, selectedHour, selectedMinute) ->  {
-            Calendar selectedTime = Calendar.getInstance();
-            selectedTime.set(selectedHour, selectedMinute);
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-            inputTime.setText(formatter.format(formatter));
-        }, selectedHour, selectedMinute);
+        TimePickerDialog timePickerDialog = new TimePickerDialog(PartySearchPage.this, (view, hourOfDay, minute) -> {
+            this.selectedHour = hourOfDay;
+            this.selectedMinute = minute;
+            inputTime.setText(String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute));
+        }, selectedHour, selectedMinute, true);
         timePickerDialog.show();
     }
 }
