@@ -50,22 +50,19 @@ public class PartySearchPage extends AppCompatActivity {
             String selection = (String) inputLocation.getText().toString();
             inputLocation.showDropDown();
         });
+        // --- קוד עבור בחירת טווח הגילאים ---
         // 1. הרשימה שלך
-        String[] ageRange = {"18-25", "25-35", "35-45"};
+        String[] ageRanges = {"18-25", "25-35", "35+"};
 
-// 2. מציאת הרכיב (שימי לב לסוג: AutoCompleteTextView)
-        AutoCompleteTextView inputAge = findViewById(R.id.inputAge);
+        // 2. יצירת האדפטר.
+        ArrayAdapter<String> ageAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, ageRanges);
 
-// 3. יצירת האדפטר (המקשר בין הרשימה למראה שלה)
-        ArrayAdapter<String> adapter2 = new ArrayAdapter<>(this,
-                android.R.layout.simple_dropdown_item_1line, ageRange);
+        // 3. קישור האדפטר לרכיב התצוגה שכבר מצאנו
+        inputAge.setAdapter(ageAdapter);
 
-        inputAge.setAdapter(adapter2);
+        // 4. הוספת Listener ללחיצה כדי לפתוח את הרשימה
+        inputAge.setOnClickListener(v -> inputAge.showDropDown());
 
-// 4. מה קורה כשלוחצים? הרשימה נפתחת מתחת לשדה
-        inputAge.setOnClickListener(v -> {
-            inputAge.showDropDown();
-        });
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         String date = sdf.format(new Date());
