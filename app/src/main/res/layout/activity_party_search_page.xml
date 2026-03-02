@@ -44,7 +44,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
         android:fillViewport="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/pageTitle">
@@ -56,127 +55,146 @@
             android:orientation="vertical"
             android:padding="24dp">
 
+            <!-- המסגרת החיצונית - נשארת תמיד -->
             <LinearLayout
+                android:id="@+id/searchForContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/button_outline"
                 android:orientation="vertical"
                 android:padding="24dp">
 
-                <TextView
+                <!-- המיכל של השדות - אותו תעלימי ב-Java -->
+                <LinearLayout
+                    android:id="@+id/fieldsContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="8dp"
-                    android:gravity="right"
-                    android:text="מיקום"
-                    android:textColor="#CCCCCC"
-                    android:textSize="14sp" />
+                    android:orientation="vertical">
 
-                <AutoCompleteTextView
-                    android:id="@+id/inputLocation"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:background="@drawable/button_outline"
-                    android:drawableStart="@drawable/locationicon"
-                    android:drawablePadding="12dp"
-                    android:drawableTint="#999999"
-                    android:gravity="center_vertical|right"
-                    android:inputType="none"
-                    android:hint="בחר איזור"
-                    android:textStyle="bold"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:textColor="#FFFFFF"
-                    android:textColorHint="#66FFFFFF"
-                    android:textSize="14sp" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="8dp"
+                        android:gravity="right"
+                        android:text="מיקום"
+                        android:textColor="#CCCCCC"
+                        android:textSize="14sp" />
 
-                <TextView
+                    <AutoCompleteTextView
+                        android:id="@+id/inputLocation"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:background="@drawable/button_outline"
+                        android:drawableStart="@drawable/locationicon"
+                        android:drawablePadding="12dp"
+                        android:drawableTint="#999999"
+                        android:gravity="center_vertical|right"
+                        android:inputType="none"
+                        android:hint="בחר איזור"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:textColor="#FFFFFF"
+                        android:textColorHint="#66FFFFFF"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="8dp"
+                        android:gravity="right"
+                        android:text="תאריך"
+                        android:textColor="#CCCCCC"
+                        android:textSize="14sp" />
+
+                    <EditText
+                        android:id="@+id/inputDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:background="@drawable/button_outline"
+                        android:drawableStart="@drawable/date_icon"
+                        android:drawablePadding="12dp"
+                        android:drawableTint="#999999"
+                        android:focusable="false"
+                        android:gravity="center_vertical|right"
+                        android:hint="בחר תאריך"
+                        android:inputType="date"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:textColor="#FFFFFF"
+                        android:textColorHint="#66FFFFFF"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="8dp"
+                        android:gravity="right"
+                        android:text="שעת התחלה"
+                        android:textColor="#CCCCCC"
+                        android:textSize="14sp" />
+
+                    <EditText
+                        android:id="@+id/inputTime"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:background="@drawable/button_outline"
+                        android:drawableStart="@drawable/time_icon"
+                        android:drawablePadding="12dp"
+                        android:drawableTint="#999999"
+                        android:focusable="false"
+                        android:gravity="center_vertical|right"
+                        android:hint="בחר שעה"
+                        android:inputType="time"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:textColor="#FFFFFF"
+                        android:textColorHint="#66FFFFFF"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="8dp"
+                        android:gravity="right"
+                        android:text="טווח גילאים"
+                        android:textColor="#CCCCCC"
+                        android:textSize="14sp" />
+
+                    <AutoCompleteTextView
+                        android:id="@+id/inputAge"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:background="@drawable/button_outline"
+                        android:drawableStart="@drawable/groups_icon"
+                        android:drawablePadding="12dp"
+                        android:drawableTint="#999999"
+                        android:gravity="center_vertical|right"
+                        android:hint="בחר טווח גילאים"
+                        android:inputType="none"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:textColor="#FFFFFF"
+                        android:textColorHint="#66FFFFFF"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout> <!-- סגירת fieldsContainer -->
+
+                <!-- מיכל לתוצאות - נמצא בתוך המסגרת, אבל מחוץ לשדות -->
+                <FrameLayout
+                    android:id="@+id/resultsContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="8dp"
-                    android:gravity="right"
-                    android:text="תאריך"
-                    android:textColor="#CCCCCC"
-                    android:textSize="14sp" />
+                    android:visibility="gone" />
 
-                <EditText
-                    android:id="@+id/inputDate"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:background="@drawable/button_outline"
-                    android:drawableStart="@drawable/date_icon"
-                    android:drawablePadding="12dp"
-                    android:drawableTint="#999999"
-                    android:focusable="false"
-                    android:textStyle="bold"
-                    android:gravity="center_vertical|right"
-                    android:hint="בחר תאריך"
-                    android:inputType="date"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:textColor="#FFFFFF"
-                    android:textColorHint="#66FFFFFF"
-                    android:textSize="14sp" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="8dp"
-                    android:gravity="right"
-                    android:text="שעת התחלה"
-                    android:textColor="#CCCCCC"
-                    android:textSize="14sp" />
-
-                <EditText
-                    android:id="@+id/inputTime"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:background="@drawable/button_outline"
-                    android:drawableStart="@drawable/time_icon"
-                    android:drawablePadding="12dp"
-                    android:drawableTint="#999999"
-                    android:focusable="false"
-                    android:textStyle="bold"
-                    android:gravity="center_vertical|right"
-                    android:hint="בחר שעה"
-                    android:inputType="time"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:textColor="#FFFFFF"
-                    android:textColorHint="#66FFFFFF"
-                    android:textSize="14sp" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="8dp"
-                    android:gravity="right"
-                    android:text="טווח גילאים"
-                    android:textColor="#CCCCCC"
-                    android:textSize="14sp" />
-
-                <AutoCompleteTextView
-                    android:id="@+id/inputAge"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:background="@drawable/button_outline"
-                    android:drawableStart="@drawable/groups_icon"
-                    android:drawablePadding="12dp"
-                    android:textStyle="bold"
-                    android:drawableTint="#999999"
-                    android:gravity="center_vertical|right"
-                    android:hint="לדוגמה: 18-25"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:textColor="#FFFFFF"
-                    android:textColorHint="#66FFFFFF"
-                    android:textSize="14sp" />
-
-            </LinearLayout>
+            </LinearLayout> <!-- סגירת searchForContainer (המסגרת) -->
 
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnSearch"

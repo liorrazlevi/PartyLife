@@ -1,14 +1,11 @@
 package lior.razlevi.partylife;
 
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
-import android.text.InputType;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.DatePicker;
 import android.widget.EditText;
 
 import androidx.activity.EdgeToEdge;
@@ -17,6 +14,7 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.FragmentTransaction;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -24,10 +22,10 @@ import java.util.Date;
 import java.util.Locale;
 
 public class PartySearchPage extends AppCompatActivity {
-    private AutoCompleteTextView inputLocation,inputAge;
+    private AutoCompleteTextView inputLocation;
     private EditText inputDate;
     private EditText inputTime;
-
+    private AutoCompleteTextView inputAge;
     private AppCompatButton btnSearch;
     private int selectedHour;
     private int selectedMinute;
@@ -38,47 +36,61 @@ public class PartySearchPage extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_party_search_page);
         init();
-        inputTime.setOnClickListener(v -> {
-            OpenTimePicker(v);
 
+        setupLocationSpinner();
+        setupAgeSpinner();
+        setupDateTimePickers();
 
-        });
-        String[] regions = {"דרום", "צפון", "מרכז"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, regions);
-        inputLocation.setAdapter(adapter);
-        inputLocation.setOnClickListener(v -> {
-            String selection = (String) inputLocation.getText().toString();
-            inputLocation.showDropDown();
-        });
-        // --- קוד עבור בחירת טווח הגילאים ---
-        // 1. הרשימה שלך
-        String[] ageRanges = {"18-25", "25-35", "35+"};
-
-        // 2. יצירת האדפטר.
-        ArrayAdapter<String> ageAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, ageRanges);
-
-        // 3. קישור האדפטר לרכיב התצוגה שכבר מצאנו
-        inputAge.setAdapter(ageAdapter);
-
-        // 4. הוספת Listener ללחיצה כדי לפתוח את הרשימה
-        inputAge.setOnClickListener(v -> inputAge.showDropDown());
-
-
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        String date = sdf.format(new Date());
-        inputDate.setText(date);
-        inputDate.setOnClickListener(v -> {
-            OpenDatePicker(v);
-        });
         btnSearch.setOnClickListener(v -> {
-
-
+            performSearch();
         });
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.partySearch), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+    }
+
+    private void setupLocationSpinner() {
+        String[] regions = {"דרום", "צפון", "מרכז"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, regions);
+        inputLocation.setAdapter(adapter);
+        inputLocation.setOnClickListener(v -> inputLocation.showDropDown());
+    }
+
+    private void setupAgeSpinner() {
+        String[] ageRanges = {"18-20", "20-25", "25-30", "30+"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, ageRanges);
+        inputAge.setAdapter(adapter);
+        inputAge.setOnClickListener(v -> inputAge.showDropDown());
+    }
+
+    private void setupDateTimePickers() {
+        inputTime.setOnClickListener(v -> OpenTimePicker(v));
+        
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        inputDate.setText(sdf.format(new Date()));
+        inputDate.setOnClickListener(v -> OpenDatePicker(v));
+    }
+
+    private void performSearch() {
+        // כאן תוכל לאסוף את הנתונים מהשדות
+        String location = inputLocation.getText().toString();
+        String date = inputDate.getText().toString();
+        // וכו'
+
+        // טעינת הפרגמנט
+        PartyResultsFragment fragment = new PartyResultsFragment();
+        
+        // אופציונלי: העברת נתוני החיפוש לפרגמנט דרך Bundle
+        // Bundle args = new Bundle();
+        // args.putString("location", location);
+        // fragment.setArguments(args);
+
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.resultsContainer, fragment);
+        transaction.commit();
     }
 
     public void init() {
@@ -95,7 +107,7 @@ public class PartySearchPage extends AppCompatActivity {
         int currentMonth = c.get(Calendar.MONTH);
         int currentDay = c.get(Calendar.DAY_OF_MONTH);
 
-        DatePickerDialog datePickerDialog = new DatePickerDialog(PartySearchPage.this, (view, year, month, dayOfMonth) -> {
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
             Calendar selectedDate = Calendar.getInstance();
             selectedDate.set(year, month, dayOfMonth);
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
@@ -108,14 +120,12 @@ public class PartySearchPage extends AppCompatActivity {
         final Calendar c = Calendar.getInstance();
         int currentHour = c.get(Calendar.HOUR_OF_DAY);
         int currentMinute = c.get(Calendar.MINUTE);
-        selectedHour = currentHour;
-        selectedMinute = currentMinute;
 
-        TimePickerDialog timePickerDialog = new TimePickerDialog(PartySearchPage.this, (view, hourOfDay, minute) -> {
+        TimePickerDialog timePickerDialog = new TimePickerDialog(this, (view, hourOfDay, minute) -> {
             this.selectedHour = hourOfDay;
             this.selectedMinute = minute;
             inputTime.setText(String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute));
-        }, selectedHour, selectedMinute, true);
+        }, currentHour, currentMinute, true);
         timePickerDialog.show();
     }
 }
