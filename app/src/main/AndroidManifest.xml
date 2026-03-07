@@ -11,6 +11,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PartyLife">
         <activity
+            android:name=".party_creation_page"
+            android:exported="false" />
+        <activity
+            android:name=".party_details"
+            android:exported="false" />
+        <activity
             android:name=".PartyDetailsPage"
             android:exported="false" />
         <activity

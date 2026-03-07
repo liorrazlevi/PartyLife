@@ -8,6 +8,39 @@
     android:id="@+id/partySearch"
     android:layoutDirection="rtl">
 
+    <!-- Top Bar with Profile Icon and Glow -->
+    <View
+        android:id="@+id/profileGlow"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="20dp"
+        android:background="@drawable/circle"
+        android:backgroundTint="#2D1B2E"
+        android:alpha="0.5"
+        app:layout_constraintBottom_toBottomOf="@id/pageTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/pageTitle" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cvProfile"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        app:cardBackgroundColor="#2D1B2E"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="0dp"
+        app:layout_constraintBottom_toBottomOf="@id/profileGlow"
+        app:layout_constraintEnd_toEndOf="@id/profileGlow"
+        app:layout_constraintStart_toStartOf="@id/profileGlow"
+        app:layout_constraintTop_toTopOf="@id/profileGlow">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            android:src="@drawable/personimeg"
+            app:tint="#D36FE4" />
+    </androidx.cardview.widget.CardView>
+
     <TextView
         android:id="@+id/pageTitle"
         android:layout_width="wrap_content"
@@ -15,36 +48,18 @@
         android:layout_marginTop="60dp"
         android:text="חיפוש מסיבה"
         android:textColor="#FFFFFF"
-        android:textSize="22sp"
+        android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.cardview.widget.CardView
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="24dp"
-        app:cardBackgroundColor="#333333"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="0dp"
-        app:layout_constraintBottom_toBottomOf="@id/pageTitle"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/pageTitle">
-
-        <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_gravity="center"
-            android:src="@drawable/personimeg"
-            app:tint="#CCCCCC" />
-    </androidx.cardview.widget.CardView>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
         android:fillViewport="true"
+        android:scrollbars="none"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/pageTitle">
 
@@ -55,159 +70,215 @@
             android:orientation="vertical"
             android:padding="24dp">
 
-            <!-- המסגרת החיצונית - נשארת תמיד -->
+            <!-- Main Search Container -->
             <LinearLayout
                 android:id="@+id/searchForContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/button_outline"
+                android:background="@drawable/input_background"
+                android:backgroundTint="#241625"
                 android:orientation="vertical"
-                android:padding="24dp">
+                android:padding="20dp">
 
-                <!-- המיכל של השדות - אותו תעלימי ב-Java -->
+                <!-- Fields Container -->
                 <LinearLayout
                     android:id="@+id/fieldsContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
+                    <!-- Location Field -->
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginBottom="8dp"
-                        android:gravity="right"
+                        android:layout_marginTop="8dp"
                         android:text="מיקום"
                         android:textColor="#CCCCCC"
-                        android:textSize="14sp" />
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:gravity="start" />
 
-                    <AutoCompleteTextView
-                        android:id="@+id/inputLocation"
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
-                        android:layout_height="56dp"
-                        android:background="@drawable/button_outline"
-                        android:drawableStart="@drawable/locationicon"
-                        android:drawablePadding="12dp"
-                        android:drawableTint="#999999"
-                        android:gravity="center_vertical|right"
-                        android:inputType="none"
-                        android:hint="בחר איזור"
-                        android:paddingStart="16dp"
-                        android:paddingEnd="16dp"
-                        android:textColor="#FFFFFF"
-                        android:textColorHint="#66FFFFFF"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        app:hintEnabled="false"
+                        app:boxBackgroundColor="#2D1B2E"
+                        app:boxBackgroundMode="filled"
+                        app:boxCornerRadiusBottomEnd="16dp"
+                        app:boxCornerRadiusBottomStart="16dp"
+                        app:boxCornerRadiusTopEnd="16dp"
+                        app:boxCornerRadiusTopStart="16dp"
+                        app:boxStrokeWidth="0dp">
 
+                        <AutoCompleteTextView
+                            android:id="@+id/inputLocation"
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:hint="בחר איזור"
+                            android:textColor="#FFFFFF"
+                            android:textColorHint="#66FFFFFF"
+                            android:textSize="14sp"
+                            android:gravity="center_vertical|start"
+                            android:drawableStart="@drawable/locationicon"
+                            android:drawablePadding="12dp"
+                            android:drawableTint="#999999"
+                            android:paddingStart="12dp"
+                            android:paddingEnd="12dp"
+                            android:background="@null" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Date Field -->
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:layout_marginBottom="8dp"
-                        android:gravity="right"
                         android:text="תאריך"
                         android:textColor="#CCCCCC"
-                        android:textSize="14sp" />
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:gravity="start" />
 
-                    <EditText
-                        android:id="@+id/inputDate"
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
-                        android:layout_height="56dp"
-                        android:background="@drawable/button_outline"
-                        android:drawableStart="@drawable/date_icon"
-                        android:drawablePadding="12dp"
-                        android:drawableTint="#999999"
-                        android:focusable="false"
-                        android:gravity="center_vertical|right"
-                        android:hint="בחר תאריך"
-                        android:inputType="date"
-                        android:paddingStart="16dp"
-                        android:paddingEnd="16dp"
-                        android:textColor="#FFFFFF"
-                        android:textColorHint="#66FFFFFF"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        app:hintEnabled="false"
+                        app:boxBackgroundColor="#2D1B2E"
+                        app:boxBackgroundMode="filled"
+                        app:boxCornerRadiusBottomEnd="16dp"
+                        app:boxCornerRadiusBottomStart="16dp"
+                        app:boxCornerRadiusTopEnd="16dp"
+                        app:boxCornerRadiusTopStart="16dp"
+                        app:boxStrokeWidth="0dp">
 
+                        <EditText
+                            android:id="@+id/inputDate"
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:hint="בחר תאריך"
+                            android:textColor="#FFFFFF"
+                            android:textColorHint="#66FFFFFF"
+                            android:textSize="14sp"
+                            android:focusable="false"
+                            android:gravity="center_vertical|start"
+                            android:drawableStart="@drawable/date_icon"
+                            android:drawablePadding="12dp"
+                            android:drawableTint="#999999"
+                            android:paddingStart="12dp"
+                            android:paddingEnd="12dp"
+                            android:background="@null" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Time Field -->
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:layout_marginBottom="8dp"
-                        android:gravity="right"
                         android:text="שעת התחלה"
                         android:textColor="#CCCCCC"
-                        android:textSize="14sp" />
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:gravity="start" />
 
-                    <EditText
-                        android:id="@+id/inputTime"
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
-                        android:layout_height="56dp"
-                        android:background="@drawable/button_outline"
-                        android:drawableStart="@drawable/time_icon"
-                        android:drawablePadding="12dp"
-                        android:drawableTint="#999999"
-                        android:focusable="false"
-                        android:gravity="center_vertical|right"
-                        android:hint="בחר שעה"
-                        android:inputType="time"
-                        android:paddingStart="16dp"
-                        android:paddingEnd="16dp"
-                        android:textColor="#FFFFFF"
-                        android:textColorHint="#66FFFFFF"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        app:hintEnabled="false"
+                        app:boxBackgroundColor="#2D1B2E"
+                        app:boxBackgroundMode="filled"
+                        app:boxCornerRadiusBottomEnd="16dp"
+                        app:boxCornerRadiusBottomStart="16dp"
+                        app:boxCornerRadiusTopEnd="16dp"
+                        app:boxCornerRadiusTopStart="16dp"
+                        app:boxStrokeWidth="0dp">
 
+                        <EditText
+                            android:id="@+id/inputTime"
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:hint="בחר שעה"
+                            android:textColor="#FFFFFF"
+                            android:textColorHint="#66FFFFFF"
+                            android:textSize="14sp"
+                            android:focusable="false"
+                            android:gravity="center_vertical|start"
+                            android:drawableStart="@drawable/time_icon"
+                            android:drawablePadding="12dp"
+                            android:drawableTint="#999999"
+                            android:paddingStart="12dp"
+                            android:paddingEnd="12dp"
+                            android:background="@null" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <!-- Age Range Field -->
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:layout_marginBottom="8dp"
-                        android:gravity="right"
                         android:text="טווח גילאים"
                         android:textColor="#CCCCCC"
-                        android:textSize="14sp" />
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:gravity="start" />
 
-                    <AutoCompleteTextView
-                        android:id="@+id/inputAge"
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
-                        android:layout_height="56dp"
-                        android:background="@drawable/button_outline"
-                        android:drawableStart="@drawable/groups_icon"
-                        android:drawablePadding="12dp"
-                        android:drawableTint="#999999"
-                        android:gravity="center_vertical|right"
-                        android:hint="בחר טווח גילאים"
-                        android:inputType="none"
-                        android:paddingStart="16dp"
-                        android:paddingEnd="16dp"
-                        android:textColor="#FFFFFF"
-                        android:textColorHint="#66FFFFFF"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        app:hintEnabled="false"
+                        app:boxBackgroundColor="#2D1B2E"
+                        app:boxBackgroundMode="filled"
+                        app:boxCornerRadiusBottomEnd="16dp"
+                        app:boxCornerRadiusBottomStart="16dp"
+                        app:boxCornerRadiusTopEnd="16dp"
+                        app:boxCornerRadiusTopStart="16dp"
+                        app:boxStrokeWidth="0dp">
 
-                </LinearLayout> <!-- סגירת fieldsContainer -->
+                        <AutoCompleteTextView
+                            android:id="@+id/inputAge"
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:hint="בחר טווח גילאים"
+                            android:textColor="#FFFFFF"
+                            android:textColorHint="#66FFFFFF"
+                            android:textSize="14sp"
+                            android:gravity="center_vertical|start"
+                            android:drawableStart="@drawable/groups_icon"
+                            android:drawablePadding="12dp"
+                            android:drawableTint="#999999"
+                            android:paddingStart="12dp"
+                            android:paddingEnd="12dp"
+                            android:background="@null" />
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- מיכל לתוצאות - נמצא בתוך המסגרת, אבל מחוץ לשדות -->
+                </LinearLayout>
+
+                <!-- FrameLayout for Fragment Results -->
                 <FrameLayout
                     android:id="@+id/resultsContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:visibility="gone" />
 
-            </LinearLayout> <!-- סגירת searchForContainer (המסגרת) -->
+            </LinearLayout>
 
-            <androidx.appcompat.widget.AppCompatButton
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSearch"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:layout_marginTop="32dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginEnd="32dp"
-                android:background="@drawable/button_gradient"
-                android:text="חיפוש"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="חיפוש מסיבה"
                 android:textColor="#FFFFFF"
                 android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:background="@drawable/button_gradient"
+                app:backgroundTint="@null"
+                app:cornerRadius="16dp" />
 
         </LinearLayout>
     </ScrollView>
