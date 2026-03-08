@@ -105,10 +105,10 @@
                         app:hintEnabled="false"
                         app:boxBackgroundColor="#2D1B2E"
                         app:boxBackgroundMode="filled"
-                        app:boxCornerRadiusBottomEnd="16dp"
-                        app:boxCornerRadiusBottomStart="16dp"
-                        app:boxCornerRadiusTopEnd="16dp"
-                        app:boxCornerRadiusTopStart="16dp"
+                        app:boxCornerRadiusBottomEnd="28dp"
+                        app:boxCornerRadiusBottomStart="28dp"
+                        app:boxCornerRadiusTopEnd="28dp"
+                        app:boxCornerRadiusTopStart="28dp"
                         app:boxStrokeWidth="0dp">
 
                         <AutoCompleteTextView
@@ -119,12 +119,12 @@
                             android:textColor="#FFFFFF"
                             android:textColorHint="#66FFFFFF"
                             android:textSize="14sp"
-                            android:gravity="center_vertical|start"
+                            android:gravity="center_vertical|right"
+                            android:textAlignment="viewStart"
                             android:drawableStart="@drawable/locationicon"
                             android:drawablePadding="12dp"
-                            android:drawableTint="#999999"
-                            android:paddingStart="12dp"
-                            android:paddingEnd="12dp"
+                            android:paddingStart="44dp"
+                            android:paddingEnd="20dp"
                             android:background="@null" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -146,10 +146,10 @@
                         app:hintEnabled="false"
                         app:boxBackgroundColor="#2D1B2E"
                         app:boxBackgroundMode="filled"
-                        app:boxCornerRadiusBottomEnd="16dp"
-                        app:boxCornerRadiusBottomStart="16dp"
-                        app:boxCornerRadiusTopEnd="16dp"
-                        app:boxCornerRadiusTopStart="16dp"
+                        app:boxCornerRadiusBottomEnd="28dp"
+                        app:boxCornerRadiusBottomStart="28dp"
+                        app:boxCornerRadiusTopEnd="28dp"
+                        app:boxCornerRadiusTopStart="28dp"
                         app:boxStrokeWidth="0dp">
 
                         <EditText
@@ -161,12 +161,12 @@
                             android:textColorHint="#66FFFFFF"
                             android:textSize="14sp"
                             android:focusable="false"
-                            android:gravity="center_vertical|start"
+                            android:gravity="center_vertical|right"
+                            android:textAlignment="viewStart"
                             android:drawableStart="@drawable/date_icon"
                             android:drawablePadding="12dp"
-                            android:drawableTint="#999999"
-                            android:paddingStart="12dp"
-                            android:paddingEnd="12dp"
+                            android:paddingStart="44dp"
+                            android:paddingEnd="20dp"
                             android:background="@null" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -188,10 +188,10 @@
                         app:hintEnabled="false"
                         app:boxBackgroundColor="#2D1B2E"
                         app:boxBackgroundMode="filled"
-                        app:boxCornerRadiusBottomEnd="16dp"
-                        app:boxCornerRadiusBottomStart="16dp"
-                        app:boxCornerRadiusTopEnd="16dp"
-                        app:boxCornerRadiusTopStart="16dp"
+                        app:boxCornerRadiusBottomEnd="28dp"
+                        app:boxCornerRadiusBottomStart="28dp"
+                        app:boxCornerRadiusTopEnd="28dp"
+                        app:boxCornerRadiusTopStart="28dp"
                         app:boxStrokeWidth="0dp">
 
                         <EditText
@@ -203,12 +203,12 @@
                             android:textColorHint="#66FFFFFF"
                             android:textSize="14sp"
                             android:focusable="false"
-                            android:gravity="center_vertical|start"
+                            android:gravity="center_vertical|right"
+                            android:textAlignment="viewStart"
                             android:drawableStart="@drawable/time_icon"
                             android:drawablePadding="12dp"
-                            android:drawableTint="#999999"
-                            android:paddingStart="12dp"
-                            android:paddingEnd="12dp"
+                            android:paddingStart="44dp"
+                            android:paddingEnd="20dp"
                             android:background="@null" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -230,10 +230,10 @@
                         app:hintEnabled="false"
                         app:boxBackgroundColor="#2D1B2E"
                         app:boxBackgroundMode="filled"
-                        app:boxCornerRadiusBottomEnd="16dp"
-                        app:boxCornerRadiusBottomStart="16dp"
-                        app:boxCornerRadiusTopEnd="16dp"
-                        app:boxCornerRadiusTopStart="16dp"
+                        app:boxCornerRadiusBottomEnd="28dp"
+                        app:boxCornerRadiusBottomStart="28dp"
+                        app:boxCornerRadiusTopEnd="28dp"
+                        app:boxCornerRadiusTopStart="28dp"
                         app:boxStrokeWidth="0dp">
 
                         <AutoCompleteTextView
@@ -244,12 +244,12 @@
                             android:textColor="#FFFFFF"
                             android:textColorHint="#66FFFFFF"
                             android:textSize="14sp"
-                            android:gravity="center_vertical|start"
+                            android:gravity="center_vertical|right"
+                            android:textAlignment="viewStart"
                             android:drawableStart="@drawable/groups_icon"
                             android:drawablePadding="12dp"
-                            android:drawableTint="#999999"
-                            android:paddingStart="12dp"
-                            android:paddingEnd="12dp"
+                            android:paddingStart="44dp"
+                            android:paddingEnd="20dp"
                             android:background="@null" />
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -278,7 +278,7 @@
                 android:textStyle="bold"
                 android:background="@drawable/button_gradient"
                 app:backgroundTint="@null"
-                app:cornerRadius="16dp" />
+                app:cornerRadius="28dp" />
 
         </LinearLayout>
     </ScrollView>
