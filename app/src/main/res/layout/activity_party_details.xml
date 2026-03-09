@@ -364,7 +364,7 @@
                     android:layout_marginStart="8dp"
                     android:text="כן"
                     android:textColor="#FFFFFF"
-                    app:backgroundTint="#D32F66"
+                    app:backgroundTint="#B14C6E"
                     app:cornerRadius="26dp"
                     app:iconGravity="textEnd"
                     app:iconTint="#FFFFFF"/>

@@ -214,7 +214,7 @@
             app:boxStrokeWidth="0dp"
             app:passwordToggleEnabled="true"
             app:passwordToggleTint="#999999"
-           android:layoutDirection="ltr"
+
             app:layout_constraintTop_toBottomOf="@id/tvPasswordLabel">
 
             <com.google.android.material.textfield.TextInputEditText

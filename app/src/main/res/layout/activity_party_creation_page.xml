@@ -244,6 +244,8 @@
                 android:background="@null" />
         </com.google.android.material.textfield.TextInputLayout>
 
+
+
         <!-- Row for Age and Dress Code -->
         <LinearLayout
             android:id="@+id/rowBottom"
@@ -340,6 +342,7 @@
             </LinearLayout>
 
         </LinearLayout>
+
 
         <!-- Create Button -->
         <com.google.android.material.button.MaterialButton
