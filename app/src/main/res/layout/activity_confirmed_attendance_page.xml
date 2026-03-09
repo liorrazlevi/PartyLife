@@ -8,15 +8,7 @@
     android:layoutDirection="rtl"
     android:padding="16dp">
 
-    <!-- Header: Title and Back Button -->
-    <ImageView
-        android:id="@+id/btnBack"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:src="@drawable/ic_arrow_back"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:tint="#FFFFFF" />
+
 
     <TextView
         android:id="@+id/tvPartyTitle"
@@ -45,8 +37,7 @@
             android:layout_height="100dp"
             android:layout_weight="1"
             android:layout_marginEnd="8dp"
-            android:background="@drawable/button_gradient"
-            android:backgroundTint="#2D1B2E"
+            android:background="#2D1B2E"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -73,8 +64,7 @@
             android:layout_height="100dp"
             android:layout_weight="1"
             android:layout_marginStart="8dp"
-            android:background="@drawable/button_gradient"
-            android:backgroundTint="#2D1B2E"
+            android:background="#2D1B2E"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -134,6 +124,6 @@
         android:layout_marginTop="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tilSearch"
-        tools:listitem="@layout/item_guest" /> <!-- חיבור לעיצוב השורה שיצרנו -->
+        tools:listitem="@layout/item_guest" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

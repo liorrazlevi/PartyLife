@@ -11,6 +11,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PartyLife">
         <activity
+            android:name=".created_events_page"
+            android:exported="false" />
+        <activity
             android:name=".confirmed_attendance_page"
             android:exported="false" />
         <activity
