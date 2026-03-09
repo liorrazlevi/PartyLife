@@ -371,7 +371,8 @@
             android:textColor="#FFFFFF"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:backgroundTint="#EE2B9C"
+            android:background="@drawable/button_gradient"
+            app:backgroundTint="@null"
             app:cornerRadius="28dp"
             app:layout_constraintTop_toBottomOf="@id/tilPhone" />
 

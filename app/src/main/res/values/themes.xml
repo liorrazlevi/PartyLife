@@ -11,4 +11,8 @@
         <item name="android:textColorPrimary">#FFFFFF</item>
         <item name="android:textColorHint">#FFFFFF</item> <!-- Color for the hint text -->
     </style>
+
+    <style name="CircleImage">
+        <item name="cornerSize">50%</item>
+    </style>
 </resources>
