@@ -8,8 +8,7 @@
     android:layoutDirection="rtl"
     android:padding="16dp">
 
-
-
+    <!-- כותרת המסך -->
     <TextView
         android:id="@+id/tvPartyTitle"
         android:layout_width="wrap_content"
@@ -22,7 +21,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Statistics Row (Coming / Not Coming) -->
+    <!-- שורת סטטיסטיקה עם פינות מעוגלות -->
     <LinearLayout
         android:id="@+id/statsRow"
         android:layout_width="match_parent"
@@ -31,62 +30,76 @@
         android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@id/tvPartyTitle">
 
-        <!-- Not Coming Card -->
-        <LinearLayout
+        <!-- כרטיס "לא מגיעים" -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="0dp"
             android:layout_height="100dp"
             android:layout_weight="1"
             android:layout_marginEnd="8dp"
-            android:background="#2D1B2E"
-            android:gravity="center"
-            android:orientation="vertical">
+            app:cardBackgroundColor="#2D1B2E"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="לא מגיעים"
-                android:textColor="#CCCCCC"
-                android:textSize="14sp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tvNotComingCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0"
-                android:textColor="#FFFFFF"
-                android:textSize="24sp"
-                android:textStyle="bold" />
-        </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="לא מגיעים"
+                    android:textColor="#CCCCCC"
+                    android:textSize="14sp" />
 
-        <!-- Coming Card -->
-        <LinearLayout
+                <TextView
+                    android:id="@+id/tvNotComingCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textColor="#FFFFFF"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- כרטיס "מגיעים" -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="0dp"
             android:layout_height="100dp"
             android:layout_weight="1"
             android:layout_marginStart="8dp"
-            android:background="#2D1B2E"
-            android:gravity="center"
-            android:orientation="vertical">
+            app:cardBackgroundColor="#2D1B2E"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="0dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="מגיעים"
-                android:textColor="#CCCCCC"
-                android:textSize="14sp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tvComingCount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0"
-                android:textColor="#FFFFFF"
-                android:textSize="24sp"
-                android:textStyle="bold" />
-        </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="מגיעים"
+                    android:textColor="#CCCCCC"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/tvComingCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textColor="#FFFFFF"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 
-    <!-- Search Bar -->
+    <!-- שורת חיפוש -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilSearch"
         android:layout_width="match_parent"
@@ -116,7 +129,7 @@
             android:paddingStart="16dp" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Guests List -->
+    <!-- רשימת האורחים -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvGuests"
         android:layout_width="match_parent"
