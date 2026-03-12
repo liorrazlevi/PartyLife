@@ -1,35 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:background="#2A1B2C">
+    android:layout_height="match_parent"
+    android:background="#1A0F1B"
+    android:layoutDirection="rtl"
+    android:padding="16dp">
 
+    <!-- Header Section -->
     <TextView
-        android:id="@+id/resultsTitle"
+        android:id="@+id/tvResultsHeader"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="תוצאות חיפוש"
-        android:textColor="#E91E8C"
-        android:textSize="18sp"
+        android:layout_marginTop="8dp"
+        android:text="מסיבות שנמצאו"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
         android:textStyle="bold"
-        android:layout_marginBottom="16dp" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvPartyResults"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="200dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tvNoResults"
-        android:layout_width="match_parent"
+        android:id="@+id/tvResultsCount"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="לא נמצאו מסיבות העונות על התנאים"
-        android:textColor="#FFFFFF"
-        android:gravity="center"
-        android:visibility="gone"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="4dp"
+        android:text="מצאנו 0 מסיבות שתואמות לחיפוש שלך"
+        android:textColor="#9575CD"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="@id/tvResultsHeader"
+        app:layout_constraintTop_toBottomOf="@id/tvResultsHeader" />
 
-</LinearLayout>
+    <!-- Results List -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvPartyResults"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:clipToPadding="false"
+        android:paddingBottom="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvResultsCount"
+        tools:listitem="@layout/item_event" />
+
+    <!-- Empty State (Hidden by default) -->
+    <LinearLayout
+        android:id="@+id/llEmptyState"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/partyicon"
+            android:alpha="0.3"
+            app:tint="#999999" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="אופס! לא מצאנו מסיבות...\nנסו לשנות את קריטריוני החיפוש"
+            android:textColor="#999999"
+            android:textSize="16sp"
+            android:textAlignment="center" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

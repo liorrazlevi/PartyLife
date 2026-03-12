@@ -7,7 +7,10 @@
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="24dp"
     android:layout_marginBottom="32dp"
-    android:layoutDirection="rtl">
+    android:layoutDirection="rtl"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground">
 
     <!-- CardView: הרכיב שחותך את התמונה עם פינות מעוגלות! -->
     <androidx.cardview.widget.CardView
@@ -15,13 +18,10 @@
         android:layout_width="match_parent"
         android:layout_height="180dp"
         app:cardCornerRadius="24dp"
-        app:cardElevation="0dp"
-        app:cardBackgroundColor="@android:color/transparent"
+        app:cardElevation="4dp"
+        app:cardBackgroundColor="#2D1B2E"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:clickable="true"
-        android:focusable="true"
-        android:foreground="?android:attr/selectableItemBackground"
         app:layout_constraintEnd_toEndOf="parent">
 
         <!-- התמונה עצמה שבתוך הכרטיסייה המעוגלת -->
