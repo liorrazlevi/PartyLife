@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,63 +8,86 @@
     android:background="#1A0F1B"
     android:layoutDirection="rtl">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="16dp">
+    <!-- 1. אייקון פרופיל (הוזז לצד ימין - Start) -->
+    <View
+        android:id="@+id/profileGlow"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginStart="24dp"
+        android:background="@drawable/circle"
+        android:backgroundTint="#2D1B2E"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- כותרת המסך - עכשיו ממורכזת לאמצע -->
-        <TextView
-            android:id="@+id/tvHeaderTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="האירועים שלי"
-            android:textColor="#FFFFFF"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <ImageView
+        android:id="@+id/ivProfile"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:src="@drawable/personimeg"
+        app:tint="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@id/profileGlow"
+        app:layout_constraintEnd_toEndOf="@id/profileGlow"
+        app:layout_constraintStart_toStartOf="@id/profileGlow"
+        app:layout_constraintTop_toTopOf="@id/profileGlow" />
 
-        <!-- כפתור פרופיל - עכשיו מוצמד לימין (Start ב-RTL) -->
-        <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/btnProfile"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:padding="8dp"
-            android:src="@android:drawable/personimeg"
-            android:background="#2D1B2E"
-            app:shapeAppearanceOverlay="@style/CircleImage"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="#FFFFFF" />
-
-        <!-- רשימת האירועים -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvMyEvents"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="24dp"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvHeaderTitle"
-            tools:listitem="@layout/item_event" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!-- כפתור "מסיבה חדשה" - Extended FAB -->
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/fabAddEvent"
+    <!-- 2. כפתור מסיבה חדשה (מוצמד משמאל לאייקון פרופיל) -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnCreateEvent"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|start"
-        android:layout_margin="24dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
         android:text="מסיבה חדשה"
         android:textColor="#FFFFFF"
-        android:textAllCaps="false"
+        android:textStyle="bold"
+        android:textSize="14sp"
         app:icon="@android:drawable/ic_input_add"
         app:iconTint="#FFFFFF"
-        app:backgroundTint="#FF4081"
-        app:elevation="6dp" />
+        app:backgroundTint="#EE2B9C"
+        app:cornerRadius="24dp"
+        app:layout_constraintBottom_toBottomOf="@id/profileGlow"
+        app:layout_constraintStart_toEndOf="@id/profileGlow"
+        app:layout_constraintTop_toTopOf="@id/profileGlow" />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    <!-- 3. כותרת המסך (שורה מתחת לאייקונים, בצד ימין - מונע התנגשויות) -->
+    <TextView
+        android:id="@+id/tvHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="האירועים שלי"
+        android:textColor="#FFFFFF"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@id/profileGlow"
+        app:layout_constraintTop_toBottomOf="@id/profileGlow" />
+
+    <!-- 4. רשימת האירועים (תופסת את כל שאר המסך) -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvEvents"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:clipToPadding="false"
+        android:paddingBottom="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvHeader"
+        tools:listitem="@layout/item_event" />
+
+    <TextView
+        android:id="@+id/tvEmptyState"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="אין לך אירועים עדיין...\nלחץ על מסיבה חדשה כדי להתחיל!"
+        android:textColor="#999999"
+        android:textSize="16sp"
+        android:textAlignment="center"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="@id/rvEvents"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

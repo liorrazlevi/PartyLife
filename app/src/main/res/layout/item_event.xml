@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="24dp"
+    android:layout_marginBottom="32dp"
+    android:layoutDirection="rtl">
+
+    <!-- CardView: הרכיב שחותך את התמונה עם פינות מעוגלות! -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cvImageContainer"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="@android:color/transparent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- התמונה עצמה שבתוך הכרטיסייה המעוגלת -->
+        <ImageView
+            android:id="@+id/ivEventCover"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            tools:src="@tools:sample/backgrounds/scenic" />
+
+    </androidx.cardview.widget.CardView>
+
+    <!-- שם המסיבה -->
+    <TextView
+        android:id="@+id/tvEventTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="מסיבת קיץ על הגג"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:gravity="start"
+        app:layout_constraintTop_toBottomOf="@id/cvImageContainer" />
+
+    <!-- תאריך ושעה -->
+    <TextView
+        android:id="@+id/tvEventDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="15 באוגוסט, 20:00"
+        android:textColor="#999999"
+        android:textSize="14sp"
+        android:gravity="start"
+        app:layout_constraintTop_toBottomOf="@id/tvEventTitle" />
+
+    <!-- סטטוס -->
+    <TextView
+        android:id="@+id/tvEventStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="פורסם"
+        android:textColor="#4CAF50"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:gravity="start"
+        app:layout_constraintTop_toBottomOf="@id/tvEventDate" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
