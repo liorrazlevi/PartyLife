@@ -1,40 +1,29 @@
 package lior.razlevi.partylife;
 
 public class Party {
-    private String id;
+    private String partyId;
     private String name;
+    private String location;
     private String date;
     private String time;
-    private String location;
+    private String age;
+    private String dressCode;
+    private String phone;
     private String imageUrl;
-    private String status;
+    private String creatorId;
 
-    public Party() {
-        // Required for Firebase
-    }
+    // חובה: קונסטרקטור ריק בשביל Firebase
+    public Party() {}
 
-    public Party(String id, String name, String date, String time, String location, String status) {
-        this.id = id;
-        this.name = name;
-        this.date = date;
-        this.time = time;
-        this.location = location;
-        this.status = status;
-    }
-
-    // Getters and Setters
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
+    // Getters - חובה כדי ש-Firebase יוכל לקרוא את הנתונים
+    public String getPartyId() { return partyId; }
     public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
-    public String getDate() { return date; }
-    public void setDate(String date) { this.date = date; }
-    public String getTime() { return time; }
-    public void setTime(String time) { this.time = time; }
     public String getLocation() { return location; }
-    public void setLocation(String location) { this.location = location; }
+    public String getDate() { return date; }
+    public String getTime() { return time; }
+    public String getAge() { return age; }
+    public String getDressCode() { return dressCode; }
+    public String getPhone() { return phone; }
     public String getImageUrl() { return imageUrl; }
-    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public String getCreatorId() { return creatorId; }
 }

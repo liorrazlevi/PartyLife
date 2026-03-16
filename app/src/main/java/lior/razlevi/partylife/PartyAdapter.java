@@ -7,12 +7,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.bumptech.glide.Glide;
 import java.util.List;
 
 public class PartyAdapter extends RecyclerView.Adapter<PartyAdapter.PartyViewHolder> {
 
-    private List<Party> partyList;
-    private OnPartyClickListener listener;
+    private final List<Party> partyList;
+    private final OnPartyClickListener listener;
 
     public interface OnPartyClickListener {
         void onPartyClick(Party party);
@@ -34,11 +35,22 @@ public class PartyAdapter extends RecyclerView.Adapter<PartyAdapter.PartyViewHol
     public void onBindViewHolder(@NonNull PartyViewHolder holder, int position) {
         Party party = partyList.get(position);
         holder.tvEventTitle.setText(party.getName());
-        holder.tvEventDate.setText(party.getDate() + ", " + party.getTime());
-        holder.tvEventStatus.setText(party.getStatus());
         
-        // כאן בהמשך אפשר להשתמש ב-Glide או Picasso לטעינת התמונה מה-URL
-        // holder.ivEventCover.setImageResource(R.drawable.partyicon);
+        String dateTime = party.getDate() + " | " + party.getTime();
+        holder.tvEventDate.setText(dateTime);
+        
+        holder.tvEventStatus.setText(party.getLocation());
+        holder.tvEventStatus.setTextColor(0xFF9575CD);
+
+        if (party.getImageUrl() != null && !party.getImageUrl().isEmpty()) {
+            Glide.with(holder.itemView.getContext())
+                    .load(party.getImageUrl())
+                    .placeholder(R.drawable.partyicon)
+                    .error(R.drawable.partyicon)
+                    .into(holder.ivEventCover);
+        } else {
+            holder.ivEventCover.setImageResource(R.drawable.partyicon);
+        }
 
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
