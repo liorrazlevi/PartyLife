@@ -191,7 +191,7 @@
                 android:id="@+id/etLocation"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:hint="הזן כתובת או השתמש ב-GPS"
+                android:hint="הזן כתובת או שם המקום"
                 android:textColorHint="#66FFFFFF"
                 android:textColor="#FFFFFF"
                 android:textSize="14sp"
@@ -330,7 +330,7 @@
                     app:boxCornerRadiusTopEnd="28dp"
                     app:boxCornerRadiusTopStart="28dp"
                     app:boxStrokeWidth="0dp">
-                    
+
                     <AutoCompleteTextView
                         android:id="@+id/etAge"
                         android:layout_width="match_parent"
@@ -414,14 +414,19 @@
                 android:id="@+id/etPhone"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
-                android:hint="לדוגמה: 050-0000000"
+                android:hint="הקלד מספר טלפון"
                 android:inputType="phone"
                 android:textColorHint="#66FFFFFF"
                 android:textColor="#FFFFFF"
                 android:textSize="14sp"
-                android:gravity="center_vertical"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp"
+                android:gravity="start|center_vertical"
+                android:textDirection="rtl"
+                android:textAlignment="viewStart"
+                android:drawableStart="@android:drawable/ic_menu_call"
+                android:drawablePadding="12dp"
+                android:drawableTint="#999999"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
                 android:background="@null" />
         </com.google.android.material.textfield.TextInputLayout>
 

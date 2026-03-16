@@ -2,7 +2,10 @@ package lior.razlevi.partylife;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -11,6 +14,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -22,24 +27,31 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.UUID;
 
 public class party_creation_page extends AppCompatActivity {
 
-    private TextInputEditText etPartyName, etLocation, etDate, etTime, etDressCode;
+    private TextInputEditText etPartyName, etLocation, etDate, etTime, etDressCode, etPhone;
     private AutoCompleteTextView etAge;
     private MaterialButton btnCreate;
     private ImageView ivProfile, ivSelectedPartyImage;
     private MaterialCardView cvPartyImage;
     private TextView tvTitle, tvSubtitle;
 
-    // משתני Firebase
+    private Uri imageUri;
+    private ActivityResultLauncher<Intent> galleryLauncher;
+    
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
+    private FirebaseStorage storage;
+    private StorageReference storageReference;
 
     private final Calendar calendar = Calendar.getInstance();
 
@@ -52,15 +64,17 @@ public class party_creation_page extends AppCompatActivity {
         init();
         setupAgeSpinner();
         setupPickers();
+        setupGalleryLauncher();
 
         btnCreate.setOnClickListener(v -> {
             if (validateInputs()) {
-                createParty();
+                uploadImageAndCreateParty();
             }
         });
 
         cvPartyImage.setOnClickListener(v -> {
-            // TODO: פתיחת גלריה לבחירת תמונה
+            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            galleryLauncher.launch(intent);
         });
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -70,8 +84,75 @@ public class party_creation_page extends AppCompatActivity {
         });
     }
 
+    private void setupGalleryLauncher() {
+        galleryLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        imageUri = result.getData().getData();
+                        ivSelectedPartyImage.setImageURI(imageUri);
+                        ivSelectedPartyImage.setAlpha(1.0f);
+                    }
+                }
+        );
+    }
+
+    private void uploadImageAndCreateParty() {
+        if (imageUri != null) {
+            String fileName = UUID.randomUUID().toString();
+            StorageReference ref = storageReference.child("party_images/" + fileName);
+
+            ref.putFile(imageUri)
+                    .addOnSuccessListener(taskSnapshot -> ref.getDownloadUrl().addOnSuccessListener(uri -> {
+                        savePartyToDatabase(uri.toString());
+                    }))
+                    .addOnFailureListener(e -> Toast.makeText(this, "שגיאה בהעלאת תמונה: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+        } else {
+            savePartyToDatabase(""); // יצירה ללא תמונה
+        }
+    }
+
+    private void savePartyToDatabase(String imageUrl) {
+        String name = etPartyName.getText().toString().trim();
+        String location = etLocation.getText().toString().trim();
+        String date = etDate.getText().toString().trim();
+        String time = etTime.getText().toString().trim();
+        String age = etAge.getText().toString().trim();
+        String dressCode = etDressCode.getText().toString().trim();
+        String phone = etPhone.getText().toString().trim();
+
+        if (mAuth.getCurrentUser() == null) {
+            Toast.makeText(this, "שגיאה: משתמש לא מחובר", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String currentUserId = mAuth.getCurrentUser().getUid();
+
+        String partyId = mDatabase.push().getKey();
+        HashMap<String, Object> partyMap = new HashMap<>();
+        partyMap.put("partyId", partyId);
+        partyMap.put("name", name);
+        partyMap.put("location", location);
+        partyMap.put("date", date);
+        partyMap.put("time", time);
+        partyMap.put("age", age);
+        partyMap.put("dressCode", dressCode);
+        partyMap.put("phone", phone);
+        partyMap.put("imageUrl", imageUrl);
+        partyMap.put("creatorId", currentUserId);
+
+        if (partyId != null) {
+            mDatabase.child(partyId).setValue(partyMap).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Toast.makeText(this, "המסיבה נוצרה בהצלחה!", Toast.LENGTH_SHORT).show();
+                    finish();
+                } else {
+                    Toast.makeText(this, "שגיאה בשמירה: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
     private void setupPickers() {
-        // בחירת תאריך
         etDate.setOnClickListener(v -> {
             new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
                 calendar.set(Calendar.YEAR, year);
@@ -81,7 +162,6 @@ public class party_creation_page extends AppCompatActivity {
             }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
         });
 
-        // בחירת שעה
         etTime.setOnClickListener(v -> {
             new TimePickerDialog(this, (view, hourOfDay, minute) -> {
                 calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
@@ -97,8 +177,8 @@ public class party_creation_page extends AppCompatActivity {
     }
 
     private boolean validateInputs() {
-        if (TextUtils.isEmpty(etPartyName.getText())) {
-            etPartyName.setError("אנא הזן שם למסיבה");
+        if (TextUtils.isEmpty(etPartyName.getText()) || etPartyName.getText().length() < 3) {
+            etPartyName.setError("שם המסיבה חייב להכיל לפחות 3 תווים");
             return false;
         }
         if (TextUtils.isEmpty(etLocation.getText())) {
@@ -117,50 +197,12 @@ public class party_creation_page extends AppCompatActivity {
             Toast.makeText(this, "אנא בחר טווח גילאים", Toast.LENGTH_SHORT).show();
             return false;
         }
+        String phone = etPhone.getText().toString().trim();
+        if (TextUtils.isEmpty(phone) || phone.length() < 10) {
+            etPhone.setError("אנא הזן מספר טלפון תקין (10 ספרות)");
+            return false;
+        }
         return true;
-    }
-
-    private void createParty() {
-        // 1. איסוף הנתונים מהטפסים
-        String name = etPartyName.getText().toString().trim();
-        String location = etLocation.getText().toString().trim();
-        String date = etDate.getText().toString().trim();
-        String time = etTime.getText().toString().trim();
-        String age = etAge.getText().toString().trim();
-        String dressCode = etDressCode.getText().toString().trim();
-
-        // בדיקה אם המשתמש מחובר (כדי לקבל את ה-UID שלו)
-        if (mAuth.getCurrentUser() == null) {
-            Toast.makeText(this, "שגיאה: משתמש לא מחובר", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        String currentUserId = mAuth.getCurrentUser().getUid();
-
-        // 2. יצירת מזהה ייחודי למסיבה בתוך ענף Parties
-        String partyId = mDatabase.push().getKey();
-
-        // 3. יצירת HashMap לשמירת הנתונים (השיטה שבה השתמשת ברישום)
-        HashMap<String, Object> partyMap = new HashMap<>();
-        partyMap.put("partyId", partyId);
-        partyMap.put("name", name);
-        partyMap.put("location", location);
-        partyMap.put("date", date);
-        partyMap.put("time", time);
-        partyMap.put("age", age);
-        partyMap.put("dressCode", dressCode);
-        partyMap.put("creatorId", currentUserId); // מקשר את המסיבה ליוצר שלה
-
-        // 4. שמירה ב-Firebase Database
-        if (partyId != null) {
-            mDatabase.child(partyId).setValue(partyMap).addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    Toast.makeText(party_creation_page.this, "המסיבה נוצרה ונשמרה בהצלחה!", Toast.LENGTH_SHORT).show();
-                    finish(); // סגירת הדף וחזרה אחורה
-                } else {
-                    Toast.makeText(party_creation_page.this, "שגיאה בשמירה: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
     }
 
     private void setupAgeSpinner() {
@@ -171,13 +213,13 @@ public class party_creation_page extends AppCompatActivity {
     }
 
     private void init() {
-        // חיבור רכיבי ה-UI
         etPartyName = findViewById(R.id.etPartyName);
         etLocation = findViewById(R.id.etLocation);
         etDate = findViewById(R.id.etDate);
         etTime = findViewById(R.id.etTime);
         etAge = findViewById(R.id.etAge);
         etDressCode = findViewById(R.id.etDressCode);
+        etPhone = findViewById(R.id.etPhone);
         btnCreate = findViewById(R.id.btnCreate);
         ivProfile = findViewById(R.id.ivProfile);
         cvPartyImage = findViewById(R.id.cvPartyImage);
@@ -185,9 +227,9 @@ public class party_creation_page extends AppCompatActivity {
         tvTitle = findViewById(R.id.tvTitle);
         tvSubtitle = findViewById(R.id.tvSubtitle);
 
-        // אתחול Firebase
         mAuth = FirebaseAuth.getInstance();
-        // יצירת קישור לענף Parties ב-Database
         mDatabase = FirebaseDatabase.getInstance().getReference("Parties");
+        storage = FirebaseStorage.getInstance();
+        storageReference = storage.getReference();
     }
 }
