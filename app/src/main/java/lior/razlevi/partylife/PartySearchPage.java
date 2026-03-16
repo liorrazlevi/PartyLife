@@ -2,6 +2,7 @@ package lior.razlevi.partylife;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -14,7 +15,6 @@ import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.fragment.app.FragmentTransaction;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -26,7 +26,7 @@ public class PartySearchPage extends AppCompatActivity {
     private EditText inputDate;
     private EditText inputTime;
     private AutoCompleteTextView inputAge;
-    private AppCompatButton btnSearch;
+    private com.google.android.material.button.MaterialButton btnSearch;
     private int selectedHour;
     private int selectedMinute;
 
@@ -75,22 +75,17 @@ public class PartySearchPage extends AppCompatActivity {
     }
 
     private void performSearch() {
-        // כאן תוכל לאסוף את הנתונים מהשדות
+        // איסוף הנתונים מהשדות
         String location = inputLocation.getText().toString();
         String date = inputDate.getText().toString();
-        // וכו'
+        String age = inputAge.getText().toString();
 
-        // טעינת הפרגמנט
-        PartyResultsFragment fragment = new PartyResultsFragment();
-        
-        // אופציונלי: העברת נתוני החיפוש לפרגמנט דרך Bundle
-        // Bundle args = new Bundle();
-        // args.putString("location", location);
-        // fragment.setArguments(args);
-
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.resultsContainer, fragment);
-        transaction.commit();
+        // מעבר ל-Activity החדש של התוצאות
+        Intent intent = new Intent(this, PartyResultsActivity.class);
+        intent.putExtra("LOCATION", location);
+        intent.putExtra("DATE", date);
+        intent.putExtra("AGE", age);
+        startActivity(intent);
     }
 
     public void init() {
