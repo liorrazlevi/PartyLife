@@ -66,6 +66,10 @@ public class party_creation_page extends AppCompatActivity {
         setupPickers();
         setupGalleryLauncher();
 
+        ivProfile.setOnClickListener(view -> {
+            startActivity(new Intent(this, UserSettingActivity.class));
+        });
+
         btnCreate.setOnClickListener(v -> {
             if (validateInputs()) {
                 uploadImageAndCreateParty();
@@ -212,6 +216,24 @@ public class party_creation_page extends AppCompatActivity {
         etAge.setOnClickListener(v -> etAge.showDropDown());
     }
 
+    private void fetchUserName(String userId) {
+        // יצירת הפניה לענף המשתמשים (Users) לפי ה-ID של המשתמש
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users").child(userId);
+
+        userRef.get().addOnSuccessListener(dataSnapshot -> {
+            if (dataSnapshot.exists()) {
+                // שליפת השם (ודאי שהשדה ב-Firebase שלך אכן נקרא fullName)
+                String name = dataSnapshot.child("fullName").getValue(String.class);
+                if (name != null && !name.isEmpty()) {
+                    tvSubtitle.setText("היי " + name + ", מלא את הפרטים ליצירת המסיבה שלך");
+                }
+            }
+        }).addOnFailureListener(e -> {
+            // אם יש שגיאה, נשאיר את הטקסט המקורי
+            tvSubtitle.setText("מלא את הפרטים ליצירת המסיבה שלך");
+        });
+    }
+
     private void init() {
         etPartyName = findViewById(R.id.etPartyName);
         etLocation = findViewById(R.id.etLocation);
@@ -231,5 +253,12 @@ public class party_creation_page extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference("Parties");
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
+        if (mAuth.getCurrentUser() != null) {
+            fetchUserName(mAuth.getCurrentUser().getUid());
+        }
+
+
+        }
+
     }
-}
+
