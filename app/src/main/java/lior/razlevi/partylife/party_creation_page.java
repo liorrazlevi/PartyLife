@@ -112,47 +112,39 @@ public class party_creation_page extends AppCompatActivity {
                     }))
                     .addOnFailureListener(e -> Toast.makeText(this, "שגיאה בהעלאת תמונה: " + e.getMessage(), Toast.LENGTH_SHORT).show());
         } else {
-            savePartyToDatabase(""); // יצירה ללא תמונה
+            savePartyToDatabase(""); 
         }
     }
 
     private void savePartyToDatabase(String imageUrl) {
-        String name = etPartyName.getText().toString().trim();
-        String location = etLocation.getText().toString().trim();
-        String date = etDate.getText().toString().trim();
-        String time = etTime.getText().toString().trim();
-        String age = etAge.getText().toString().trim();
-        String dressCode = etDressCode.getText().toString().trim();
-        String phone = etPhone.getText().toString().trim();
-        String parking = etParking.getText().toString().trim();
-
-        if (mAuth.getCurrentUser() == null) {
-            Toast.makeText(this, "שגיאה: משתמש לא מחובר", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        if (mAuth.getCurrentUser() == null) return;
         String currentUserId = mAuth.getCurrentUser().getUid();
 
-        String partyId = mDatabase.push().getKey();
+        // יצירת מזהה ייחודי ב-Firebase
+        DatabaseReference newPartyRef = mDatabase.push();
+        String partyId = newPartyRef.getKey(); // זה ה-ID הייחודי של המסיבה
+
+        // יצירת אובייקט מסיבה (השתמשתי ב-Map כדי לוודא שכל השדות נשמרים)
         HashMap<String, Object> partyMap = new HashMap<>();
-        partyMap.put("partyId", partyId);
-        partyMap.put("name", name);
-        partyMap.put("location", location);
-        partyMap.put("date", date);
-        partyMap.put("time", time);
-        partyMap.put("age", age);
-        partyMap.put("dressCode", dressCode);
-        partyMap.put("phone", phone);
-        partyMap.put("parking", parking);
+        partyMap.put("partyId", partyId); // שמירה של ה-ID בתוך האובייקט
+        partyMap.put("name", etPartyName.getText().toString().trim());
+        partyMap.put("location", etLocation.getText().toString().trim());
+        partyMap.put("date", etDate.getText().toString().trim());
+        partyMap.put("time", etTime.getText().toString().trim());
+        partyMap.put("age", etAge.getText().toString().trim());
+        partyMap.put("dressCode", etDressCode.getText().toString().trim());
+        partyMap.put("phone", etPhone.getText().toString().trim());
+        partyMap.put("parking", etParking.getText().toString().trim());
         partyMap.put("imageUrl", imageUrl);
         partyMap.put("creatorId", currentUserId);
 
         if (partyId != null) {
-            mDatabase.child(partyId).setValue(partyMap).addOnCompleteListener(task -> {
+            newPartyRef.setValue(partyMap).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     Toast.makeText(this, "המסיבה נוצרה בהצלחה!", Toast.LENGTH_SHORT).show();
                     finish();
                 } else {
-                    Toast.makeText(this, "שגיאה בשמירה: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "שגיאה: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -183,8 +175,8 @@ public class party_creation_page extends AppCompatActivity {
     }
 
     private boolean validateInputs() {
-        if (TextUtils.isEmpty(etPartyName.getText()) || etPartyName.getText().length() < 3) {
-            etPartyName.setError("שם המסיבה חייב להכיל לפחות 3 תווים");
+        if (TextUtils.isEmpty(etPartyName.getText())) {
+            etPartyName.setError("אנא הזן שם מסיבה");
             return false;
         }
         if (TextUtils.isEmpty(etLocation.getText())) {
@@ -203,11 +195,6 @@ public class party_creation_page extends AppCompatActivity {
             Toast.makeText(this, "אנא בחר טווח גילאים", Toast.LENGTH_SHORT).show();
             return false;
         }
-        String phone = etPhone.getText().toString().trim();
-        if (TextUtils.isEmpty(phone) || phone.length() < 10) {
-            etPhone.setError("אנא הזן מספר טלפון תקין (10 ספרות)");
-            return false;
-        }
         return true;
     }
 
@@ -220,13 +207,10 @@ public class party_creation_page extends AppCompatActivity {
 
     private void fetchUserName(String userId) {
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users").child(userId);
-
         userRef.get().addOnSuccessListener(dataSnapshot -> {
             if (dataSnapshot.exists()) {
                 String name = dataSnapshot.child("fullName").getValue(String.class);
-                if (name != null && !name.isEmpty()) {
-                    tvSubtitle.setText("היי " + name + ", מלא את הפרטים ליצירת המסיבה שלך");
-                }
+                if (name != null) tvSubtitle.setText("היי " + name + ", מלא את הפרטים ליצירת המסיבה שלך");
             }
         });
     }
@@ -239,12 +223,11 @@ public class party_creation_page extends AppCompatActivity {
         etAge = findViewById(R.id.etAge);
         etDressCode = findViewById(R.id.etDressCode);
         etPhone = findViewById(R.id.etPhone);
-        etParking = findViewById(R.id.etParking); // הוספנו את החניה
+        etParking = findViewById(R.id.etParking);
         btnCreate = findViewById(R.id.btnCreate);
         ivProfile = findViewById(R.id.ivProfile);
         cvPartyImage = findViewById(R.id.cvPartyImage);
         ivSelectedPartyImage = findViewById(R.id.ivSelectedPartyImage);
-        tvTitle = findViewById(R.id.tvTitle);
         tvSubtitle = findViewById(R.id.tvSubtitle);
 
         mAuth = FirebaseAuth.getInstance();

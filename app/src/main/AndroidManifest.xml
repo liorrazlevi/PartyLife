@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- הרשאות להתראות (חובה בגרסאות חדשות) -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -10,6 +14,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.PartyLife">
+        
+        <activity
+            android:name=".PartyResultsActivity"
+            android:exported="false" />
         <activity
             android:name=".created_events_page"
             android:exported="false" />
@@ -26,16 +34,10 @@
             android:name=".party_details"
             android:exported="false" />
         <activity
-            android:name=".PartyDetailsPage"
-            android:exported="false" />
-        <activity
             android:name=".PartySearchPage"
             android:exported="false" />
         <activity
             android:name=".UserSettingActivity"
-            android:exported="false" />
-        <activity
-            android:name=".UserSetting"
             android:exported="false" />
         <activity
             android:name=".RegisterPage"
@@ -48,10 +50,16 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- רישום השירות של ה-JobScheduler -->
+        <service
+            android:name=".PartyJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:exported="true" />
+
     </application>
 
 </manifest>
