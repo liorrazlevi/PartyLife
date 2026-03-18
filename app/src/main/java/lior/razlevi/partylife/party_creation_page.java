@@ -38,7 +38,7 @@ import java.util.UUID;
 
 public class party_creation_page extends AppCompatActivity {
 
-    private TextInputEditText etPartyName, etLocation, etDate, etTime, etDressCode, etPhone;
+    private TextInputEditText etPartyName, etLocation, etDate, etTime, etDressCode, etPhone, etParking;
     private AutoCompleteTextView etAge;
     private MaterialButton btnCreate;
     private ImageView ivProfile, ivSelectedPartyImage;
@@ -124,6 +124,7 @@ public class party_creation_page extends AppCompatActivity {
         String age = etAge.getText().toString().trim();
         String dressCode = etDressCode.getText().toString().trim();
         String phone = etPhone.getText().toString().trim();
+        String parking = etParking.getText().toString().trim();
 
         if (mAuth.getCurrentUser() == null) {
             Toast.makeText(this, "שגיאה: משתמש לא מחובר", Toast.LENGTH_SHORT).show();
@@ -141,6 +142,7 @@ public class party_creation_page extends AppCompatActivity {
         partyMap.put("age", age);
         partyMap.put("dressCode", dressCode);
         partyMap.put("phone", phone);
+        partyMap.put("parking", parking);
         partyMap.put("imageUrl", imageUrl);
         partyMap.put("creatorId", currentUserId);
 
@@ -217,20 +219,15 @@ public class party_creation_page extends AppCompatActivity {
     }
 
     private void fetchUserName(String userId) {
-        // יצירת הפניה לענף המשתמשים (Users) לפי ה-ID של המשתמש
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users").child(userId);
 
         userRef.get().addOnSuccessListener(dataSnapshot -> {
             if (dataSnapshot.exists()) {
-                // שליפת השם (ודאי שהשדה ב-Firebase שלך אכן נקרא fullName)
                 String name = dataSnapshot.child("fullName").getValue(String.class);
                 if (name != null && !name.isEmpty()) {
                     tvSubtitle.setText("היי " + name + ", מלא את הפרטים ליצירת המסיבה שלך");
                 }
             }
-        }).addOnFailureListener(e -> {
-            // אם יש שגיאה, נשאיר את הטקסט המקורי
-            tvSubtitle.setText("מלא את הפרטים ליצירת המסיבה שלך");
         });
     }
 
@@ -242,6 +239,7 @@ public class party_creation_page extends AppCompatActivity {
         etAge = findViewById(R.id.etAge);
         etDressCode = findViewById(R.id.etDressCode);
         etPhone = findViewById(R.id.etPhone);
+        etParking = findViewById(R.id.etParking); // הוספנו את החניה
         btnCreate = findViewById(R.id.btnCreate);
         ivProfile = findViewById(R.id.ivProfile);
         cvPartyImage = findViewById(R.id.cvPartyImage);
@@ -253,12 +251,9 @@ public class party_creation_page extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference("Parties");
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
+        
         if (mAuth.getCurrentUser() != null) {
             fetchUserName(mAuth.getCurrentUser().getUid());
         }
-
-
-        }
-
     }
-
+}

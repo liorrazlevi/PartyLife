@@ -135,6 +135,7 @@ public class party_details_edit extends AppCompatActivity {
                     etLocation.setText(party.getLocation());
                     etDate.setText(party.getDate());
                     etTime.setText(party.getTime());
+                    etParking.setText(party.getParking()); // טעינת חניה
                     etDressCodeEdit.setText(party.getDressCode());
                     etPhone.setText(party.getPhone());
                     inputAge.setText(party.getAge(), false);
@@ -181,6 +182,7 @@ public class party_details_edit extends AppCompatActivity {
         updates.put("location", etLocation.getText().toString());
         updates.put("date", etDate.getText().toString());
         updates.put("time", etTime.getText().toString());
+        updates.put("parking", etParking.getText().toString()); // שמירת חניה
         updates.put("dressCode", etDressCodeEdit.getText().toString());
         updates.put("phone", etPhone.getText().toString());
         updates.put("age", inputAge.getText().toString());

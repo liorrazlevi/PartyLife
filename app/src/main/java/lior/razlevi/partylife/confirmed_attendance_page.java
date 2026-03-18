@@ -18,14 +18,11 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class
-confirmed_attendance_page extends AppCompatActivity {
+public class confirmed_attendance_page extends AppCompatActivity {
 
-    // רכיבי המסך
     private TextView tvComingCount, tvNotComingCount;
     private RecyclerView rvGuests;
     
-    // רכיבי הנתונים
     private GuestAdapter adapter;
     private List<Guest> guestList;
     private DatabaseReference mDatabase;
@@ -36,51 +33,34 @@ confirmed_attendance_page extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirmed_attendance_page);
 
-        // קריאה לפעולה המאתחלת
         init();
-
-        // הגדרת ה-RecyclerView (פעולה נוספת לסדר)
         setupRecyclerView();
-
-        // טעינת הנתונים
         loadGuestsFromFirebase();
     }
 
-    /**
-     * פעולה המאתחלת את רכיבי המסך והחיבור ל-Firebase
-     */
     private void init() {
         tvComingCount = findViewById(R.id.tvComingCount);
         tvNotComingCount = findViewById(R.id.tvNotComingCount);
         rvGuests = findViewById(R.id.rvGuests);
 
-        // קבלת ה-ID של המסיבה
         partyId = getIntent().getStringExtra("PARTY_ID");
-        
-        // אתחול רשימת האורחים
         guestList = new ArrayList<>();
         
-        // אתחול ההתחברות ל-Firebase (אם יש partyId)
         if (partyId != null) {
-            mDatabase = FirebaseDatabase.getInstance().getReference("Parties").child(partyId).child("Attendance");
+            // פנייה לטבלה הנפרדת "Attendance" לפי ה-partyId
+            mDatabase = FirebaseDatabase.getInstance().getReference("Attendance").child(partyId);
         } else {
             Toast.makeText(this, "שגיאה: לא נמצא מזהה מסיבה", Toast.LENGTH_SHORT).show();
             finish();
         }
     }
 
-    /**
-     * פעולה המגדירה את ה-RecyclerView וה-Adapter
-     */
     private void setupRecyclerView() {
         rvGuests.setLayoutManager(new LinearLayoutManager(this));
         adapter = new GuestAdapter(guestList);
         rvGuests.setAdapter(adapter);
     }
 
-    /**
-     * פעולה המושכת את הנתונים מ-Firebase
-     */
     private void loadGuestsFromFirebase() {
         if (mDatabase == null) return;
 
@@ -103,8 +83,6 @@ confirmed_attendance_page extends AppCompatActivity {
                         }
                     }
                 }
-
-                // עדכון ה-UI עם הפונקציה המתאימה
                 updateUI(countComing, countNotComing);
             }
 
@@ -115,9 +93,6 @@ confirmed_attendance_page extends AppCompatActivity {
         });
     }
 
-    /**
-     * פעולה המעדכנת את רכיבי הממשק (UI)
-     */
     private void updateUI(int coming, int notComing) {
         tvComingCount.setText(String.valueOf(coming));
         tvNotComingCount.setText(String.valueOf(notComing));

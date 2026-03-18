@@ -8,10 +8,11 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatButton;
+import androidx.cardview.widget.CardView;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -27,6 +28,7 @@ public class PartySearchPage extends AppCompatActivity {
     private EditText inputTime;
     private AutoCompleteTextView inputAge;
     private com.google.android.material.button.MaterialButton btnSearch;
+    private CardView cvProfile; // הוספנו את הפרופיל
     private int selectedHour;
     private int selectedMinute;
 
@@ -41,8 +43,16 @@ public class PartySearchPage extends AppCompatActivity {
         setupAgeSpinner();
         setupDateTimePickers();
 
+        // חיבור לפרופיל
+        cvProfile.setOnClickListener(v -> {
+            startActivity(new Intent(this, UserSettingActivity.class));
+        });
+
         btnSearch.setOnClickListener(v -> {
-            performSearch();
+            // בדיקה שכל השדות מולאו לפני החיפוש
+            if (validateFields()) {
+                performSearch();
+            }
         });
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.partySearch), (v, insets) -> {
@@ -52,8 +62,31 @@ public class PartySearchPage extends AppCompatActivity {
         });
     }
 
+    /**
+     * בדיקה שהמשתמש מילא את כל הקריטריונים
+     */
+    private boolean validateFields() {
+        if (inputLocation.getText().toString().isEmpty()) {
+            Toast.makeText(this, "נא לבחור מיקום", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (inputDate.getText().toString().isEmpty()) {
+            Toast.makeText(this, "נא לבחור תאריך", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (inputTime.getText().toString().isEmpty()) {
+            Toast.makeText(this, "נא לבחור שעה", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (inputAge.getText().toString().isEmpty()) {
+            Toast.makeText(this, "נא לבחור טווח גילאים", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
     private void setupLocationSpinner() {
-        String[] regions = {"דרום", "צפון", "מרכז"};
+        String[] regions = {"דרום", "צפון", "מרכז", "ירושלים"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, regions);
         inputLocation.setAdapter(adapter);
         inputLocation.setOnClickListener(v -> inputLocation.showDropDown());
@@ -94,6 +127,7 @@ public class PartySearchPage extends AppCompatActivity {
         inputLocation = findViewById(R.id.inputLocation);
         inputDate = findViewById(R.id.inputDate);
         btnSearch = findViewById(R.id.btnSearch);
+        cvProfile = findViewById(R.id.cvProfile); // אתחול הפרופיל
     }
 
     public void OpenDatePicker(View v) {

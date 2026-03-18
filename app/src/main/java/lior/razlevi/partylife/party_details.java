@@ -52,7 +52,7 @@ public class party_details extends AppCompatActivity {
         // 1. טעינת פרטי המסיבה
         loadPartyDetails();
 
-        // 2. בדיקה אם המשתמש כבר אישר הגעה
+        // 2. בדיקה אם המשתמש כבר אישר הגעה (מטבלה נפרדת)
         checkUserAttendance();
 
         // 3. כפתור ניווט
@@ -125,7 +125,8 @@ public class party_details extends AppCompatActivity {
         if (mAuth.getCurrentUser() == null) return;
         String userId = mAuth.getCurrentUser().getUid();
 
-        mDatabase.child("Parties").child(partyId).child("Attendance").child(userId)
+        // פנייה לטבלה נפרדת "Attendance"
+        mDatabase.child("Attendance").child(partyId).child(userId)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -146,7 +147,7 @@ public class party_details extends AppCompatActivity {
         if (mAuth.getCurrentUser() == null) return;
         String userId = mAuth.getCurrentUser().getUid();
 
-        mDatabase.child("users").child(userId).child("fullName").addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabase.child("Users").child(userId).child("fullName").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String userName = snapshot.getValue(String.class);
@@ -154,7 +155,8 @@ public class party_details extends AppCompatActivity {
 
                 Guest guestStatus = new Guest(userName, status);
 
-                mDatabase.child("Parties").child(partyId).child("Attendance").child(userId)
+                // שמירה בטבלה נפרדת "Attendance"
+                mDatabase.child("Attendance").child(partyId).child(userId)
                         .setValue(guestStatus)
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
@@ -171,21 +173,15 @@ public class party_details extends AppCompatActivity {
 
     private void updateButtonStyles(String status) {
         if ("מגיע".equals(status)) {
-            // הבלטת כפתור "כן"
             btnYes.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#B14C6E")));
             btnYes.setStrokeWidth(4);
             btnYes.setStrokeColor(ColorStateList.valueOf(Color.WHITE));
-            
-            // החזרת כפתור "לא" למצב רגיל
             btnNo.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#333333")));
             btnNo.setStrokeWidth(0);
         } else if ("לא מגיע".equals(status)) {
-            // הבלטת כפתור "לא"
             btnNo.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FF5252")));
             btnNo.setStrokeWidth(4);
             btnNo.setStrokeColor(ColorStateList.valueOf(Color.WHITE));
-            
-            // החזרת כפתור "כן" למצב רגיל
             btnYes.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#333333")));
             btnYes.setStrokeWidth(0);
         }
