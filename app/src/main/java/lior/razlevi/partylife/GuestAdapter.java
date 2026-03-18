@@ -27,12 +27,21 @@ public class GuestAdapter extends RecyclerView.Adapter<GuestAdapter.GuestViewHol
     public void onBindViewHolder(@NonNull GuestViewHolder holder, int position) {
         Guest guest = guestList.get(position);
         holder.tvGuestName.setText(guest.getName());
-        holder.tvGuestStatus.setText(guest.getStatus());
+
+        // תיקון: בדיקה לפי מחרוזת (String) במקום isComing()
+        // אנחנו בודקים אם הסטטוס שווה למילה "מגיע"
+        if (guest.getStatus() != null && guest.getStatus().equals("מגיע")) {
+            holder.tvGuestStatus.setText("כן");
+            holder.tvGuestStatus.setBackgroundResource(R.drawable.bg_status_green);
+        } else {
+            holder.tvGuestStatus.setText("לא");
+            holder.tvGuestStatus.setBackgroundResource(R.drawable.bg_status_red);
+        }
     }
 
     @Override
     public int getItemCount() {
-        return guestList != null ? guestList.size() : 0;
+        return guestList.size();
     }
 
     public static class GuestViewHolder extends RecyclerView.ViewHolder {
