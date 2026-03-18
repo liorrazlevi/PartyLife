@@ -34,7 +34,7 @@ public class PartyResultsActivity extends AppCompatActivity implements PartyAdap
     private List<Party> partyList;
     
     private DatabaseReference mDatabase;
-    private String searchLocation, searchDate, searchAge;
+    private String searchLocation, searchDate, searchAge, searchTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,10 +44,11 @@ public class PartyResultsActivity extends AppCompatActivity implements PartyAdap
 
         init();
 
-        // 1. קבלת נתוני החיפוש מה-Intent
+        // 1. קבלת נתוני החיפוש מה-Intent (כולל הזמן שנוסף)
         searchLocation = getIntent().getStringExtra("LOCATION");
         searchDate = getIntent().getStringExtra("DATE");
         searchAge = getIntent().getStringExtra("AGE");
+        searchTime = getIntent().getStringExtra("TIME");
 
         // 2. אתחול רשימה ואדפטר
         partyList = new ArrayList<>();
@@ -82,12 +83,13 @@ public class PartyResultsActivity extends AppCompatActivity implements PartyAdap
                     Party party = data.getValue(Party.class);
                     
                     if (party != null) {
-                        // לוגיקת הסינון: בודקים אם המסיבה מתאימה לכל הקריטריונים
+                        // לוגיקת הסינון המלאה: מיקום, תאריך, גיל וזמן
                         boolean matchesLocation = party.getLocation() != null && party.getLocation().contains(searchLocation);
                         boolean matchesDate = searchDate.equals(party.getDate());
                         boolean matchesAge = searchAge.equals(party.getAge());
+                        boolean matchesTime = searchTime != null && searchTime.equals(party.getTime());
 
-                        if (matchesLocation && matchesDate && matchesAge) {
+                        if (matchesLocation && matchesDate && matchesAge && matchesTime) {
                             partyList.add(party);
                         }
                     }
@@ -117,7 +119,6 @@ public class PartyResultsActivity extends AppCompatActivity implements PartyAdap
 
     @Override
     public void onPartyClick(Party party) {
-        // מעבר למסך פרטי מסיבה עם ה-ID של המסיבה שנבחרה
         Intent intent = new Intent(this, party_details.class);
         intent.putExtra("PARTY_ID", party.getPartyId());
         startActivity(intent);

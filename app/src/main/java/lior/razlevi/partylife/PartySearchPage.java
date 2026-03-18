@@ -28,7 +28,7 @@ public class PartySearchPage extends AppCompatActivity {
     private EditText inputTime;
     private AutoCompleteTextView inputAge;
     private com.google.android.material.button.MaterialButton btnSearch;
-    private CardView cvProfile; // הוספנו את הפרופיל
+    private CardView cvProfile;
     private int selectedHour;
     private int selectedMinute;
 
@@ -43,13 +43,11 @@ public class PartySearchPage extends AppCompatActivity {
         setupAgeSpinner();
         setupDateTimePickers();
 
-        // חיבור לפרופיל
         cvProfile.setOnClickListener(v -> {
             startActivity(new Intent(this, UserSettingActivity.class));
         });
 
         btnSearch.setOnClickListener(v -> {
-            // בדיקה שכל השדות מולאו לפני החיפוש
             if (validateFields()) {
                 performSearch();
             }
@@ -62,9 +60,6 @@ public class PartySearchPage extends AppCompatActivity {
         });
     }
 
-    /**
-     * בדיקה שהמשתמש מילא את כל הקריטריונים
-     */
     private boolean validateFields() {
         if (inputLocation.getText().toString().isEmpty()) {
             Toast.makeText(this, "נא לבחור מיקום", Toast.LENGTH_SHORT).show();
@@ -108,15 +103,15 @@ public class PartySearchPage extends AppCompatActivity {
     }
 
     private void performSearch() {
-        // איסוף הנתונים מהשדות
         String location = inputLocation.getText().toString();
         String date = inputDate.getText().toString();
+        String time = inputTime.getText().toString();
         String age = inputAge.getText().toString();
 
-        // מעבר ל-Activity החדש של התוצאות
         Intent intent = new Intent(this, PartyResultsActivity.class);
         intent.putExtra("LOCATION", location);
         intent.putExtra("DATE", date);
+        intent.putExtra("TIME", time); // הוספנו את הזמן
         intent.putExtra("AGE", age);
         startActivity(intent);
     }
@@ -127,7 +122,7 @@ public class PartySearchPage extends AppCompatActivity {
         inputLocation = findViewById(R.id.inputLocation);
         inputDate = findViewById(R.id.inputDate);
         btnSearch = findViewById(R.id.btnSearch);
-        cvProfile = findViewById(R.id.cvProfile); // אתחול הפרופיל
+        cvProfile = findViewById(R.id.cvProfile);
     }
 
     public void OpenDatePicker(View v) {
