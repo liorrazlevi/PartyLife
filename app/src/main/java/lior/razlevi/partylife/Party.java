@@ -11,11 +11,12 @@ public class Party {
     private String phone;
     private String imageUrl;
     private String creatorId;
+    private String parking; // הוספנו את השדה שחסר
 
     // חובה: קונסטרקטור ריק בשביל Firebase
     public Party() {}
 
-    // Getters - חובה כדי ש-Firebase יוכל לקרוא את הנתונים
+    // Getters
     public String getPartyId() { return partyId; }
     public String getName() { return name; }
     public String getLocation() { return location; }
@@ -26,4 +27,5 @@ public class Party {
     public String getPhone() { return phone; }
     public String getImageUrl() { return imageUrl; }
     public String getCreatorId() { return creatorId; }
+    public String getParking() { return parking; } // הוספנו Getter
 }
