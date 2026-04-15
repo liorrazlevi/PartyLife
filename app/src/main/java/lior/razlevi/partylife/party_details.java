@@ -110,8 +110,8 @@ public class party_details extends AppCompatActivity {
                     tvDressCode.setText(party.getDressCode());
                     organizerPhone = party.getPhone();
 
-                    if (party.getImageUrl() != null && !party.getImageUrl().isEmpty()) {
-                        Glide.with(party_details.this).load(party.getImageUrl()).into(ivPartyIcon);
+                    if (party.getImage() != null && !party.getImage().isEmpty()) {
+                        Glide.with(party_details.this).load(party.getImage()).into(ivPartyIcon);
                     }
                 }
             }

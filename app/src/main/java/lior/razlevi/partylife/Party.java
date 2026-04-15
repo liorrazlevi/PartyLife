@@ -9,12 +9,27 @@ public class Party {
     private String age;
     private String dressCode;
     private String phone;
-    private String imageUrl;
+    private String image;
     private String creatorId;
     private String parking;
 
+
     // חובה: קונסטרקטור ריק בשביל Firebase
     public Party() {}
+
+    public  Party( String partyId,String name, String location,  String date,  String time,String age,String dressCode,String phone,String image,String creatorId,String parking){
+    this.partyId = partyId;
+this.name=name;
+this.location=location;
+this.date=date;
+this.time=time;
+this.age=age;
+this.dressCode=dressCode;
+this.phone=phone;
+this.image=image;
+this.creatorId=creatorId;
+this.parking=parking;
+    }
 
     // Getters
     public String getPartyId() { return partyId; }
@@ -25,7 +40,7 @@ public class Party {
     public String getAge() { return age; }
     public String getDressCode() { return dressCode; }
     public String getPhone() { return phone; }
-    public String getImageUrl() { return imageUrl; }
+    public String getImage() { return image; }
     public String getCreatorId() { return creatorId; }
     public String getParking() { return parking; }
 
@@ -38,7 +53,7 @@ public class Party {
     public void setAge(String age) { this.age = age; }
     public void setDressCode(String dressCode) { this.dressCode = dressCode; }
     public void setPhone(String phone) { this.phone = phone; }
-    public void setImageUrl(String imageUrl) { this.imageUrl = imageUrl; }
+    public void setImageUrl(String imageUrl) { this.image = imageUrl; }
     public void setCreatorId(String creatorId) { this.creatorId = creatorId; }
     public void setParking(String parking) { this.parking = parking; }
 }

@@ -204,97 +204,112 @@
                 android:background="@null" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Date Field -->
-        <TextView
-            android:id="@+id/tvDateLabel"
+        <!-- Date and Time Row (Combined) -->
+        <LinearLayout
+            android:id="@+id/rowDateTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="תאריך"
-            android:textColor="#CCCCCC"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            android:gravity="start"
-            app:layout_constraintTop_toBottomOf="@id/tilLocation" />
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@id/tilLocation">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tilDate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:hintEnabled="false"
-            app:boxBackgroundColor="#2D1B2E"
-            app:boxBackgroundMode="filled"
-            app:boxCornerRadiusBottomEnd="28dp"
-            app:boxCornerRadiusBottomStart="28dp"
-            app:boxCornerRadiusTopEnd="28dp"
-            app:boxCornerRadiusTopStart="28dp"
-            app:boxStrokeWidth="0dp"
-            app:layout_constraintTop_toBottomOf="@id/tvDateLabel">
+            <!-- Date Field -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="12dp"
+                android:orientation="vertical">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etDate"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:hint="בחר תאריך"
-                android:focusable="false"
-                android:textColorHint="#66FFFFFF"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp"
-                android:gravity="center_vertical"
-                android:drawableStart="@drawable/date_icon"
-                android:drawablePadding="12dp"
-                android:drawableTint="#999999"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:background="@null" />
-        </com.google.android.material.textfield.TextInputLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="תאריך"
+                    android:textColor="#CCCCCC"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
 
-        <!-- Time Field -->
-        <TextView
-            android:id="@+id/tvTimeLabel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="שעת התחלה"
-            android:textColor="#CCCCCC"
-            android:textSize="13sp"
-            android:textStyle="bold"
-            android:gravity="start"
-            app:layout_constraintTop_toBottomOf="@id/tilDate" />
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilDate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:hintEnabled="false"
+                    app:boxBackgroundColor="#2D1B2E"
+                    app:boxBackgroundMode="filled"
+                    app:boxCornerRadiusBottomEnd="28dp"
+                    app:boxCornerRadiusBottomStart="28dp"
+                    app:boxCornerRadiusTopEnd="28dp"
+                    app:boxCornerRadiusTopStart="28dp"
+                    app:boxStrokeWidth="0dp">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/tilTime"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:hintEnabled="false"
-            app:boxBackgroundColor="#2D1B2E"
-            app:boxBackgroundMode="filled"
-            app:boxCornerRadiusBottomEnd="28dp"
-            app:boxCornerRadiusBottomStart="28dp"
-            app:boxCornerRadiusTopEnd="28dp"
-            app:boxCornerRadiusTopStart="28dp"
-            app:boxStrokeWidth="0dp"
-            app:layout_constraintTop_toBottomOf="@id/tvTimeLabel">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:hint="בחר תאריך"
+                        android:focusable="false"
+                        android:textColorHint="#66FFFFFF"
+                        android:textColor="#FFFFFF"
+                        android:textSize="14sp"
+                        android:gravity="center_vertical"
+                        android:drawableStart="@drawable/date_icon"
+                        android:drawablePadding="12dp"
+                        android:drawableTint="#999999"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:background="@null" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etTime"
-                android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:hint="בחר שעה"
-                android:focusable="false"
-                android:textColorHint="#66FFFFFF"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp"
-                android:gravity="center_vertical"
-                android:drawableStart="@drawable/time_icon"
-                android:drawablePadding="12dp"
-                android:drawableTint="#999999"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:background="@null" />
-        </com.google.android.material.textfield.TextInputLayout>
+            <!-- Time Field -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="שעת התחלה"
+                    android:textColor="#CCCCCC"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:hintEnabled="false"
+                    app:boxBackgroundColor="#2D1B2E"
+                    app:boxBackgroundMode="filled"
+                    app:boxCornerRadiusBottomEnd="28dp"
+                    app:boxCornerRadiusBottomStart="28dp"
+                    app:boxCornerRadiusTopEnd="28dp"
+                    app:boxCornerRadiusTopStart="28dp"
+                    app:boxStrokeWidth="0dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etTime"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:hint="בחר שעה"
+                        android:focusable="false"
+                        android:textColorHint="#66FFFFFF"
+                        android:textColor="#FFFFFF"
+                        android:textSize="14sp"
+                        android:gravity="center_vertical"
+                        android:drawableStart="@drawable/time_icon"
+                        android:drawablePadding="12dp"
+                        android:drawableTint="#999999"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:background="@null" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </LinearLayout>
+        </LinearLayout>
 
         <!-- Bottom Row (Age & Dress Code) -->
         <LinearLayout
@@ -303,7 +318,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:orientation="horizontal"
-            app:layout_constraintTop_toBottomOf="@id/tilTime">
+            app:layout_constraintTop_toBottomOf="@id/rowDateTime">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -382,6 +397,48 @@
             </LinearLayout>
         </LinearLayout>
 
+        <!-- Parking Field -->
+        <TextView
+            android:id="@+id/tvParkingLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="מיקום חנייה קרובה"
+            android:textColor="#CCCCCC"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:gravity="start"
+            app:layout_constraintTop_toBottomOf="@id/rowBottom" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilParking"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:hintEnabled="false"
+            app:boxBackgroundColor="#2D1B2E"
+            app:boxBackgroundMode="filled"
+            app:boxCornerRadiusBottomEnd="28dp"
+            app:boxCornerRadiusBottomStart="28dp"
+            app:boxCornerRadiusTopEnd="28dp"
+            app:boxCornerRadiusTopStart="28dp"
+            app:boxStrokeWidth="0dp"
+            app:layout_constraintTop_toBottomOf="@id/tvParkingLabel">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etParking"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:hint="לדוגמה: חניון המרכז, רחוב הברזל 1"
+                android:textColorHint="#66FFFFFF"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:gravity="center_vertical"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:background="@null" />
+        </com.google.android.material.textfield.TextInputLayout>
+
         <!-- Phone Number Field -->
         <TextView
             android:id="@+id/tvPhoneLabel"
@@ -393,7 +450,7 @@
             android:textSize="13sp"
             android:textStyle="bold"
             android:gravity="start"
-            app:layout_constraintTop_toBottomOf="@id/rowBottom" />
+            app:layout_constraintTop_toBottomOf="@id/tilParking" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilPhone"
@@ -428,6 +485,7 @@
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
                 android:background="@null" />
+
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Create Button -->
