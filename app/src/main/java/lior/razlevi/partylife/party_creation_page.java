@@ -167,7 +167,7 @@ public class party_creation_page extends AppCompatActivity {
 
         Party  party = new Party(partyId, etPartyName.getText().toString(), etLocation.getText().toString(),
                 etDate.getText().toString(), etTime.getText().toString(), etAge.getText().toString(),
-                etDressCode.getText().toString(),uid, etParking.getText().toString());
+                etDressCode.getText().toString(), etPhone.getText().toString(), image, uid, etParking.getText().toString());
 
 
 
@@ -194,8 +194,8 @@ public class party_creation_page extends AppCompatActivity {
         partyMap.put("dressCode", etDressCode.getText().toString().trim());
         partyMap.put("phone", etPhone.getText().toString().trim());
         partyMap.put("parking", etParking.getText().toString().trim());
-        partyMap.put("imageUrl", imageUrl);
-        partyMap.put("creatorId", currentUserId);
+        partyMap.put("imageUrl", image);
+        partyMap.put("creatorId", uid);
 
         if (partyId != null) {
             newPartyRef.setValue(partyMap).addOnCompleteListener(task -> {
