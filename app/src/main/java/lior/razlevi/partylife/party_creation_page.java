@@ -163,7 +163,7 @@ public class party_creation_page extends AppCompatActivity {
 
         // יצירת מזהה ייחודי ב-Firebase// /// // DatabaseReference newPartyRef = database.push();
         DatabaseReference newPartyRef = partyRef.push();
-        String partyId = partyRef.getKey(); // זה ה-ID הייחודי של המסיבה
+        String partyId = newPartyRef.getKey(); // זה ה-ID הייחודי של המסיבה
 
         Party  party = new Party(partyId, etPartyName.getText().toString(), etLocation.getText().toString(),
                 etDate.getText().toString(), etTime.getText().toString(), etAge.getText().toString(),
@@ -171,42 +171,23 @@ public class party_creation_page extends AppCompatActivity {
 
 
 
-      partyRef.child(partyId).setValue(party)
+      newPartyRef.setValue(party)
                 .addOnSuccessListener(aVoid -> {
                     Log.d("MARIELA", "User saved successfully");
+Toast.makeText(this,"party save successfully",Toast.LENGTH_SHORT).show();
+                   Intent intent=new Intent(party_creation_page.this,created_events_page.class);
+                   startActivity(intent);
+
                     // כאן אפשר לעבור מסך, אבל אנחנו עושים את זה למטה ב-OnClickListener
                 })
                 //כשלון בשמירה
                 .addOnFailureListener(e -> {
-                    Log.e("MARIELA", "Failed to save user", e);
+                    Log.e("MARIELA", "Failed to save party", e);
+                    Toast.makeText(this,"failed to save party",Toast.LENGTH_SHORT).show();
                 });
 
 
 
-        // יצירת אובייקט מסיבה (השתמשתי ב-Map כדי לוודא שכל השדות נשמרים)
-        HashMap<String, Object> partyMap = new HashMap<>();
-        partyMap.put("partyId", partyId); // שמירה של ה-ID בתוך האובייקט
-        partyMap.put("name", etPartyName.getText().toString().trim());
-        partyMap.put("location", etLocation.getText().toString().trim());
-        partyMap.put("date", etDate.getText().toString().trim());
-        partyMap.put("time", etTime.getText().toString().trim());
-        partyMap.put("age", etAge.getText().toString().trim());
-        partyMap.put("dressCode", etDressCode.getText().toString().trim());
-        partyMap.put("phone", etPhone.getText().toString().trim());
-        partyMap.put("parking", etParking.getText().toString().trim());
-        partyMap.put("imageUrl", image);
-        partyMap.put("creatorId", uid);
-
-        if (partyId != null) {
-            newPartyRef.setValue(partyMap).addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    Toast.makeText(this, "המסיבה נוצרה בהצלחה!", Toast.LENGTH_SHORT).show();
-                    finish();
-                } else {
-                    Toast.makeText(this, "שגיאה: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
     }
 
     private void setupPickers() {
@@ -245,7 +226,10 @@ public class party_creation_page extends AppCompatActivity {
         if (etDate.getText().toString().isEmpty()) {
             etDate.setError("אנא בחר תאריך");
             return false;
+
         }
+        // לבדןק שהתאריך והזמן לא פגו.
+
         if (etTime.getText().toString().isEmpty()) {
             etTime.setError("אנא בחר שעה");
             return false;

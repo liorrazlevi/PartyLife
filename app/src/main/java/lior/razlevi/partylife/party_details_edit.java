@@ -139,7 +139,7 @@ public class party_details_edit extends AppCompatActivity {
                     etDressCodeEdit.setText(party.getDressCode());
                     etPhone.setText(party.getPhone());
                     inputAge.setText(party.getAge(), false);
-                    currentImageUrl = party.getImageUrl();
+                    currentImageUrl = party.getImage();
 
                     if (currentImageUrl != null && !currentImageUrl.isEmpty()) {
                         Glide.with(party_details_edit.this).load(currentImageUrl).into(ivSelectedPartyImage);

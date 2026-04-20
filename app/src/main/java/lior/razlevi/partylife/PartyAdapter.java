@@ -42,9 +42,9 @@ public class PartyAdapter extends RecyclerView.Adapter<PartyAdapter.PartyViewHol
         holder.tvEventStatus.setText(party.getLocation());
         holder.tvEventStatus.setTextColor(0xFF9575CD);
 
-        if (party.getImageUrl() != null && !party.getImageUrl().isEmpty()) {
+        if (party.getImage() != null && !party.getImage().isEmpty()) {
             Glide.with(holder.itemView.getContext())
-                    .load(party.getImageUrl())
+                    .load(party.getImage())
                     .placeholder(R.drawable.partyicon)
                     .error(R.drawable.partyicon)
                     .into(holder.ivEventCover);
