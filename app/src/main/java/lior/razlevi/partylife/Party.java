@@ -53,7 +53,7 @@ this.parking=parking;
     public void setAge(String age) { this.age = age; }
     public void setDressCode(String dressCode) { this.dressCode = dressCode; }
     public void setPhone(String phone) { this.phone = phone; }
-    public void setImageUrl(String imageUrl) { this.image = imageUrl; }
+    public void setImage(String image) { this.image = image; }
     public void setCreatorId(String creatorId) { this.creatorId = creatorId; }
     public void setParking(String parking) { this.parking = parking; }
 }

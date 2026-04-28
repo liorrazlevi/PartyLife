@@ -11,6 +11,7 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
@@ -40,6 +41,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.UUID;
@@ -49,9 +51,9 @@ public class party_creation_page extends AppCompatActivity {
     private TextInputEditText etPartyName, etLocation, etDate, etTime, etDressCode, etPhone, etParking;
     private AutoCompleteTextView etAge;
     private MaterialButton btnCreate;
-    private ImageView ivProfile, ivSelectedPartyImage;
+    private ImageView ivProfile, ivSelectedPartyImage,ivUploadImage;
     private MaterialCardView cvPartyImage;
-    private TextView tvTitle, tvSubtitle;
+    private TextView tvTitle, tvSubtitle, tvUploadImage;
 
     private Uri imageUri;
     private ActivityResultLauncher<Intent> galleryLauncher;
@@ -102,9 +104,29 @@ public class party_creation_page extends AppCompatActivity {
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        // 1. קבלת הכתובת של התמונה (Uri)
+                        Log.d("MARIELA", "result.getData().getData(): " + result.getData().getData());
                         imageUri = result.getData().getData();
-                        ivSelectedPartyImage.setImageURI(imageUri);
-                        ivSelectedPartyImage.setAlpha(1.0f);
+
+                        try {
+                            // 2. פתיחת "צינור" מידע לקובץ
+                            InputStream inputStream = getContentResolver().openInputStream(imageUri);
+
+                            // 3. יצירת התמונה (Bitmap) מהמידע שזרם בצינור
+                            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+
+                            // 4.
+                            // הצגת התמונה על המסך
+                            ivUploadImage.setVisibility(View.GONE);
+                            tvUploadImage.setVisibility(View.GONE);
+                            ivSelectedPartyImage.setImageBitmap(bitmap);
+                         //   ivSelectedPartyImage.setAlpha(1.0f);
+
+                        } catch (FileNotFoundException e) {
+                            Log.e("MARIELA", "File not found: " + e.getMessage());
+                            e.printStackTrace(); //  הדפסת השגיאה ללוג למקרה שטעינת התמונה נכשלה
+                            Toast.makeText(this, "שגיאה בטעינת התמונה", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
         );
@@ -128,7 +150,7 @@ public class party_creation_page extends AppCompatActivity {
 
             // המרה סופית למחרוזת
             return Base64.encodeToString(imageBytes, Base64.DEFAULT);
-        } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) { //
             e.printStackTrace();
             return null;
         }
@@ -211,10 +233,25 @@ Toast.makeText(this,"party save successfully",Toast.LENGTH_SHORT).show();
 
     private void updateLabel(TextInputEditText editText, String format) {
         SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.getDefault());
+
+        // יצירת אובייקט של "עכשיו"
+        Calendar now = Calendar.getInstance();
+        // הורדה של יום אחד אחורה כדי ש"היום" תמיד ייחשב תקין
+        now.add(Calendar.DATE, -1);
+
+        if (calendar.before(now)) {
+            editText.setError("התאריך או השעה עברו");
+        } else {
+            // ברגע שמשהו תקין - מנקים את השגיאה גם מהתאריך וגם מהשעה!
+            etDate.setError(null);
+            etTime.setError(null);
+        }
         editText.setText(sdf.format(calendar.getTime()));
     }
 
     private boolean validateInputs() {
+        etDate.setError(null);
+        etTime.setError(null);
         if (etPartyName.getText().toString().isEmpty()) {
             etPartyName.setError("אנא הזן שם מסיבה");
             return false;
@@ -274,6 +311,8 @@ Toast.makeText(this,"party save successfully",Toast.LENGTH_SHORT).show();
         cvPartyImage = findViewById(R.id.cvPartyImage);
         ivSelectedPartyImage = findViewById(R.id.ivSelectedPartyImage);
         tvSubtitle = findViewById(R.id.tvSubtitle);
+       ivUploadImage = findViewById(R.id.ivUploadImage);
+        tvUploadImage = findViewById(R.id.tvUploadImage);
 
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
