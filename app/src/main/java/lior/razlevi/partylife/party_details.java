@@ -49,28 +49,25 @@ public class party_details extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
-        // 1. טעינת פרטי המסיבה
         loadPartyDetails();
-
-        // 2. בדיקה אם המשתמש כבר אישר הגעה (מטבלה נפרדת)
         checkUserAttendance();
 
-        // 3. כפתור ניווט
         btnNavigate.setOnClickListener(v -> {
             String address = tvLocation.getText().toString();
             Uri gmmIntentUri = Uri.parse("google.navigation:q=" + address);
             Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
             mapIntent.setPackage("com.google.android.apps.maps");
-            startActivity(mapIntent);
+            if (mapIntent.resolveActivity(getPackageManager()) != null) {
+                startActivity(mapIntent);
+            } else {
+                // אם אין גוגל מאפס, נפתח בדפדפן
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com/maps/search/?api=1&query=" + address)));
+            }
         });
 
-        // 4. אישור הגעה - כן
         btnYes.setOnClickListener(v -> updateAttendance("מגיע"));
-
-        // 5. אישור הגעה - לא
         btnNo.setOnClickListener(v -> updateAttendance("לא מגיע"));
 
-        // 6. יצירת קשר עם המארגן
         btnContact.setOnClickListener(v -> {
             if (organizerPhone != null) {
                 Intent intent = new Intent(Intent.ACTION_DIAL);
@@ -110,8 +107,9 @@ public class party_details extends AppCompatActivity {
                     tvDressCode.setText(party.getDressCode());
                     organizerPhone = party.getPhone();
 
-                    if (party.getImage() != null && !party.getImage().isEmpty()) {
-                        Glide.with(party_details.this).load(party.getImage()).into(ivPartyIcon);
+                    // תיקון: שימוש ב-getImageUrl()
+                    if (party.bringPartyImage() != null) {
+                        Glide.with(party_details.this).load(party.bringPartyImage()).into(ivPartyIcon);
                     }
                 }
             }
@@ -125,7 +123,6 @@ public class party_details extends AppCompatActivity {
         if (mAuth.getCurrentUser() == null) return;
         String userId = mAuth.getCurrentUser().getUid();
 
-        // פנייה לטבלה נפרדת "Attendance"
         mDatabase.child("Attendance").child(partyId).child(userId)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -155,7 +152,6 @@ public class party_details extends AppCompatActivity {
 
                 Guest guestStatus = new Guest(userName, status);
 
-                // שמירה בטבלה נפרדת "Attendance"
                 mDatabase.child("Attendance").child(partyId).child(userId)
                         .setValue(guestStatus)
                         .addOnCompleteListener(task -> {

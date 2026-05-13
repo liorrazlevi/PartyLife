@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import java.util.List;
 
-public class PartyAdapter extends RecyclerView.Adapter<PartyAdapter.PartyViewHolder> {
+public class PartyAdapter extends RecyclerView.Adapter<PartyHolder> {
 
     private final List<Party> partyList;
     private final OnPartyClickListener listener;
@@ -26,13 +26,13 @@ public class PartyAdapter extends RecyclerView.Adapter<PartyAdapter.PartyViewHol
 
     @NonNull
     @Override
-    public PartyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public PartyHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_event, parent, false);
-        return new PartyViewHolder(view);
+        return new PartyHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PartyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull PartyHolder holder, int position) {
         Party party = partyList.get(position);
         holder.tvEventTitle.setText(party.getName());
         
@@ -42,9 +42,10 @@ public class PartyAdapter extends RecyclerView.Adapter<PartyAdapter.PartyViewHol
         holder.tvEventStatus.setText(party.getLocation());
         holder.tvEventStatus.setTextColor(0xFF9575CD);
 
-        if (party.getImage() != null && !party.getImage().isEmpty()) {
+        // תיקון: שימוש ב-getImageUrl() במקום getImage()
+        if (party.bringPartyImage() != null) {
             Glide.with(holder.itemView.getContext())
-                    .load(party.getImage())
+                    .load(party.bringPartyImage())
                     .placeholder(R.drawable.partyicon)
                     .error(R.drawable.partyicon)
                     .into(holder.ivEventCover);
@@ -64,16 +65,5 @@ public class PartyAdapter extends RecyclerView.Adapter<PartyAdapter.PartyViewHol
         return partyList != null ? partyList.size() : 0;
     }
 
-    public static class PartyViewHolder extends RecyclerView.ViewHolder {
-        ImageView ivEventCover;
-        TextView tvEventTitle, tvEventDate, tvEventStatus;
 
-        public PartyViewHolder(@NonNull View itemView) {
-            super(itemView);
-            ivEventCover = itemView.findViewById(R.id.ivEventCover);
-            tvEventTitle = itemView.findViewById(R.id.tvEventTitle);
-            tvEventDate = itemView.findViewById(R.id.tvEventDate);
-            tvEventStatus = itemView.findViewById(R.id.tvEventStatus);
-        }
-    }
 }

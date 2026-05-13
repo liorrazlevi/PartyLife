@@ -3,9 +3,12 @@ package lior.razlevi.partylife;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Base64;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
@@ -29,13 +32,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public class party_details_edit extends AppCompatActivity {
 
@@ -48,10 +50,9 @@ public class party_details_edit extends AppCompatActivity {
 
     private String partyId;
     private DatabaseReference mDatabase;
-    private FirebaseStorage storage;
-    private StorageReference storageReference;
     private Uri imageUri;
-    private String currentImageUrl;
+    private String currentImageString;
+    private Bitmap currentImageBitMap;
 
     private final Calendar calendar = Calendar.getInstance();
     private ActivityResultLauncher<Intent> galleryLauncher;
@@ -66,7 +67,6 @@ public class party_details_edit extends AppCompatActivity {
         setupPickers();
         setupGalleryLauncher();
 
-        // 1. קבלת ה-ID מה-Intent
         partyId = getIntent().getStringExtra("PARTY_ID");
         if (partyId == null) {
             Toast.makeText(this, "שגיאה: לא נמצא מזהה מסיבה", Toast.LENGTH_SHORT).show();
@@ -75,28 +75,22 @@ public class party_details_edit extends AppCompatActivity {
         }
 
         mDatabase = FirebaseDatabase.getInstance().getReference("Parties").child(partyId);
-        storage = FirebaseStorage.getInstance();
-        storageReference = storage.getReference();
 
-        // 2. טעינת פרטי המסיבה
         loadPartyDetails();
 
-        // 3. בחירת תמונה חדשה
         cvPartyImage.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             galleryLauncher.launch(intent);
         });
 
-        // 4. שמירת השינויים
         btnSaveChanges.setOnClickListener(v -> {
             if (imageUri != null) {
-                uploadImageAndSave();
+                convertUriAndSave();
             } else {
-                saveChanges(currentImageUrl);
+                saveChanges(currentImageString);
             }
         });
 
-        // 5. מעבר לדף אישורי הגעה
         btnViewEvents.setOnClickListener(v -> {
             Intent intent = new Intent(party_details_edit.this, confirmed_attendance_page.class);
             intent.putExtra("PARTY_ID", partyId);
@@ -121,7 +115,7 @@ public class party_details_edit extends AppCompatActivity {
         btnSaveChanges = findViewById(R.id.btnSaveChanges);
         btnViewEvents = findViewById(R.id.btnViewEvents);
         tvTitle = findViewById(R.id.tvTitle);
-        ivSelectedPartyImage = findViewById(R.id.ivSelectedPartyImage);
+        ivSelectedPartyImage = findViewById(R.id.ivSelectedPartyImageE);
         cvPartyImage = findViewById(R.id.cvPartyImage);
     }
 
@@ -135,14 +129,16 @@ public class party_details_edit extends AppCompatActivity {
                     etLocation.setText(party.getLocation());
                     etDate.setText(party.getDate());
                     etTime.setText(party.getTime());
-                    etParking.setText(party.getParking()); // טעינת חניה
+                    etParking.setText(party.getParking());
                     etDressCodeEdit.setText(party.getDressCode());
                     etPhone.setText(party.getPhone());
                     inputAge.setText(party.getAge(), false);
-                    currentImageUrl = party.getImage();
+                    
+                    currentImageString = party.getImageString();
+                    currentImageBitMap = party.bringPartyImage();
 
-                    if (currentImageUrl != null && !currentImageUrl.isEmpty()) {
-                        Glide.with(party_details_edit.this).load(currentImageUrl).into(ivSelectedPartyImage);
+                    if (currentImageBitMap != null) {
+                        Glide.with(party_details_edit.this).load(currentImageBitMap).into(ivSelectedPartyImage);
                         ivSelectedPartyImage.setAlpha(1.0f);
                     }
                 }
@@ -166,27 +162,37 @@ public class party_details_edit extends AppCompatActivity {
         );
     }
 
-    private void uploadImageAndSave() {
-        String fileName = UUID.randomUUID().toString();
-        StorageReference ref = storageReference.child("party_images/" + fileName);
-
-        ref.putFile(imageUri)
-                .addOnSuccessListener(taskSnapshot -> ref.getDownloadUrl().addOnSuccessListener(uri -> {
-                    saveChanges(uri.toString());
-                }))
-                .addOnFailureListener(e -> Toast.makeText(this, "שגיאה בהעלאת תמונה", Toast.LENGTH_SHORT).show());
+    /**
+     * המרת ה-URI שנבחר מהגלריה למחרוזת Base64 ושמירה
+     */
+    private void convertUriAndSave() {
+        try {
+            InputStream inputStream = getContentResolver().openInputStream(imageUri);
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+            
+            // דחיסת התמונה כדי שלא תהיה גדולה מדי עבור ה-Database
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
+            byte[] imageBytes = baos.toByteArray();
+            
+            String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+            saveChanges(encodedImage);
+        } catch (Exception e) {
+            Toast.makeText(this, "שגיאה בעיבוד התמונה", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
     }
 
-    private void saveChanges(String imageUrl) {
+    private void saveChanges(String imageString) {
         Map<String, Object> updates = new HashMap<>();
         updates.put("location", etLocation.getText().toString());
         updates.put("date", etDate.getText().toString());
         updates.put("time", etTime.getText().toString());
-        updates.put("parking", etParking.getText().toString()); // שמירת חניה
+        updates.put("parking", etParking.getText().toString());
         updates.put("dressCode", etDressCodeEdit.getText().toString());
         updates.put("phone", etPhone.getText().toString());
         updates.put("age", inputAge.getText().toString());
-        updates.put("imageUrl", imageUrl);
+        updates.put("imageString", imageString);
 
         mDatabase.updateChildren(updates).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {

@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
-public class GuestAdapter extends RecyclerView.Adapter<GuestAdapter.GuestViewHolder> {
+public class GuestAdapter extends RecyclerView.Adapter<GuestHolder> {
 
     private List<Guest> guestList;
 
@@ -18,13 +18,13 @@ public class GuestAdapter extends RecyclerView.Adapter<GuestAdapter.GuestViewHol
 
     @NonNull
     @Override
-    public GuestViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public GuestHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_guest, parent, false);
-        return new GuestViewHolder(view);
+        return new GuestHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull GuestViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull GuestHolder holder, int position) {
         Guest guest = guestList.get(position);
         holder.tvGuestName.setText(guest.getName());
 
@@ -44,13 +44,5 @@ public class GuestAdapter extends RecyclerView.Adapter<GuestAdapter.GuestViewHol
         return guestList.size();
     }
 
-    public static class GuestViewHolder extends RecyclerView.ViewHolder {
-        TextView tvGuestName, tvGuestStatus;
 
-        public GuestViewHolder(@NonNull View itemView) {
-            super(itemView);
-            tvGuestName = itemView.findViewById(R.id.tvGuestName);
-            tvGuestStatus = itemView.findViewById(R.id.tvGuestStatus);
-        }
-    }
 }

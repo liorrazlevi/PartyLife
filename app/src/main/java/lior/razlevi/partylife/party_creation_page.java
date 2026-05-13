@@ -33,34 +33,26 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.UUID;
 
 public class party_creation_page extends AppCompatActivity {
 
     private TextInputEditText etPartyName, etLocation, etDate, etTime, etDressCode, etPhone, etParking;
     private AutoCompleteTextView etAge;
     private MaterialButton btnCreate;
-    private ImageView ivProfile, ivSelectedPartyImage,ivUploadImage;
+    private ImageView ivProfile, ivSelectedPartyImage;
     private MaterialCardView cvPartyImage;
-    private TextView tvTitle, tvSubtitle, tvUploadImage;
+    private TextView tvSubtitle;
 
     private Uri imageUri;
     private ActivityResultLauncher<Intent> galleryLauncher;
     
     private FirebaseAuth mAuth;
-
-    private FirebaseDatabase database;
     private DatabaseReference partyRef;
 
     private final Calendar calendar = Calendar.getInstance();
@@ -82,10 +74,9 @@ public class party_creation_page extends AppCompatActivity {
 
         btnCreate.setOnClickListener(v -> {
             if (validateInputs()) {
-                uploadImageAndCreateParty();
+                createParty();
             }
         });
-
 
         cvPartyImage.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -104,27 +95,15 @@ public class party_creation_page extends AppCompatActivity {
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        // 1. קבלת הכתובת של התמונה (Uri)
-                        Log.d("MARIELA", "result.getData().getData(): " + result.getData().getData());
                         imageUri = result.getData().getData();
-
                         try {
-                            // 2. פתיחת "צינור" מידע לקובץ
                             InputStream inputStream = getContentResolver().openInputStream(imageUri);
-
-                            // 3. יצירת התמונה (Bitmap) מהמידע שזרם בצינור
                             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-
-                            // 4.
-                            // הצגת התמונה על המסך
-                            ivUploadImage.setVisibility(View.GONE);
-                            tvUploadImage.setVisibility(View.GONE);
+                            
+                            // הצגת התמונה הנבחרת
                             ivSelectedPartyImage.setImageBitmap(bitmap);
-                         //   ivSelectedPartyImage.setAlpha(1.0f);
-
-                        } catch (FileNotFoundException e) {
-                            Log.e("MARIELA", "File not found: " + e.getMessage());
-                            e.printStackTrace(); //  הדפסת השגיאה ללוג למקרה שטעינת התמונה נכשלה
+                            ivSelectedPartyImage.setAlpha(1.0f);
+                        } catch (Exception e) {
                             Toast.makeText(this, "שגיאה בטעינת התמונה", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -132,84 +111,60 @@ public class party_creation_page extends AppCompatActivity {
         );
     }
 
-    // פונקציה שמקבלת URI ומחזירה מחרוזת Base64
-    public String encodeImage(Uri imageUri) {
+    private String encodeImage(Uri uri) {
         try {
-            // הפיכת ה-URI ל-InputStream ואז ל-Bitmap
-            InputStream inputStream = getContentResolver().openInputStream(imageUri);
+            InputStream inputStream = getContentResolver().openInputStream(uri);
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-
-            // הכנת הזרם שבו נדחוס את התמונה
+            
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-            // דחיסה לפורמט JPEG (ניתן לשנות ל-PNG אם השקיפות חשובה)
-            // איכות 100 היא המקסימלית, ניתן להוריד כדי לחסוך מקום
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-
+            // דחיסה משמעותית כדי שהסטרינג לא יהיה ארוך מדי עבור ה-Database
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos);
             byte[] imageBytes = baos.toByteArray();
-
-            // המרה סופית למחרוזת
             return Base64.encodeToString(imageBytes, Base64.DEFAULT);
-        } catch (FileNotFoundException e) { //
-            e.printStackTrace();
-            return null;
+        } catch (Exception e) {
+            return "";
         }
     }
 
-    private void uploadImageAndCreateParty() {
-        Log.d("uploadImageAndCreateParty", "Uploading image and creating party");
+    private void createParty() {
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser == null) {
+            Toast.makeText(this, "עליך להיות מחובר כדי ליצור מסיבה", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String imageString = "";
         if (imageUri != null) {
-            Log.d("uploadImageAndCreateParty", "Image URI is not null");
-
-            String picture=encodeImage(imageUri);
-          //  String fileName = UUID.randomUUID().toString();
-          //  StorageReference ref = storageReference.child("party_images/" + fileName);
-
-         //   ref.putFile(imageUri)
-                //    .addOnSuccessListener(taskSnapshot -> ref.getDownloadUrl().addOnSuccessListener(uri -> {
-                    //    savePartyToDatabase(uri.toString());
-                  //  }))
-                  //  .addOnFailureListener(e -> Toast.makeText(this, "שגיאה בהעלאת תמונה: " + e.getMessage(), Toast.LENGTH_SHORT).show());
-        savePartyToDatabase(picture);
-        } else {
-            Log.d("uploadImageAndCreateParty", "Image URI is null");
-            savePartyToDatabase(""); 
+            imageString = encodeImage(imageUri);
         }
-    }
 
-    private void savePartyToDatabase(String image) {
-        FirebaseUser firebaseUser = Auth.getCurrentUser();
-        if (firebaseUser == null) return;
-        String uid = firebaseUser.getUid();
-
-
-        // יצירת מזהה ייחודי ב-Firebase// /// // DatabaseReference newPartyRef = database.push();
-        DatabaseReference newPartyRef = partyRef.push();
-        String partyId = newPartyRef.getKey(); // זה ה-ID הייחודי של המסיבה
-
-        Party  party = new Party(partyId, etPartyName.getText().toString(), etLocation.getText().toString(),
-                etDate.getText().toString(), etTime.getText().toString(), etAge.getText().toString(),
-                etDressCode.getText().toString(), etPhone.getText().toString(), image, uid, etParking.getText().toString());
-
-
-
-      newPartyRef.setValue(party)
+        String partyId = partyRef.push().getKey();
+        if (partyId == null) return;
+Log.d("PartyLior", "PartyId: " + partyId);
+        Party party = new Party(
+                partyId,
+                etPartyName.getText().toString().trim(),
+                etLocation.getText().toString().trim(),
+                etDate.getText().toString().trim(),
+                etTime.getText().toString().trim(),
+                etAge.getText().toString().trim(),
+                etDressCode.getText().toString().trim(),
+                etPhone.getText().toString().trim(),
+                imageString,
+                currentUser.getUid(),
+                etParking.getText().toString().trim()
+        );
+Log.d("PartyLior", "Party before: " + party);
+        partyRef.child(partyId).setValue(party)
                 .addOnSuccessListener(aVoid -> {
-                    Log.d("MARIELA", "User saved successfully");
-Toast.makeText(this,"party save successfully",Toast.LENGTH_SHORT).show();
-                   Intent intent=new Intent(party_creation_page.this,created_events_page.class);
-                   startActivity(intent);
-
-                    // כאן אפשר לעבור מסך, אבל אנחנו עושים את זה למטה ב-OnClickListener
+                    Log.d("PartyLior", "Party created: " + party);
+                    Toast.makeText(this, "המסיבה נוצרה בהצלחה!", Toast.LENGTH_SHORT).show();
+                    finish();
                 })
-                //כשלון בשמירה
                 .addOnFailureListener(e -> {
-                    Log.e("MARIELA", "Failed to save party", e);
-                    Toast.makeText(this,"failed to save party",Toast.LENGTH_SHORT).show();
+                    Log.e("PartyLior", "Error creating party", e);
+                    Toast.makeText(this, "שגיאה בשמירה: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
-
-
-
     }
 
     private void setupPickers() {
@@ -233,51 +188,31 @@ Toast.makeText(this,"party save successfully",Toast.LENGTH_SHORT).show();
 
     private void updateLabel(TextInputEditText editText, String format) {
         SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.getDefault());
-
-        // יצירת אובייקט של "עכשיו"
-        Calendar now = Calendar.getInstance();
-        // הורדה של יום אחד אחורה כדי ש"היום" תמיד ייחשב תקין
-        now.add(Calendar.DATE, -1);
-
-        if (calendar.before(now)) {
-            editText.setError("התאריך או השעה עברו");
-        } else {
-            // ברגע שמשהו תקין - מנקים את השגיאה גם מהתאריך וגם מהשעה!
-            etDate.setError(null);
-            etTime.setError(null);
-        }
         editText.setText(sdf.format(calendar.getTime()));
     }
 
     private boolean validateInputs() {
-        etDate.setError(null);
-        etTime.setError(null);
-        if (etPartyName.getText().toString().isEmpty()) {
+        if (TextUtils.isEmpty(etPartyName.getText())) {
             etPartyName.setError("אנא הזן שם מסיבה");
             return false;
         }
-        if (etLocation.getText().toString().isEmpty()) {
+        if (TextUtils.isEmpty(etLocation.getText())) {
             etLocation.setError("אנא הזן מיקום");
             return false;
         }
-        if (etDate.getText().toString().isEmpty()) {
+        if (TextUtils.isEmpty(etDate.getText())) {
             etDate.setError("אנא בחר תאריך");
             return false;
-
         }
-        // לבדןק שהתאריך והזמן לא פגו.
-
-        if (etTime.getText().toString().isEmpty()) {
+        if (TextUtils.isEmpty(etTime.getText())) {
             etTime.setError("אנא בחר שעה");
             return false;
         }
-        if (etAge.getText().toString().isEmpty()) {
-            Toast.makeText(this, "אנא בחר טווח גילאים", Toast.LENGTH_SHORT).show();
+        if (TextUtils.isEmpty(etAge.getText())) {
+            Toast.makeText(this, "אנא בחר גיל", Toast.LENGTH_SHORT).show();
             return false;
         }
-        Log.d("validateInputs", "All fields are valid");
         return true;
-
     }
 
     private void setupAgeSpinner() {
@@ -288,13 +223,13 @@ Toast.makeText(this,"party save successfully",Toast.LENGTH_SHORT).show();
     }
 
     private void fetchUserName(String userId) {
-        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("Users").child(userId);
-        userRef.get().addOnSuccessListener(dataSnapshot -> {
-            if (dataSnapshot.exists()) {
-                String name = dataSnapshot.child("fullName").getValue(String.class);
-                if (name != null) tvSubtitle.setText("היי " + name + ", מלא את הפרטים ליצירת המסיבה שלך");
-            }
-        });
+        FirebaseDatabase.getInstance().getReference("Users").child(userId)
+                .get().addOnSuccessListener(dataSnapshot -> {
+                    if (dataSnapshot.exists()) {
+                        String name = dataSnapshot.child("fullName").getValue(String.class);
+                        if (name != null) tvSubtitle.setText("היי " + name + ", מלא את הפרטים ליצירת המסיבה שלך");
+                    }
+                });
     }
 
     private void init() {
@@ -311,12 +246,10 @@ Toast.makeText(this,"party save successfully",Toast.LENGTH_SHORT).show();
         cvPartyImage = findViewById(R.id.cvPartyImage);
         ivSelectedPartyImage = findViewById(R.id.ivSelectedPartyImage);
         tvSubtitle = findViewById(R.id.tvSubtitle);
-       ivUploadImage = findViewById(R.id.ivUploadImage);
-        tvUploadImage = findViewById(R.id.tvUploadImage);
 
         mAuth = FirebaseAuth.getInstance();
-        database = FirebaseDatabase.getInstance();
-    partyRef = database.getReference("Parties");
+        partyRef = FirebaseDatabase.getInstance().getReference("Parties");
+        
         if (mAuth.getCurrentUser() != null) {
             fetchUserName(mAuth.getCurrentUser().getUid());
         }

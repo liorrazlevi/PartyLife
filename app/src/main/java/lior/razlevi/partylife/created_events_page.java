@@ -2,6 +2,7 @@ package lior.razlevi.partylife;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -97,9 +98,11 @@ public class created_events_page extends AppCompatActivity {
                 partyList.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     Party party = dataSnapshot.getValue(Party.class);
-                    
+
+
                     // בדיקה: האם המסיבה שייכת למשתמש שמחובר כרגע?
                     if (party != null && currentUserId.equals(party.getCreatorId())) {
+                        Log.d("PartyLior", "Party: " + party);
                         partyList.add(party);
                     }
                 }
@@ -108,6 +111,7 @@ public class created_events_page extends AppCompatActivity {
                 if (partyList.isEmpty()) {
                     tvEmptyState.setVisibility(View.VISIBLE);
                     rvEvents.setVisibility(View.GONE);
+                    adapter.notifyDataSetChanged();
                 } else {
                     tvEmptyState.setVisibility(View.GONE);
                     rvEvents.setVisibility(View.VISIBLE);
