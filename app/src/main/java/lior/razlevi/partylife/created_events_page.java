@@ -1,8 +1,8 @@
 package lior.razlevi.partylife;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -44,32 +44,57 @@ public class created_events_page extends AppCompatActivity {
 
         init();
 
-        // 1. הגדרת הרשימה (RecyclerView)
         rvEvents.setLayoutManager(new LinearLayoutManager(this));
         partyList = new ArrayList<>();
         
-        // יצירת ה-Adapter: כשלוחצים על מסיבה עוברים לדף העריכה (party_details_edit)
         adapter = new PartyAdapter(partyList, party -> {
             Intent intent = new Intent(created_events_page.this, party_details_edit.class);
-            intent.putExtra("PARTY_ID", party.getPartyId()); // מעבירים את ה-ID כדי שנדע מה לערוך
+            intent.putExtra("PARTY_ID", party.getPartyId());
             startActivity(intent);
         });
+
+        // הפעלת אפשרות המחיקה בדף זה
+        adapter.enableDeletion(party -> {
+            showDeleteDialog(party);
+        });
+
         rvEvents.setAdapter(adapter);
 
-        // 2. כפתור למעבר לדף יצירת מסיבה חדשה
         btnCreateEvent.setOnClickListener(v -> {
             Intent intent = new Intent(created_events_page.this, party_creation_page.class);
             startActivity(intent);
         });
 
-        // 3. לחיצה על אייקון הפרופיל מעבירה לדף הגדרות המשתמש
         ivProfile.setOnClickListener(v -> {
             Intent intent = new Intent(created_events_page.this, UserSettingActivity.class);
             startActivity(intent);
         });
 
-        // 4. טעינת המסיבות מה-Firebase
         loadUserParties();
+    }
+
+    private void showDeleteDialog(Party party) {
+        new AlertDialog.Builder(this)
+                .setTitle("מחיקת מסיבה")
+                .setMessage("האם את בטוחה שברצונך למחוק את \"" + party.getName() + "\"?")
+                .setPositiveButton("מחק", (dialog, which) -> {
+                    deleteParty(party);
+                })
+                .setNegativeButton("ביטול", null)
+                .show();
+    }
+
+    private void deleteParty(Party party) {
+        // מחיקת המסיבה מהענף Parties
+        mDatabase.child(party.getPartyId()).removeValue().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                // מחיקת אישורי הגעה קשורים כדי לא להשאיר מידע מיותר
+                FirebaseDatabase.getInstance().getReference("Attendance").child(party.getPartyId()).removeValue();
+                Toast.makeText(this, "המסיבה נמחקה", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "שגיאה במחיקה", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void init() {
@@ -84,44 +109,34 @@ public class created_events_page extends AppCompatActivity {
 
     private void loadUserParties() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser == null) {
-            Toast.makeText(this, "משתמש לא מחובר", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        if (currentUser == null) return;
 
         String currentUserId = currentUser.getUid();
 
-        // האזנה לשינויים ב-Database - שליפת כל המסיבות
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 partyList.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     Party party = dataSnapshot.getValue(Party.class);
-
-
-                    // בדיקה: האם המסיבה שייכת למשתמש שמחובר כרגע?
                     if (party != null && currentUserId.equals(party.getCreatorId())) {
-                        Log.d("PartyLior", "Party: " + party);
                         partyList.add(party);
                     }
                 }
 
-                // עדכון המסך במידה ואין מסיבות
                 if (partyList.isEmpty()) {
                     tvEmptyState.setVisibility(View.VISIBLE);
                     rvEvents.setVisibility(View.GONE);
-                    adapter.notifyDataSetChanged();
                 } else {
                     tvEmptyState.setVisibility(View.GONE);
                     rvEvents.setVisibility(View.VISIBLE);
-                    adapter.notifyDataSetChanged(); // רענון הרשימה
                 }
+                adapter.notifyDataSetChanged();
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(created_events_page.this, "שגיאה בטעינת נתונים: " + error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(created_events_page.this, "שגיאה בטעינה", Toast.LENGTH_SHORT).show();
             }
         });
     }

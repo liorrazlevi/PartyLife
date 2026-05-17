@@ -114,7 +114,7 @@
                             android:id="@+id/inputLocation"
                             android:layout_width="match_parent"
                             android:layout_height="56dp"
-                            android:hint="בחר איזור"
+                            android:hint="הקלד עיר (למשל: ירושלים)"
                             android:textColor="#FFFFFF"
                             android:textColorHint="#66FFFFFF"
                             android:textSize="14sp"
@@ -124,7 +124,9 @@
                             android:drawablePadding="12dp"
                             android:paddingStart="44dp"
                             android:paddingEnd="20dp"
-                            android:background="@null" />
+                            android:background="@null"
+                            android:inputType="text"
+                            android:completionThreshold="1" />
                     </com.google.android.material.textfield.TextInputLayout>
 
                     <!-- Date Field -->

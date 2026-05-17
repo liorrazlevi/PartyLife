@@ -3,8 +3,6 @@ package lior.razlevi.partylife;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
@@ -14,14 +12,26 @@ public class PartyAdapter extends RecyclerView.Adapter<PartyHolder> {
 
     private final List<Party> partyList;
     private final OnPartyClickListener listener;
+    private OnDeleteClickListener deleteListener;
+    private boolean showDeleteButton = false;
 
     public interface OnPartyClickListener {
         void onPartyClick(Party party);
     }
 
+    public interface OnDeleteClickListener {
+        void onDeleteClick(Party party);
+    }
+
     public PartyAdapter(List<Party> partyList, OnPartyClickListener listener) {
         this.partyList = partyList;
         this.listener = listener;
+    }
+
+    // פעולה להפעלת כפתור המחיקה
+    public void enableDeletion(OnDeleteClickListener deleteListener) {
+        this.showDeleteButton = true;
+        this.deleteListener = deleteListener;
     }
 
     @NonNull
@@ -35,17 +45,28 @@ public class PartyAdapter extends RecyclerView.Adapter<PartyHolder> {
     public void onBindViewHolder(@NonNull PartyHolder holder, int position) {
         Party party = partyList.get(position);
         holder.tvEventTitle.setText(party.getName());
-        
+
         String dateTime = party.getDate() + " | " + party.getTime();
         holder.tvEventDate.setText(dateTime);
-        
+
         holder.tvEventStatus.setText(party.getLocation());
         holder.tvEventStatus.setTextColor(0xFF9575CD);
 
-        // תיקון: שימוש ב-getImageUrl() במקום getImage()
-        if (party.bringPartyImage() != null) {
+        // הצגת כפתור המחיקה וטיפול בלחיצה
+        if (showDeleteButton && holder.ivDeleteParty != null) {
+            holder.ivDeleteParty.setVisibility(View.VISIBLE);
+            holder.ivDeleteParty.setOnClickListener(v -> {
+                if (deleteListener != null) {
+                    deleteListener.onDeleteClick(party);
+                }
+            });
+        } else if (holder.ivDeleteParty != null) {
+            holder.ivDeleteParty.setVisibility(View.GONE);
+        }
+
+        if (party.bringPartyImage()  != null) {
             Glide.with(holder.itemView.getContext())
-                    .load(party.bringPartyImage())
+                    .load(party.bringPartyImage() )
                     .placeholder(R.drawable.partyicon)
                     .error(R.drawable.partyicon)
                     .into(holder.ivEventCover);
@@ -64,6 +85,13 @@ public class PartyAdapter extends RecyclerView.Adapter<PartyHolder> {
     public int getItemCount() {
         return partyList != null ? partyList.size() : 0;
     }
-
-
+    // פונקציה שמעדכנת את הרשימה על המסך מיד אחרי המחיקה
+    public void removeItem(Party party) {
+        int position = partyList.indexOf(party);
+        if (position != -1) {
+            partyList.remove(position);
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(position, partyList.size());
+        }
+    }
 }

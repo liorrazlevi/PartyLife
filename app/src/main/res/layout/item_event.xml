@@ -12,7 +12,7 @@
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground">
 
-    <!-- CardView: הרכיב שחותך את התמונה עם פינות מעוגלות! -->
+    <!-- תמונת המסיבה -->
     <androidx.cardview.widget.CardView
         android:id="@+id/cvImageContainer"
         android:layout_width="match_parent"
@@ -24,7 +24,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <!-- התמונה עצמה שבתוך הכרטיסייה המעוגלת -->
         <ImageView
             android:id="@+id/ivEventCover"
             android:layout_width="match_parent"
@@ -34,19 +33,36 @@
 
     </androidx.cardview.widget.CardView>
 
-    <!-- שם המסיבה -->
+    <!-- שם המסיבה - תופס את השורה עד הכפתור -->
     <TextView
         android:id="@+id/tvEventTitle"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:gravity="start"
-        android:text="מסיבת קיץ על הגג"
+        android:layout_marginEnd="8dp"
+        android:text="שם המסיבה"
         android:textColor="#FFFFFF"
         android:textSize="18sp"
         android:textStyle="bold"
+        android:gravity="start"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/ivDeleteParty"
         app:layout_constraintTop_toBottomOf="@id/cvImageContainer" />
+
+    <!-- כפתור מחיקה - מוגדל ונוח ללחיצה -->
+    <ImageView
+        android:id="@+id/ivDeleteParty"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:padding="8dp"
+        android:src="@android:drawable/ic_menu_delete"
+        android:background="?android:attr/selectableItemBackgroundBorderless"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:tint="#FF5252"
+        app:layout_constraintTop_toTopOf="@id/tvEventTitle"
+        app:layout_constraintBottom_toBottomOf="@id/tvEventTitle"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- תאריך ושעה -->
     <TextView
@@ -54,21 +70,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:gravity="start"
-        android:text="15 באוגוסט, 20:00"
+        android:text="תאריך ושעה"
         android:textColor="#999999"
         android:textSize="14sp"
-        app:layout_constraintStart_toStartOf="parent"
+        android:gravity="start"
         app:layout_constraintTop_toBottomOf="@id/tvEventTitle" />
 
-    <!-- סטטוס -->
+    <!-- מיקום -->
     <TextView
         android:id="@+id/tvEventStatus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="פורסם"
-        android:textColor="#4CAF50"
+        android:text="מיקום"
+        android:textColor="#9575CD"
         android:textSize="14sp"
         android:textStyle="bold"
         android:gravity="start"

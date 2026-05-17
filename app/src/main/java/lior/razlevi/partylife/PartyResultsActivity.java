@@ -50,7 +50,14 @@ public class PartyResultsActivity extends AppCompatActivity implements PartyAdap
         searchAge = getIntent().getStringExtra("AGE");
         searchTime = getIntent().getStringExtra("TIME");
 
-        // 2. אתחול רשימה ואדפטר
+
+// שורות הגנה - אם הנתון חסר, נשים טקסט ריק במקום null
+        if (searchLocation == null) searchLocation = "";
+        if (searchDate == null) searchDate = "";
+        if (searchAge == null) searchAge = "";
+        if (searchTime == null) searchTime = "";
+
+        // 2. אתחול רשימה ואדפטרא
         partyList = new ArrayList<>();
         partyAdapter = new PartyAdapter(partyList, this);
         rvPartyResults.setLayoutManager(new LinearLayoutManager(this));
@@ -78,17 +85,37 @@ public class PartyResultsActivity extends AppCompatActivity implements PartyAdap
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 partyList.clear();
-                
-                for (DataSnapshot data : snapshot.getChildren()) {
-                    Party party = data.getValue(Party.class);
-                    
-                    if (party != null) {
-                        // לוגיקת הסינון המלאה: מיקום, תאריך, גיל וזמן
-                        boolean matchesLocation = party.getLocation() != null && party.getLocation().contains(searchLocation);
-                        boolean matchesDate = searchDate.equals(party.getDate());
-                        boolean matchesAge = searchAge.equals(party.getAge());
-                        boolean matchesTime = searchTime != null && searchTime.equals(party.getTime());
 
+                for (DataSnapshot data : snapshot.getChildren()) {
+                    // 1. קבלת האובייקט מה-Snapshot
+                    Party party = data.getValue(Party.class);
+
+                    if (party != null) {
+                        // 2. יצירת משתני עזר עם הגנה למקרה שב-Firebase חסר נתון
+                        String pLocation = party.getLocation() != null ? party.getLocation() : "";
+                        String pDate = party.getDate() != null ? party.getDate() : "";
+                        String pAge = party.getAge() != null ? party.getAge() : "";
+                        String pTime = party.getTime() != null ? party.getTime() : "";
+
+                        // 3. בדיקה שהכל תואם בדיוק (כפי שביקשת)
+                        // השתמשתי ב-contains למיקום כי זה יותר בטוח, וב-equals לשאר
+                        boolean matchesLocation = pLocation.contains(searchLocation);
+                        boolean matchesDate = pDate.equals(searchDate);
+                        boolean matchesAge = pAge.equals(searchAge);
+                       // המרת שעת החיפוש ושעת המסיבה מה-Firebase לדקות
+                        int searchMinutes = timeToMinutes(searchTime);
+                        int partyMinutes = timeToMinutes(pTime);
+
+                        boolean matchesTime;
+                        if (searchMinutes == -1 || partyMinutes == -1) {
+                            // אם יש בעיה בפורמט, נחזור להשוואה מדויקת
+                            matchesTime = pTime.equals(searchTime);
+                        } else {
+                            // הבדיקה: האם המסיבה בטווח של השעה שביקשתי ועד שעה קדימה
+                            matchesTime = (partyMinutes >= searchMinutes) && (partyMinutes <= searchMinutes + 60);
+                        }
+
+                        // 4. הוספה לרשימה רק אם כל התנאים מתקיימים
                         if (matchesLocation && matchesDate && matchesAge && matchesTime) {
                             partyList.add(party);
                         }
@@ -122,5 +149,16 @@ public class PartyResultsActivity extends AppCompatActivity implements PartyAdap
         Intent intent = new Intent(this, party_details.class);
         intent.putExtra("PARTY_ID", party.getPartyId());
         startActivity(intent);
+    }
+    private int timeToMinutes(String timeStr) {
+        try {
+            if (timeStr == null || !timeStr.contains(":")) return -1;
+            String[] parts = timeStr.split(":");
+            int hours = Integer.parseInt(parts[0].trim());
+            int minutes = Integer.parseInt(parts[1].trim());
+            return (hours * 60) + minutes;
+        } catch (Exception e) {
+            return -1;
+        }
     }
 }

@@ -61,8 +61,8 @@ public class PartySearchPage extends AppCompatActivity {
     }
 
     private boolean validateFields() {
-        if (inputLocation.getText().toString().isEmpty()) {
-            Toast.makeText(this, "נא לבחור מיקום", Toast.LENGTH_SHORT).show();
+        if (inputLocation.getText().toString().trim().isEmpty()) {
+            Toast.makeText(this, "נא להזין עיר לחיפוש", Toast.LENGTH_SHORT).show();
             return false;
         }
         if (inputDate.getText().toString().isEmpty()) {
@@ -81,10 +81,26 @@ public class PartySearchPage extends AppCompatActivity {
     }
 
     private void setupLocationSpinner() {
-        String[] regions = {"דרום", "צפון", "מרכז", "ירושלים"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, regions);
+        //1. רשימת ערים נפוצות בישראל (תוכלי להוסיף עוד כרצונך)
+        String[] cities = {
+                "תל אביב", "ירושלים", "חיפה", "ראשון לציון", "פתח תקווה",
+                "אשדוד", "נתניה", "באר שבע", "בני ברק", "חולון",
+                "רמת גן", "רחובות", "אשקלון", "בת ים", "בית שמש",
+                "כפר סבא", "הרצליה", "חדרה", "מודיעין", "רעננה",
+                "יבנה", "רמלה", "נהריה", "מודיעין עילית"
+        };
+
+        // 2. יצירת האדאפטר
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_dropdown_item_1line, cities);
+
         inputLocation.setAdapter(adapter);
-        inputLocation.setOnClickListener(v -> inputLocation.showDropDown());
+
+        // 3. חשוב: הסרנו את ה-showDropDown בלחיצה כדי לאפשר למשתמש להקליד בחופשיות
+        // האפשרויות יקפצו לבד כשהוא יתחיל להקליד אותיות.
+        inputLocation.setOnClickListener(null);
+        // מאפשר לפתוח את הרשימה המלאה גם בלחיצה, לא רק בהקלדה
+        // inputLocation.setOnClickListener(v -> inputLocation.showDropDown());
     }
 
     private void setupAgeSpinner() {
@@ -103,7 +119,7 @@ public class PartySearchPage extends AppCompatActivity {
     }
 
     private void performSearch() {
-        String location = inputLocation.getText().toString();
+        String location = inputLocation.getText().toString().trim();
         String date = inputDate.getText().toString();
         String time = inputTime.getText().toString();
         String age = inputAge.getText().toString();
