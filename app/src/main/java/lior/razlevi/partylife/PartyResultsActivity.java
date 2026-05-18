@@ -2,8 +2,10 @@ package lior.razlevi.partylife;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +34,7 @@ public class PartyResultsActivity extends AppCompatActivity implements PartyAdap
     private LinearLayout llEmptyState;
     private PartyAdapter partyAdapter;
     private List<Party> partyList;
+    private ProgressBar progressBar;
     
     private DatabaseReference mDatabase;
     private String searchLocation, searchDate, searchAge, searchTime;
@@ -44,6 +47,8 @@ public class PartyResultsActivity extends AppCompatActivity implements PartyAdap
 
         init();
 
+        Log.d("LIORA","in onCreate");
+        progressBar.setVisibility( View.VISIBLE);
         // 1. קבלת נתוני החיפוש מה-Intent (כולל הזמן שנוסף)
         searchLocation = getIntent().getStringExtra("LOCATION");
         searchDate = getIntent().getStringExtra("DATE");
@@ -78,6 +83,7 @@ public class PartyResultsActivity extends AppCompatActivity implements PartyAdap
         rvPartyResults = findViewById(R.id.rvPartyResults);
         tvResultsCount = findViewById(R.id.tvResultsCount);
         llEmptyState = findViewById(R.id.llEmptyState);
+        progressBar = findViewById(R.id.progressBar);
     }
 
     private void loadFilteredParties() {
@@ -104,29 +110,40 @@ public class PartyResultsActivity extends AppCompatActivity implements PartyAdap
                         boolean matchesAge = pAge.equals(searchAge);
                        // המרת שעת החיפוש ושעת המסיבה מה-Firebase לדקות
                         int searchMinutes = timeToMinutes(searchTime);
+                        Log.d("LIORA","searchMinutes"+searchMinutes);
                         int partyMinutes = timeToMinutes(pTime);
+                        Log.d("LIORA","partyMinutes"+partyMinutes);
+
 
                         boolean matchesTime;
                         if (searchMinutes == -1 || partyMinutes == -1) {
                             // אם יש בעיה בפורמט, נחזור להשוואה מדויקת
+                            Log.d("LIORA","error in time conversion"+party.getName());
                             matchesTime = pTime.equals(searchTime);
                         } else {
                             // הבדיקה: האם המסיבה בטווח של השעה שביקשתי ועד שעה קדימה
+                            Log.d("LIORA","error in time1 conversion"+party.getName());
                             matchesTime = (partyMinutes >= searchMinutes) && (partyMinutes <= searchMinutes + 60);
+                            Log.d("LIORA","error in time2 conversion"+ partyMinutes + " " + searchMinutes+matchesTime);
                         }
 
                         // 4. הוספה לרשימה רק אם כל התנאים מתקיימים
                         if (matchesLocation && matchesDate && matchesAge && matchesTime) {
+                            Log.d("LIORA","found party " +party);
                             partyList.add(party);
                         }
                     }
                 }
                 updateUI();
+              progressBar.setVisibility(View.GONE);
+                Log.d("LIORA","finished loading");
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Toast.makeText(PartyResultsActivity.this, "שגיאה בטעינת הנתונים", Toast.LENGTH_SHORT).show();
+                progressBar.setVisibility(View.GONE);
+                Log.d("LIORA","error loading");
             }
         });
     }
@@ -155,7 +172,9 @@ public class PartyResultsActivity extends AppCompatActivity implements PartyAdap
             if (timeStr == null || !timeStr.contains(":")) return -1;
             String[] parts = timeStr.split(":");
             int hours = Integer.parseInt(parts[0].trim());
+            Log.d("LIORA","time is  h "+hours);
             int minutes = Integer.parseInt(parts[1].trim());
+            Log.d("LIORA","time is  m "+minutes);
             return (hours * 60) + minutes;
         } catch (Exception e) {
             return -1;

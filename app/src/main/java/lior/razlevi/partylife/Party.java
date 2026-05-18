@@ -16,10 +16,12 @@ public class Party {
     private String imageString; 
     private String creatorId;
     private String parking;
+    private String fullAddress;
 
     public Party() {}
 
-    public Party(String partyId, String name, String location, String date, String time, String age, String dressCode, String phone, String imageString, String creatorId, String parking) {
+    public Party(String partyId, String name, String location, String date, String time, String age, String dressCode, String phone,
+                 String imageString, String creatorId, String parking, String fullAddress) {
         this.partyId = partyId;
         this.name = name;
         this.location = location;
@@ -31,6 +33,7 @@ public class Party {
         this.imageString = imageString;
         this.creatorId = creatorId;
         this.parking = parking;
+        this.fullAddress = fullAddress;
     }
 
     public String getPartyId() { return partyId; }
@@ -41,6 +44,7 @@ public class Party {
     public String getAge() { return age; }
     public String getDressCode() { return dressCode; }
     public String getPhone() { return phone; }
+    public String getFullAddress() { return fullAddress; }
     
     // פעולה זו מחזירה את ה-Bitmap עבור Glide
     public Bitmap bringPartyImage() {
@@ -62,6 +66,7 @@ public class Party {
     public void setImageString(String imageString) { this.imageString = imageString; } 
     public void setCreatorId(String creatorId) { this.creatorId = creatorId; }
     public void setParking(String parking) { this.parking = parking; }
+    public void setFullAddress(String fullAddress) { this.fullAddress = fullAddress; }
     
     // הפעולה המתוקנת להמרת הסטרינג ל-Bitmap
     public Bitmap convertStringToBitmap(String imageString) {
@@ -81,7 +86,8 @@ public class Party {
     public String toString() {
 
 
-       return this.partyId + " " + this.name + " " + this.location + " " + this.date + " " + this.time + " " + this.age + " " + this.dressCode + " " + this.phone + " "  + " " + this.creatorId + " " + this.parking;
+       return this.partyId + " " + this.name + " " + this.location + " " + this.date + " " + this.time + " " + this.age + " " + this.dressCode + " " + this.phone + " "  + " " +
+               this.creatorId + " " + this.parking + " " + this.fullAddress;
 
 
 

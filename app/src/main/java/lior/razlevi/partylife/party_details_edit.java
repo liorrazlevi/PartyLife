@@ -41,7 +41,7 @@ import java.util.Map;
 
 public class party_details_edit extends AppCompatActivity {
 
-    private TextInputEditText etLocation, etDate, etTime, etParking, etDressCodeEdit, etPhone;
+    private TextInputEditText etLocation, etDate, etTime, etParking, etDressCodeEdit, etPhone, etFullAddress;
     private AutoCompleteTextView inputAge;
     private MaterialButton btnSaveChanges, btnViewEvents;
     private TextView tvTitle;
@@ -106,6 +106,7 @@ public class party_details_edit extends AppCompatActivity {
 
     private void init() {
         etLocation = findViewById(R.id.etLocation);
+        etFullAddress = findViewById(R.id.etFullAddress);
         etDate = findViewById(R.id.etDate);
         etTime = findViewById(R.id.etTime);
         etParking = findViewById(R.id.etParking);
@@ -127,13 +128,13 @@ public class party_details_edit extends AppCompatActivity {
                 if (party != null) {
                     tvTitle.setText("עריכת: " + party.getName());
                     etLocation.setText(party.getLocation());
+                    etFullAddress.setText(party.getFullAddress());
                     etDate.setText(party.getDate());
                     etTime.setText(party.getTime());
                     etParking.setText(party.getParking());
                     etDressCodeEdit.setText(party.getDressCode());
                     etPhone.setText(party.getPhone());
                     inputAge.setText(party.getAge(), false);
-                    
                     currentImageString = party.getImageString();
                     currentImageBitMap = party.bringPartyImage();
 
@@ -186,6 +187,7 @@ public class party_details_edit extends AppCompatActivity {
     private void saveChanges(String imageString) {
         Map<String, Object> updates = new HashMap<>();
         updates.put("location", etLocation.getText().toString());
+        updates.put("fullAddress", etFullAddress.getText().toString());
         updates.put("date", etDate.getText().toString());
         updates.put("time", etTime.getText().toString());
         updates.put("parking", etParking.getText().toString());

@@ -42,7 +42,7 @@ import java.util.Locale;
 
 public class party_creation_page extends AppCompatActivity {
 
-    private TextInputEditText etPartyName, etLocation, etDate, etTime, etDressCode, etPhone, etParking;
+    private TextInputEditText etPartyName, etLocation, etDate, etTime, etDressCode, etPhone, etParking ,etFullAddress;
     private AutoCompleteTextView etAge;
     private MaterialButton btnCreate;
     private ImageView ivProfile, ivSelectedPartyImage;
@@ -153,6 +153,7 @@ Log.d("PartyLior", "PartyId: " + partyId);
                 imageString,
                 currentUser.getUid(),
                 etParking.getText().toString().trim()
+                ,etFullAddress.getText().toString().trim()
         );
 Log.d("PartyLior", "Party before: " + party);
         partyRef.child(partyId).setValue(party)
@@ -200,6 +201,10 @@ Log.d("PartyLior", "Party before: " + party);
             etLocation.setError("אנא הזן מיקום");
             return false;
         }
+        if(TextUtils.isEmpty(etFullAddress.getText())) {
+            etFullAddress.setError("אנא הזן כתובת מלאה");
+            return false;
+        }
         if (TextUtils.isEmpty(etDate.getText())) {
             etDate.setError("אנא בחר תאריך");
             return false;
@@ -241,6 +246,7 @@ Log.d("PartyLior", "Party before: " + party);
         etDressCode = findViewById(R.id.etDressCode);
         etPhone = findViewById(R.id.etPhone);
         etParking = findViewById(R.id.etParking);
+        etFullAddress = findViewById(R.id.etFullAddress);
         btnCreate = findViewById(R.id.btnCreate);
         ivProfile = findViewById(R.id.ivProfile);
         cvPartyImage = findViewById(R.id.cvPartyImage);
@@ -253,5 +259,6 @@ Log.d("PartyLior", "Party before: " + party);
         if (mAuth.getCurrentUser() != null) {
             fetchUserName(mAuth.getCurrentUser().getUid());
         }
+
     }
 }
