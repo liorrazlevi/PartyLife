@@ -53,7 +53,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="60dp"
-        android:text="ברוך הבא, ליאל"
+        android:text="איזה כיף שהגעת "
         android:textColor="#FFFFFF"
         android:textSize="32sp"
         android:textStyle="bold"

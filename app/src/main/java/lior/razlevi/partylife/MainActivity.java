@@ -3,6 +3,7 @@ package lior.razlevi.partylife;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -18,6 +19,9 @@ import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.firebase.FirebaseNetworkException;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,6 +31,9 @@ public class MainActivity extends AppCompatActivity {
     private EditText passwordInput;
     private MaterialCheckBox cbRememberMe;
     private SharedPreferences sp;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
         passwordInput = findViewById(R.id.passwordInput);
         cbRememberMe = findViewById(R.id.cbRememberMe);
         sp = getSharedPreferences("PartyLifeDetails", MODE_PRIVATE);
+
     }
 
     public void SingInforUsers() {
@@ -72,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     Auth.signIn(MainActivity.this, email, password, task -> {
                         if (task.isSuccessful()) {
+
                             // אם ההתחברות הצליחה, נבדוק אם המשתמש רוצה שנזכור אותו
                             if (cbRememberMe.isChecked()) {
                                 saveLogedInUserInSharedPreferences(email, password);
@@ -81,6 +90,8 @@ public class MainActivity extends AppCompatActivity {
                             }
                             
                             Toast.makeText(MainActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
+
+
                             startActivity(new Intent(MainActivity.this, OpenPage.class));
                             finish(); // סגירת מסך הלוגין
                         } else {
@@ -130,4 +141,5 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, "שגיאה בהתחברות: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
+
 }

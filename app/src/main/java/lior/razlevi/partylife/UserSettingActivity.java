@@ -1,5 +1,6 @@
 package lior.razlevi.partylife;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -88,6 +89,8 @@ public class UserSettingActivity extends AppCompatActivity {
                     updatePassword(password);
                 }
                 updateUserInfo(fullName, email, phone);
+                Intent intent = new Intent(UserSettingActivity.this, OpenPage.class);
+                startActivity(intent);
 
             }
         });
