@@ -9,28 +9,22 @@
     android:background="#1A0F1B"
     android:layoutDirection="rtl">
 
-    <!-- רקע האייקון (צד ימין) -->
-    <View
-        android:id="@+id/iconBackground"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:background="@drawable/circle"
-        android:backgroundTint="#2D1B2E"
+
+
+    <!-- תמונת הפרופיל של האורח - גדולה וברורה -->
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/ivGuestIcon"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:padding="2dp"
+        android:src="@drawable/personimeg"
+        android:scaleType="centerCrop"
+        app:strokeColor="#D36FE4"
+        app:strokeWidth="2dp"
+        app:shapeAppearanceOverlay="@style/CircleImage"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <!-- אייקון האיש -->
-    <ImageView
-        android:id="@+id/ivGuestIcon"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:src="@drawable/personimeg"
-        app:tint="#FFFFFF"
-        app:layout_constraintTop_toTopOf="@id/iconBackground"
-        app:layout_constraintBottom_toBottomOf="@id/iconBackground"
-        app:layout_constraintLeft_toLeftOf="@id/iconBackground"
-        app:layout_constraintRight_toRightOf="@id/iconBackground" />
 
     <!-- תגית הסטטוס (צד שמאל) - דינמית -->
     <TextView
@@ -62,7 +56,7 @@
         android:gravity="right"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/tvGuestStatus"
-        app:layout_constraintRight_toLeftOf="@id/iconBackground"
+        app:layout_constraintRight_toLeftOf="@id/ivGuestIcon"
         app:layout_constraintTop_toTopOf="parent" />
 
     <!-- קו מפריד תחתון -->
@@ -71,7 +65,7 @@
         android:layout_height="0.5dp"
         android:layout_marginTop="12dp"
         android:background="#22FFFFFF"
-        app:layout_constraintTop_toBottomOf="@id/iconBackground"
+        app:layout_constraintTop_toBottomOf="@id/ivGuestIcon"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 

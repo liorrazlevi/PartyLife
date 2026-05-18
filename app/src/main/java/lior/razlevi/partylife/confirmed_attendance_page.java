@@ -137,6 +137,7 @@ private  List<String> answered;
 
                 for (DataSnapshot data : snapshot.getChildren()) {
                     Guest guest = data.getValue(Guest.class);
+                    Log.d("LIORA", "Guest: " + guest);
                     if (guest != null) {
                         guestList.add(guest);
 

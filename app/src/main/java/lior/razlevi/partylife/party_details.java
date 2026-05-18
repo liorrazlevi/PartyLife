@@ -6,6 +6,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -178,15 +179,18 @@ public class party_details extends AppCompatActivity {
     private void updateAttendance(String status) {
         if (mAuth.getCurrentUser() == null) return;
         String userId = mAuth.getCurrentUser().getUid();
-
-        mDatabase.child("Users").child(userId).child("fullName").addListenerForSingleValueEvent(new ValueEventListener() {
+Log.d("LIORA", "User ID: " + userId);
+        mDatabase.child("Users").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String userName = snapshot.getValue(String.class);
+                String userName = snapshot.child("fullName").getValue(String.class);
+                String picture = snapshot.child("profileImage").getValue(String.class);
+
+                Log.d("LIORA", "User Name: " + userName + " Picture URL: " + picture.substring(0, Math.min(picture.length(), 10)));
                 if (userName == null) userName = "אורח";
 
-                Guest guestStatus = new Guest(userName, status);
-
+                Guest guestStatus = new Guest(userName, status,picture);
+Log.d("LIORA", "Guest Status: " + guestStatus);
                 mDatabase.child("Attendance").child(partyId).child(userId)
                         .setValue(guestStatus)
                         .addOnCompleteListener(task -> {

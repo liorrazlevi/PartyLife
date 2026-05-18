@@ -1,5 +1,9 @@
 package lior.razlevi.partylife;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +31,8 @@ public class GuestAdapter extends RecyclerView.Adapter<GuestHolder> {
     public void onBindViewHolder(@NonNull GuestHolder holder, int position) {
         Guest guest = guestList.get(position);
         holder.tvGuestName.setText(guest.getName());
+Log.d("LIORA", "Guest: " + guest);
+        holder.ivGuestIcon.setImageBitmap(convertStringToBitmap(guest.getPicture()));
 
         // תיקון: בדיקה לפי מחרוזת (String) במקום isComing()
         // אנחנו בודקים אם הסטטוס שווה למילה "מגיע"
@@ -44,5 +50,19 @@ public class GuestAdapter extends RecyclerView.Adapter<GuestHolder> {
         return guestList.size();
     }
 
+    public Bitmap convertStringToBitmap(String imageString) {
+        if (imageString != null && !imageString.isEmpty()) {
+            try {
+                // המרה מ-Base64 למערך בתים
+                byte[] decodedString = Base64.decode(imageString, Base64.DEFAULT);
+                // יצירת Bitmap מהבתים
+                return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        return null;
+    }
 
 }
