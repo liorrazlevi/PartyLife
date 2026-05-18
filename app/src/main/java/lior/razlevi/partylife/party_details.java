@@ -1,5 +1,6 @@
 package lior.razlevi.partylife;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -26,6 +27,7 @@ public class party_details extends AppCompatActivity {
     private TextView tvPartyName, tvDate, tvTime, tvLocation, tvAgeInfo, tvParkingInfo, tvDressCode;
     private ImageView ivPartyIcon;
     private MaterialButton btnNavigate, btnYes, btnNo, btnContact;
+    private  String fullAddress;
 
     private String partyId;
     private DatabaseReference mDatabase;
@@ -53,15 +55,48 @@ public class party_details extends AppCompatActivity {
         checkUserAttendance();
 
         btnNavigate.setOnClickListener(v -> {
-            String address = tvLocation.getText().toString();
-            Uri gmmIntentUri = Uri.parse("google.navigation:q=" + address);
-            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-            mapIntent.setPackage("com.google.android.apps.maps");
-            if (mapIntent.resolveActivity(getPackageManager()) != null) {
-                startActivity(mapIntent);
-            } else {
-                // אם אין גוגל מאפס, נפתח בדפדפן
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com/maps/search/?api=1&query=" + address)));
+            try {
+                // 1. יצירת פורמט לקריאת התאריך והשעה (ודאי שהפורמט תואם למה ששמור ב-Firebase)
+                java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm", java.util.Locale.getDefault());
+
+                // חיבור מחרוזת התאריך והשעה של המסיבה
+                String partyDateTimeStr = tvDate.getText().toString() + " " + tvTime.getText().toString();
+                java.util.Date partyDate = sdf.parse(partyDateTimeStr);
+
+                if (partyDate != null) {
+                    long currentTime = System.currentTimeMillis();
+                    long partyTimeMillis = partyDate.getTime();
+
+                    // 24 שעות במילישניות
+                    long twentyFourHoursInMillis = 24 * 60 * 60 * 1000;
+
+                    // בדיקה: האם המסיבה רחוקה יותר מ-24 שעות מעכשיו?
+                    if (partyTimeMillis - currentTime > twentyFourHoursInMillis) {
+                        // הצגת דיאלוג התראה
+                        new AlertDialog.Builder(party_details.this)
+                                .setTitle("מיקום מדויק טרם נחשף")
+                                .setMessage("למען פרטיות המסיבה, המיקום המדויק והניווט יהיו זמינים רק 24 שעות לפני תחילת האירוע.")
+                                .setPositiveButton("הבנתי", null)
+                                .show();
+                    } else {
+                        // ניווט (הקוד המקורי שלך)
+                        String address = tvLocation.getText().toString() + " " + (fullAddress != null ? fullAddress : "");
+                        Uri gmmIntentUri = Uri.parse("google.navigation:q=" + address);
+                        Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                        mapIntent.setPackage("com.google.android.apps.maps");
+
+                        if (mapIntent.resolveActivity(getPackageManager()) != null) {
+                            startActivity(mapIntent);
+                        } else {
+                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com/maps/search/?api=1&query=" + address)));
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                // במקרה של שגיאה בפורמט התאריך, נאפשר ניווט ליתר ביטחון
+                Toast.makeText(this, "לא ניתן לחשב את זמן המסיבה, מנווט כרגיל", Toast.LENGTH_SHORT).show();
+                String address = tvLocation.getText().toString();
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + address)));
             }
         });
 
@@ -106,7 +141,7 @@ public class party_details extends AppCompatActivity {
                     tvParkingInfo.setText(party.getParking());
                     tvDressCode.setText(party.getDressCode());
                     organizerPhone = party.getPhone();
-
+                    fullAddress = (party.getFullAddress() != null) ? party.getFullAddress() : "";
                     // תיקון: שימוש ב-getImageUrl()
                     if (party.bringPartyImage() != null) {
                         Glide.with(party_details.this).load(party.bringPartyImage()).into(ivPartyIcon);
