@@ -42,8 +42,8 @@ import java.util.Locale;
 
 public class party_creation_page extends AppCompatActivity {
 
-    private TextInputEditText etPartyName, etLocation, etDate, etTime, etDressCode, etPhone, etParking ,etFullAddress;
-    private AutoCompleteTextView etAge;
+    private TextInputEditText etPartyName, etDate, etTime, etDressCode, etPhone, etParking ,etFullAddress;
+    private AutoCompleteTextView etAge, etLocation;
     private MaterialButton btnCreate;
     private ImageView ivProfile, ivSelectedPartyImage;
     private MaterialCardView cvPartyImage;
@@ -67,7 +67,7 @@ public class party_creation_page extends AppCompatActivity {
         setupAgeSpinner();
         setupPickers();
         setupGalleryLauncher();
-
+       setupCity();
         ivProfile.setOnClickListener(view -> {
             startActivity(new Intent(this, UserSettingActivity.class));
         });
@@ -261,4 +261,30 @@ Log.d("PartyLior", "Party before: " + party);
         }
 
     }
+
+    private  void setupCity(){
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                party_creation_page.this,
+                android.R.layout.simple_list_item_1, // עיצוב שורת הרשימה (ברירת מחדל של אנדרואיד)
+                MainActivity.cities
+        );
+
+        etLocation.setAdapter(adapter);
+
+        // הגדרה: אחרי כמה תווים שהמשתמש מקליד תוצג הרשימה?
+        etLocation.setThreshold(2);
+
+
+    }
 }
+
+
+
+
+
+
+
+
+
+

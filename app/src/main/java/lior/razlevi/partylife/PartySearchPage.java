@@ -81,18 +81,11 @@ public class PartySearchPage extends AppCompatActivity {
     }
 
     private void setupLocationSpinner() {
-        //1. רשימת ערים נפוצות בישראל (תוכלי להוסיף עוד כרצונך)
-        String[] cities = {
-                "תל אביב", "ירושלים", "חיפה", "ראשון לציון", "פתח תקווה",
-                "אשדוד", "נתניה", "באר שבע", "בני ברק", "חולון",
-                "רמת גן", "רחובות", "אשקלון", "בת ים", "בית שמש",
-                "כפר סבא", "הרצליה", "חדרה", "מודיעין", "רעננה",
-                "יבנה", "רמלה", "נהריה", "מודיעין עילית"
-        };
+
 
         // 2. יצירת האדאפטר
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_dropdown_item_1line, cities);
+                android.R.layout.simple_list_item_1, MainActivity.cities);
 
         inputLocation.setAdapter(adapter);
 

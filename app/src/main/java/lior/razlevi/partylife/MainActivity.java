@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -23,24 +24,24 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.List;
 
+public class MainActivity extends AppCompatActivity {
     private AppCompatButton loginButton;
     private AppCompatButton registerButton;
     private EditText emailInputLogin;
     private EditText passwordInput;
     private MaterialCheckBox cbRememberMe;
     private SharedPreferences sp;
-
-
-
-
+public static List<String> cities;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-        
+
+        getCities();
         init();
         loadLastLoggedInUserData(); // טעינת פרטים שנשמרו
         SingInforUsers();
@@ -141,5 +142,35 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, "שגיאה בהתחברות: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
+    public  void getCities(){
+Log.d("LIORA", "getCities");
+        cities=new ArrayList<>();
+
+        CityApiManager apiManager;
+        apiManager = new CityApiManager();
+
+        // קריאה למחלקה שיצרנו כדי להביא את הנתונים
+        apiManager.fetchCities(new CityApiManager.CityCallback() {
+            @Override
+            public void onCitiesLoaded(List<String> gotcities) {
+                cities = gotcities;
+                Log.d("LIORA", "Cities: " + cities);
+
+            }
+            @Override
+            public void onError(String error) {
+                cities.add("תל אביב");
+                cities.add("חדרה");
+                cities.add("ראשון לציון");
+                cities.add("הרצליה");
+                cities.add("נתניה");
+
+            }
+
+
+    });
 
 }
+}
+
+
