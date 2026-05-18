@@ -1,6 +1,10 @@
 package lior.razlevi.partylife;
 
 import android.os.Bundle;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,11 +26,13 @@ public class confirmed_attendance_page extends AppCompatActivity {
 
     private TextView tvComingCount, tvNotComingCount;
     private RecyclerView rvGuests;
+    private AutoCompleteTextView etSearchGuest;
     
     private GuestAdapter adapter;
     private List<Guest> guestList;
     private DatabaseReference mDatabase;
     private String partyId;
+private  List<String> answered;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,14 +40,72 @@ public class confirmed_attendance_page extends AppCompatActivity {
         setContentView(R.layout.activity_confirmed_attendance_page);
 
         init();
-        setupRecyclerView();
         loadGuestsFromFirebase();
+        setupRecyclerView();
+
+        etSearchGuest.setOnItemClickListener((parent, view, position, id) -> {
+            String selectedName = parent.getItemAtPosition(position).toString();
+            if (selectedName != null&& !selectedName.isEmpty()){
+                Log.d("LIORA", "selectedName: " + selectedName);
+                filterGuests(selectedName);
+            }
+          else{
+              Log.d("LIORA", "EmptyselectedName: " + selectedName);
+                setupRecyclerView();
+            };
+
+       });
+        etSearchGuest.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // אם השדה ריק, נחזיר את הרשימה המלאה
+                if (s.toString().isEmpty()) {
+                    adapter = new GuestAdapter(guestList);
+                    rvGuests.setAdapter(adapter);
+                } else {
+                    // אופציונלי: סינון תוך כדי הקלדה (לפני לחיצה על הצעה)
+                    filterGuests(s.toString());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(android.text.Editable s) {
+
+            }
+
+
+
+
+        });
+
     }
 
+
+    private void filterGuests(String name) {
+
+        List<Guest> filteredList = new ArrayList<>();
+        for (Guest guest : guestList) {
+            if (guest.getName().toLowerCase().contains(name.toLowerCase())) {
+                filteredList.add(guest);
+            }
+        }
+        adapter = new GuestAdapter(filteredList);
+        rvGuests.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+
+    }
     private void init() {
         tvComingCount = findViewById(R.id.tvComingCount);
         tvNotComingCount = findViewById(R.id.tvNotComingCount);
         rvGuests = findViewById(R.id.rvGuests);
+        etSearchGuest = findViewById(R.id.etSearchGuest);
+
 
         partyId = getIntent().getStringExtra("PARTY_ID");
         guestList = new ArrayList<>();
@@ -83,6 +147,7 @@ public class confirmed_attendance_page extends AppCompatActivity {
                         }
                     }
                 }
+                setupGuest();
                 updateUI(countComing, countNotComing);
             }
 
@@ -97,5 +162,27 @@ public class confirmed_attendance_page extends AppCompatActivity {
         tvComingCount.setText(String.valueOf(coming));
         tvNotComingCount.setText(String.valueOf(notComing));
         adapter.notifyDataSetChanged();
+    }
+    private  void setupGuest(){
+
+        answered=new ArrayList<>();
+        for (Guest guest : guestList) {
+            answered.add(guest.getName());
+        }
+
+        Log.d("LIORA", "answered: " + answered);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                confirmed_attendance_page.this,
+                android.R.layout.simple_list_item_1, // עיצוב שורת הרשימה (ברירת מחדל של אנדרואיד)
+                answered
+        );
+
+        etSearchGuest.setAdapter(adapter);
+
+        // הגדרה: אחרי כמה תווים שהמשתמש מקליד תוצג הרשימה?
+        etSearchGuest.setThreshold(2);
+
+
     }
 }
