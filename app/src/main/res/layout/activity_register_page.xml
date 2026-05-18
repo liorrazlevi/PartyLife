@@ -12,7 +12,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="24dp"
+        android:padding="18dp"
         android:layoutDirection="rtl">
 
         <!-- Title Section -->
@@ -20,7 +20,7 @@
             android:id="@+id/tvTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="20dp"
             android:text="יצירת חשבון חדש"
             android:textColor="#FFFFFF"
             android:textSize="28sp"
@@ -43,18 +43,52 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvTitle" />
 
-        <!-- Full Name Input -->
+        <!-- Profile Image Selection Area -->
+        <FrameLayout
+            android:id="@+id/flProfileImageContainer"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_marginTop="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvSubtitle">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/ivProfileImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="2dp"
+                android:src="@drawable/personimeg"
+                android:scaleType="centerCrop"
+                app:strokeColor="#D36FE4"
+                app:strokeWidth="3dp"
+                app:shapeAppearanceOverlay="@style/CircleImage"
+                android:background="#2D1B2E" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fabAddPhoto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:src="@android:drawable/ic_menu_camera"
+                app:fabCustomSize="36dp"
+                app:backgroundTint="#D36FE4"
+                app:tint="#FFFFFF"
+                tools:ignore="ContentDescription" />
+        </FrameLayout>
+
+        <!-- Full Name Input (Linked to Profile Image) -->
         <TextView
             android:id="@+id/tvNameLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="8dp"
             android:text="שם מלא"
             android:textColor="#CCCCCC"
             android:textSize="14sp"
             android:textStyle="bold"
             android:gravity="start"
-            app:layout_constraintTop_toBottomOf="@id/tvSubtitle" />
+            app:layout_constraintTop_toBottomOf="@id/flProfileImageContainer" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilFullName"
@@ -74,7 +108,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etFullName"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
+                android:layout_height="50dp"
                 android:hint="הזינו את שמכם המלא"
                 android:textColorHint="#66FFFFFF"
                 android:textColor="#FFFFFF"
@@ -120,7 +154,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etEmail"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
+                android:layout_height="50dp"
                 android:inputType="textEmailAddress"
                 android:hint="israel@email.com"
                 android:textColorHint="#66FFFFFF"
@@ -133,8 +167,7 @@
                 android:paddingStart="44dp"
                 android:paddingEnd="20dp"
                 android:background="@null"
-                tools:ignore="RtlCompat"
-                />
+                tools:ignore="RtlCompat" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -169,7 +202,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etPhone"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
+                android:layout_height="50dp"
                 android:inputType="phone"
                 android:hint="הזינו מספר טלפון"
                 android:textColorHint="#66FFFFFF"
@@ -214,13 +247,12 @@
             app:boxStrokeWidth="0dp"
             app:passwordToggleEnabled="true"
             app:passwordToggleTint="#999999"
-
             app:layout_constraintTop_toBottomOf="@id/tvPasswordLabel">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etPassword"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
+                android:layout_height="50dp"
                 android:inputType="textPassword"
                 android:hint="הקלד סיסמא"
                 android:textColorHint="#66FFFFFF"
@@ -272,7 +304,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etConfirmPassword"
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
+                android:layout_height="50dp"
                 android:inputType="textPassword"
                 android:hint="וודא סיסמא"
                 android:textColorHint="#66FFFFFF"

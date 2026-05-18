@@ -4,11 +4,13 @@ public class UserProperties {
     private  String userPhone;
     private String fullName;
     private String uid;
+    private String profileImage;
 
-    public UserProperties(String userPhone, String uid, String fullName) {
+    public UserProperties(String userPhone, String uid, String fullName, String profileImage) {
         this.userPhone = userPhone;
         this.uid = uid;
         this.fullName = fullName;
+        this.profileImage = profileImage;
     }
     public UserProperties(){
 
@@ -24,6 +26,9 @@ public class UserProperties {
     public String getUid() {
         return uid;
     }
+    public String getProfileImage() {
+        return profileImage;
+    }
 
     public void setUid(String uid) {
         this.uid = uid;
@@ -35,6 +40,10 @@ public class UserProperties {
     public void setFullName(String fullName) {
         this.fullName = fullName;
     }
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
+    }
+
 
 
     @Override

@@ -1,12 +1,19 @@
 package lior.razlevi.partylife;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
@@ -17,6 +24,8 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -24,6 +33,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 
 public class UserSettingActivity extends AppCompatActivity {
 
@@ -35,6 +47,11 @@ public class UserSettingActivity extends AppCompatActivity {
     private MaterialButton btEnRegister;
     private FirebaseDatabase database;
     private DatabaseReference userRef;
+    private ShapeableImageView ivProfileImageE;
+    private Uri imageUri;
+    private ActivityResultLauncher<Intent> galleryLauncher;
+    private String encodedImage = "";
+    private FloatingActionButton fabAddPhotoE;
     private static final String TAG = "UserSet" + "tingActivity";
 
 
@@ -45,6 +62,15 @@ public class UserSettingActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_user_setting);
         init();
+        setupGalleryLauncher();
+
+        fabAddPhotoE.setOnClickListener(view -> {
+
+            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            galleryLauncher.launch(intent);
+        });
+
+
         FirebaseUser firebaseUser = Auth.getCurrentUser();
         if (firebaseUser == null) return;
         String uid = firebaseUser.getUid();
@@ -54,6 +80,7 @@ public class UserSettingActivity extends AppCompatActivity {
                 etEPhone.setText(String.valueOf(userProperties.getUserPhone()));
                 etEFullName.setText(userProperties.getFullName());
                 etEEmail.setText(firebaseUser.getEmail());
+                ivProfileImageE.setImageBitmap(convertStringToBitmap(userProperties.getProfileImage()));
             }
 
         });
@@ -109,6 +136,8 @@ public class UserSettingActivity extends AppCompatActivity {
         etEEmail = findViewById(R.id.etEEmail);
         etEFullName = findViewById(R.id.etEFullName);
         btEnRegister = findViewById(R.id.btEnRegister);
+        ivProfileImageE = findViewById(R.id.ivProfileImageE);
+        fabAddPhotoE = findViewById(R.id.fabAddPhotoE);
         database = FirebaseDatabase.getInstance();
         userRef = database.getReference("Users");
     }
@@ -132,9 +161,10 @@ public class UserSettingActivity extends AppCompatActivity {
             });
         }
 
+
         // Update user properties in Realtime Database
         String uid = firebaseUser.getUid();
-        UserProperties userProperties = new UserProperties(phone, uid, fullName);
+        UserProperties userProperties = new UserProperties(phone, uid, fullName,encodedImage);
 
         userRef.child(uid).setValue(userProperties)
                 .addOnSuccessListener(aVoid -> {
@@ -159,5 +189,46 @@ public class UserSettingActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void setupGalleryLauncher() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        galleryLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        imageUri = result.getData().getData();
+                        try {
+                            InputStream inputStream = getContentResolver().openInputStream(imageUri);
+                            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+
+                            // המרה של הביטמאפ לסטרינג (Base64)ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos); // דחיסה ל-50% כדי לחסוך מקום ב-Database
+                            byte[] b = baos.toByteArray();
+                            encodedImage = android.util.Base64.encodeToString(b, android.util.Base64.DEFAULT);
+                            // הצגת התמונה הנבחרת
+                            ivProfileImageE.setImageBitmap(bitmap);
+                            ivProfileImageE.setAlpha(1.0f);
+                        } catch (Exception e) {
+                            Toast.makeText(this, "שגיאה בטעינת התמונה", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+        );
+    }
+
+    public Bitmap convertStringToBitmap(String imageString) {
+        if (imageString != null && !imageString.isEmpty()) {
+            try {
+                // המרה מ-Base64 למערך בתים
+                byte[] decodedString = Base64.decode(imageString, Base64.DEFAULT);
+                // יצירת Bitmap מהבתים
+                return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+        return null;
     }
 }

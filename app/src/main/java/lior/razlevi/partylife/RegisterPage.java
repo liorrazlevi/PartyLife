@@ -1,18 +1,27 @@
 package lior.razlevi.partylife;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.io.ByteArrayOutputStream;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.FirebaseNetworkException;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
@@ -21,6 +30,8 @@ import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.io.InputStream;
 
 
 public class RegisterPage extends AppCompatActivity {
@@ -33,6 +44,12 @@ public class RegisterPage extends AppCompatActivity {
     private TextView tvLoginLink;
     private FirebaseDatabase database;
     private DatabaseReference userRef;
+    private ShapeableImageView ivProfileImage;
+    private FloatingActionButton fabAddPhoto;
+    private Uri imageUri;
+    private ActivityResultLauncher<Intent> galleryLauncher;
+    private String encodedImage = ""; // יוצב כאן הסטרינג של התמונה
+
 
 
     public void registerFB() {
@@ -45,6 +62,7 @@ public class RegisterPage extends AppCompatActivity {
                 Toast.makeText(RegisterPage.this, "Signup Successful", Toast.LENGTH_SHORT).show();
 
                 SaveUserInDBS();
+
                 startActivity(new Intent(RegisterPage.this, OpenPage.class));
 
             } else {
@@ -75,6 +93,13 @@ public class RegisterPage extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_register_page);
         init();
+        setupGalleryLauncher();
+
+        fabAddPhoto.setOnClickListener(view -> {
+
+            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            galleryLauncher.launch(intent);
+                });
         btnRegister.setOnClickListener(view -> {
             String fullName = etFullName.getText().toString();
             String email = etEmail.getText().toString();
@@ -109,6 +134,8 @@ public class RegisterPage extends AppCompatActivity {
         etPassword = findViewById(R.id.etPassword);
         etConfirmPassword = findViewById(R.id.etConfirmPassword);
         tvLoginLink = findViewById(R.id.tvLoginLink);
+        ivProfileImage = findViewById(R.id.ivProfileImage);
+        fabAddPhoto = findViewById(R.id.fabAddPhoto);
         database = FirebaseDatabase.getInstance();
         userRef = database.getReference("Users");
 
@@ -118,7 +145,7 @@ public class RegisterPage extends AppCompatActivity {
         FirebaseUser firebaseUser = Auth.getCurrentUser();
         if (firebaseUser == null) return;
         String uid = firebaseUser.getUid();
-      UserProperties userProperties = new UserProperties(etPhone.getText().toString(), uid, etFullName.getText().toString());
+      UserProperties userProperties = new UserProperties(etPhone.getText().toString(), uid, etFullName.getText().toString(), encodedImage);
         // שמירת ההמשתמש  במסד הנתונים
         userRef.child(uid).setValue(userProperties)
                 .addOnSuccessListener(aVoid -> {
@@ -130,5 +157,31 @@ public class RegisterPage extends AppCompatActivity {
                     Log.e("MARIELA", "Failed to save user", e);
                 });
 
+    }
+
+    private void setupGalleryLauncher() {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        galleryLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        imageUri = result.getData().getData();
+                        try {
+                            InputStream inputStream = getContentResolver().openInputStream(imageUri);
+                            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+
+                            // המרה של הביטמאפ לסטרינג (Base64)ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos); // דחיסה ל-50% כדי לחסוך מקום ב-Database
+                            byte[] b = baos.toByteArray();
+                            encodedImage = android.util.Base64.encodeToString(b, android.util.Base64.DEFAULT);
+                            // הצגת התמונה הנבחרת
+                            ivProfileImage.setImageBitmap(bitmap);
+                            ivProfileImage.setAlpha(1.0f);
+                        } catch (Exception e) {
+                            Toast.makeText(this, "שגיאה בטעינת התמונה", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+        );
     }
 }
