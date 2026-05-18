@@ -22,6 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 public class OpenPage extends AppCompatActivity {
  private CardView cvCreateParty;
  private CardView cvPlanParty;
+ private CardView cvMyParties;
  private ImageView ivSettings;
  private TextView tvWelcome;
     private FirebaseDatabase database;
@@ -37,7 +38,7 @@ public class OpenPage extends AppCompatActivity {
 
 
         cvCreateParty.setOnClickListener(view -> {
-            startActivity(new Intent(this, created_events_page.class));
+            startActivity(new Intent(this, party_creation_page.class));
         });
         cvPlanParty.setOnClickListener(view -> {
             startActivity(new Intent(this, PartySearchPage.class));
@@ -46,6 +47,11 @@ public class OpenPage extends AppCompatActivity {
             startActivity(new Intent(this, UserSettingActivity.class));
         });
 
+        cvMyParties.setOnClickListener(view -> {
+                    startActivity(new Intent(this, created_events_page.class));
+
+
+                });
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.openpage), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -55,10 +61,12 @@ public class OpenPage extends AppCompatActivity {
     public  void  init(){
         cvCreateParty = findViewById(R.id.cvCreateParty);
         cvPlanParty = findViewById(R.id.cvPlanParty);
+        cvMyParties = findViewById(R.id.cvMyParties);
         ivSettings = findViewById(R.id.ivSettings);
         tvWelcome=findViewById(R.id.tvWelcome);
         database = FirebaseDatabase.getInstance();
         userRef = database.getReference("Users");
+
 
 
     }

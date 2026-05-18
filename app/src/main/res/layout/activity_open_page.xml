@@ -9,7 +9,7 @@
     android:layoutDirection="rtl">
 
     <!-- Header Section - Profile on the Right, Logo on the Left -->
-    
+
     <ImageView
         android:id="@+id/ivSettings"
         android:layout_width="40dp"
@@ -52,7 +52,7 @@
         android:id="@+id/tvWelcome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="35dp"
         android:text="איזה כיף שהגעת "
         android:textColor="#FFFFFF"
         android:textSize="32sp"
@@ -91,7 +91,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="32dp"
+            android:padding="10dp"
             android:background="@drawable/button_outline">
 
             <ImageView
@@ -136,6 +136,71 @@
 
     </androidx.cardview.widget.CardView>
 
+
+    <!-- My Parties Card --><androidx.cardview.widget.CardView
+    android:id="@+id/cvMyParties"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="24dp"
+    android:layout_marginTop="20dp"
+    android:layout_marginEnd="24dp"
+    app:cardBackgroundColor="#2D1B2E"
+    app:cardCornerRadius="24dp"
+    app:cardElevation="0dp"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/cvPlanParty">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:background="@drawable/button_outline">
+
+        <ImageView
+            android:id="@+id/ivMyPartiesIcon"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:padding="16dp"
+            android:background="@drawable/circle_icon_background"
+            android:backgroundTint="#1A0F1B"
+            android:src="@drawable/partyicon"
+            app:tint="#D36FE4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvMyPartiesTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="המסיבות שלי"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ivMyPartiesIcon" />
+
+        <TextView
+            android:id="@+id/tvMyPartiesSubtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="נהלו את המסיבות שפרסמתם"
+            android:textColor="#9575CD"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvMyPartiesTitle" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>
+
+
+
     <!-- Search Party Card (Large Square) -->
     <androidx.cardview.widget.CardView
         android:id="@+id/cvPlanParty"
@@ -154,7 +219,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="32dp"
+            android:padding="10dp"
             android:background="@drawable/button_outline">
 
             <ImageView
