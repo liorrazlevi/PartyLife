@@ -134,9 +134,13 @@ public static List<String> cities;
     }
 
     private void handleLoginError(Exception e) {
-        if (e instanceof FirebaseAuthInvalidUserException || e instanceof FirebaseAuthInvalidCredentialsException) {
-            Toast.makeText(MainActivity.this, "אימייל או סיסמה שגויים. ניתן להירשם אם אין לך חשבון.", Toast.LENGTH_LONG).show();
-        } else if (e instanceof FirebaseNetworkException) {
+        if (e instanceof FirebaseAuthInvalidUserException ) {
+            Toast.makeText(MainActivity.this, "אימייל שגויי. ניתן להירשם אם אין לך חשבון.", Toast.LENGTH_LONG).show();
+        }
+         else if(e instanceof FirebaseAuthInvalidCredentialsException){
+            Toast.makeText(MainActivity.this, " סיסמה שגוייה. ניתן להירשם אם אין לך חשבון.", Toast.LENGTH_LONG).show();
+        }
+        else if (e instanceof FirebaseNetworkException) {
             Toast.makeText(MainActivity.this, "אין חיבור לאינטרנט", Toast.LENGTH_LONG).show();
         } else {
             Toast.makeText(MainActivity.this, "שגיאה בהתחברות: " + e.getMessage(), Toast.LENGTH_LONG).show();

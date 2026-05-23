@@ -67,6 +67,7 @@ public class party_creation_page extends AppCompatActivity {
         setupAgeSpinner();
         setupPickers();
         setupGalleryLauncher();
+        setupTextWatchers();
        setupCity();
         ivProfile.setOnClickListener(view -> {
             startActivity(new Intent(this, UserSettingActivity.class));
@@ -168,21 +169,29 @@ Log.d("PartyLior", "Party before: " + party);
                 });
     }
 
-    private void setupPickers() {
-        etDate.setOnClickListener(v -> {
-            new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
-                calendar.set(Calendar.YEAR, year);
-                calendar.set(Calendar.MONTH, month);
-                calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                updateLabel(etDate, "dd/MM/yyyy");
-            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
-        });
+    private void setupPickers() {etDate.setOnClickListener(v -> {
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
+            calendar.set(Calendar.YEAR, year);
+            calendar.set(Calendar.MONTH, month);
+            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            updateLabel(etDate, "dd/MM/yyyy");
+
+            // הסרת השגיאה ברגע שנבחר תאריך
+            etDate.setError(null);
+        }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+
+        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+        datePickerDialog.show();
+    });
 
         etTime.setOnClickListener(v -> {
             new TimePickerDialog(this, (view, hourOfDay, minute) -> {
                 calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
                 calendar.set(Calendar.MINUTE, minute);
                 updateLabel(etTime, "HH:mm");
+
+                // הסרת השגיאה ברגע שנבחרה שעה
+                etTime.setError(null);
             }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show();
         });
     }
@@ -193,30 +202,95 @@ Log.d("PartyLior", "Party before: " + party);
     }
 
     private boolean validateInputs() {
-        if (TextUtils.isEmpty(etPartyName.getText())) {
+        String partyName = etPartyName.getText().toString().trim();
+        String location = etLocation.getText().toString().trim();
+        String fullAddress = etFullAddress.getText().toString().trim();
+        String date = etDate.getText().toString().trim();
+        String time = etTime.getText().toString().trim();
+        String age = etAge.getText().toString().trim();
+        String phone = etPhone.getText().toString().trim();
+        String dressCode = etDressCode.getText().toString().trim();
+        String parking = etParking.getText().toString().trim();
+
+        if (TextUtils.isEmpty(partyName)) {
             etPartyName.setError("אנא הזן שם מסיבה");
+            etPartyName.requestFocus();
             return false;
         }
-        if (TextUtils.isEmpty(etLocation.getText())) {
-            etLocation.setError("אנא הזן מיקום");
+        if (TextUtils.isEmpty(location)) {
+            etLocation.setError("אנא בחר עיר");
+            etLocation.requestFocus();
             return false;
         }
-        if(TextUtils.isEmpty(etFullAddress.getText())) {
-            etFullAddress.setError("אנא הזן כתובת מלאה");
+        if (TextUtils.isEmpty(fullAddress)) {
+            etFullAddress.setError("אנא הזן כתובת מדויקת");
+            etFullAddress.requestFocus();
             return false;
         }
-        if (TextUtils.isEmpty(etDate.getText())) {
-            etDate.setError("אנא בחר תאריך");
+
+        if (TextUtils.isEmpty(date)) {
+            etDate.setError("חובה לבחור תאריך");
+            Toast.makeText(this, "אנא בחר תאריך למסיבה", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (TextUtils.isEmpty(etTime.getText())) {
-            etTime.setError("אנא בחר שעה");
+        if (TextUtils.isEmpty(time)) {
+            etTime.setError("חובה לבחור שעה");
+            Toast.makeText(this, "אנא בחר שעת התחלה", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (TextUtils.isEmpty(etAge.getText())) {
-            Toast.makeText(this, "אנא בחר גיל", Toast.LENGTH_SHORT).show();
+
+        // --- תיקון בדיקת זמן עבר (איפוס שניות ומילי-שניות) ---
+        Calendar now = Calendar.getInstance();
+
+        // יצירת עותקים להשוואה נקייה ללא שניות
+        Calendar selectedTime = (Calendar) calendar.clone();
+        selectedTime.set(Calendar.SECOND, 0);
+        selectedTime.set(Calendar.MILLISECOND, 0);
+
+        Calendar currentTime = (Calendar) now.clone();
+        currentTime.set(Calendar.SECOND, 0);
+        currentTime.set(Calendar.MILLISECOND, 0);
+
+        if (selectedTime.before(currentTime)) {
+            Toast.makeText(this, "לא ניתן ליצור מסיבה בזמן שכבר עבר", Toast.LENGTH_SHORT).show();
             return false;
         }
+        // --------------------------------------------------
+
+        if (TextUtils.isEmpty(age)) {
+           // etAge.setError("אנא בחר טווח גילים");
+            etAge.requestFocus();
+            Toast.makeText(this, "חובה לבחור טווח גילים", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if (TextUtils.isEmpty(dressCode)) {
+            etDressCode.setError("אנא ציין קוד לבוש");
+            etDressCode.requestFocus();
+            return false;
+        }
+        if (TextUtils.isEmpty(parking)) {
+            etParking.setError("אנא פרט על מצב החניה");
+            etParking.requestFocus();
+            return false;
+        }
+
+        // בדיקת טלפון מופרדת
+        if (TextUtils.isEmpty(phone)) {
+            etPhone.setError("חובה להזין מספר טלפון");
+            etPhone.requestFocus();
+            return false;
+        }
+        if (!phone.startsWith("05")) {
+            etPhone.setError("מספר טלפון חייב להתחיל ב-05");
+            etPhone.requestFocus();
+            return false;
+        }
+        if (phone.length() != 10) {
+            etPhone.setError("מספר טלפון חייב להכיל בדיוק 10 ספרות");
+            etPhone.requestFocus();
+            return false;
+        }
+
         return true;
     }
 
@@ -224,6 +298,12 @@ Log.d("PartyLior", "Party before: " + party);
         String[] ageRanges = {"18-20", "20-25", "25-30", "30+"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, ageRanges);
         etAge.setAdapter(adapter);
+
+        // זה החלק שמוודא שהשגיאה תיעלם מיד בבחירה
+        etAge.setOnItemClickListener((parent, view, position, id) -> {
+            etAge.setError(null);
+        });
+
         etAge.setOnClickListener(v -> etAge.showDropDown());
     }
 
@@ -260,6 +340,18 @@ Log.d("PartyLior", "Party before: " + party);
             fetchUserName(mAuth.getCurrentUser().getUid());
         }
 
+    }
+
+    private void setupTextWatchers() {
+        etPhone.addTextChangedListener(new android.text.TextWatcher() {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                etPhone.setError(null); // הסרת השגיאה בזמן הקלדה
+            }
+            public void afterTextChanged(android.text.Editable s) {}
+        });
+
+        // אפשר להוסיף כאן TextWatcher דומה גם ל-etPartyName ו-etFullAddress
     }
 
     private  void setupCity(){

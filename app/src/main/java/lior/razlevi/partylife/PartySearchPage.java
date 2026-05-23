@@ -61,24 +61,58 @@ public class PartySearchPage extends AppCompatActivity {
     }
 
     private boolean validateFields() {
-        if (inputLocation.getText().toString().trim().isEmpty()) {
+        String location = inputLocation.getText().toString().trim();
+        String dateStr = inputDate.getText().toString().trim();
+        String timeStr = inputTime.getText().toString().trim();
+        String age = inputAge.getText().toString().trim();
+
+        // 1. קודם בודקים שהשדות לא ריקים
+        if (location.isEmpty()) {
             Toast.makeText(this, "נא להזין עיר לחיפוש", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (inputDate.getText().toString().isEmpty()) {
+        if (dateStr.isEmpty()) {
             Toast.makeText(this, "נא לבחור תאריך", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (inputTime.getText().toString().isEmpty()) {
+        if (timeStr.isEmpty()) {
             Toast.makeText(this, "נא לבחור שעה", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if (inputAge.getText().toString().isEmpty()) {
+
+        // 2. עכשיו בודקים את לוגיקת ה"זמן עבר" (לפני שבודקים את הגיל!)
+        try {
+            Calendar selectedCalendar = Calendar.getInstance();
+            String[] dateParts = dateStr.split("/");
+            int day = Integer.parseInt(dateParts[0]);
+            int month = Integer.parseInt(dateParts[1]) - 1;
+            int year = Integer.parseInt(dateParts[2]);
+
+            selectedCalendar.set(year, month, day, selectedHour, selectedMinute);
+            selectedCalendar.set(Calendar.SECOND, 0);
+            selectedCalendar.set(Calendar.MILLISECOND, 0);
+
+            Calendar now = Calendar.getInstance();
+            now.set(Calendar.SECOND, 0);
+            now.set(Calendar.MILLISECOND, 0);
+
+            if (selectedCalendar.before(now)) {
+                Toast.makeText(this, "לא ניתן לחפש מסיבות בזמן שכבר עבר", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        } catch (Exception e) {
+            return false;
+        }
+
+        // 3. רק בסוף בודקים את הגיל
+        if (age.isEmpty()) {
             Toast.makeText(this, "נא לבחור טווח גילאים", Toast.LENGTH_SHORT).show();
             return false;
         }
+
         return true;
     }
+
 
     private void setupLocationSpinner() {
 
@@ -132,6 +166,10 @@ public class PartySearchPage extends AppCompatActivity {
         inputDate = findViewById(R.id.inputDate);
         btnSearch = findViewById(R.id.btnSearch);
         cvProfile = findViewById(R.id.cvProfile);
+        // אתחול שעה ודקה נוכחיים כברירת מחדל
+        Calendar c = Calendar.getInstance();
+        this.selectedHour = c.get(Calendar.HOUR_OF_DAY);
+        this.selectedMinute = c.get(Calendar.MINUTE);
     }
 
     public void OpenDatePicker(View v) {
@@ -146,6 +184,10 @@ public class PartySearchPage extends AppCompatActivity {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
             inputDate.setText(sdf.format(selectedDate.getTime()));
         }, currentYear, currentMonth, currentDay);
+
+        // הגבלת הבחירה החל מהיום בלבד
+        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+
         datePickerDialog.show();
     }
 
