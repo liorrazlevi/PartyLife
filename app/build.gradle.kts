@@ -45,6 +45,7 @@ dependencies {
     
     // Glide להצגת תמונות
     implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation(libs.impress)
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
 
     testImplementation(libs.junit)
