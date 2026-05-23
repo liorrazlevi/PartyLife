@@ -152,11 +152,16 @@ public class PartyResultsActivity extends AppCompatActivity implements PartyAdap
         if (partyList.isEmpty()) {
             llEmptyState.setVisibility(View.VISIBLE);
             rvPartyResults.setVisibility(View.GONE);
-            tvResultsCount.setText("לא נמצאו מסיבות");
+            tvResultsCount.setText("אופס... לא מצאנו מסיבות בדיוק בשעה הזו");
         } else {
             llEmptyState.setVisibility(View.GONE);
             rvPartyResults.setVisibility(View.VISIBLE);
-            tvResultsCount.setText("מצאנו " + partyList.size() + " מסיבות שתואמות לחיפוש שלך");
+
+            // הודעה מגניבה שמסבירה על טווח השעה
+            String message = "מצאנו " + partyList.size() + " מסיבות בשבילך!\n";
+            message += "💡 הצגנו תוצאות בטווח של עד שעה מהזמן שביקשת, כדי שלא תפספסו אף חגיגה.";
+
+            tvResultsCount.setText(message);
             partyAdapter.notifyDataSetChanged();
         }
     }

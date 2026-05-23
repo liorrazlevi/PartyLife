@@ -72,18 +72,28 @@ public class UserSettingActivity extends AppCompatActivity {
 
 
         FirebaseUser firebaseUser = Auth.getCurrentUser();
-        if (firebaseUser == null) return;
-        String uid = firebaseUser.getUid();
-        userRef.child(uid).get().addOnSuccessListener(dataSnapshot -> { //שליפה
-            if (dataSnapshot.exists()) {
-                UserProperties userProperties = dataSnapshot.getValue(UserProperties.class);
-                etEPhone.setText(String.valueOf(userProperties.getUserPhone()));
-                etEFullName.setText(userProperties.getFullName());
-                etEEmail.setText(firebaseUser.getEmail());
-                ivProfileImageE.setImageBitmap(convertStringToBitmap(userProperties.getProfileImage()));
-            }
+        if (firebaseUser != null) {
+            String uid = firebaseUser.getUid();
+            userRef.child(uid).get().addOnSuccessListener(dataSnapshot -> {
+                if (dataSnapshot.exists()) {
+                    UserProperties userProperties = dataSnapshot.getValue(UserProperties.class);
+                    if (userProperties != null) {
+                        etEPhone.setText(String.valueOf(userProperties.getUserPhone()));
+                        etEFullName.setText(userProperties.getFullName());
+                        etEEmail.setText(firebaseUser.getEmail());
 
-        });
+                        // --- השורה שמתקנת את בעיית התמונה ---
+                        // אנחנו שומרים את הסטרינג של התמונה הקיימת בתוך המשתנה שלנו
+                        encodedImage = userProperties.getProfileImage();
+
+                        // הצגת התמונה ב-ImageView
+                        if (encodedImage != null && !encodedImage.isEmpty()) {
+                            ivProfileImageE.setImageBitmap(convertStringToBitmap(encodedImage));
+                        }
+                    }
+                }
+            });
+        }
         btEnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -135,7 +145,7 @@ public class UserSettingActivity extends AppCompatActivity {
         etEPhone = findViewById(R.id.etEPhone);
         etEEmail = findViewById(R.id.etEEmail);
         etEFullName = findViewById(R.id.etEFullName);
-        btEnRegister = findViewById(R.id.btEnRegister);
+        btEnRegister = findViewById(R.id.btnSaveSettings);
         ivProfileImageE = findViewById(R.id.ivProfileImageE);
         fabAddPhotoE = findViewById(R.id.fabAddPhotoE);
         database = FirebaseDatabase.getInstance();

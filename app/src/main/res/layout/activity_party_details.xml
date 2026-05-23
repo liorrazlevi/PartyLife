@@ -45,40 +45,37 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <!-- Party Header with Upgraded Icon -->
-            <RelativeLayout
+            <!-- Party Header עם תיקון התמונה העגולה -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="32dp">
+                android:layout_marginBottom="32dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-                <View
-                    android:id="@+id/iconGlow"
+                <!-- המיכל שחותך את התמונה לעיגול מושלם -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardImageContainer"
                     android:layout_width="64dp"
                     android:layout_height="64dp"
-                    android:layout_alignParentStart="true"
-                    android:background="@drawable/circle"
-                    android:backgroundTint="#D36FE4"
-                    android:alpha="0.2" />
+                    app:cardCornerRadius="32dp"
+                    app:cardBackgroundColor="#2D1B2E"
+                    app:strokeWidth="2dp"
+                    app:strokeColor="#D36FE4"
+                    app:cardElevation="4dp">
 
-                <ImageView
-                    android:id="@+id/ivPartyIcon"
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
-                    android:layout_centerVertical="true"
-                    android:layout_alignStart="@id/iconGlow"
-                    android:layout_marginStart="4dp"
-                    android:background="@drawable/circle"
-                    android:backgroundTint="#2D1B2E"
-                    android:padding="12dp"
-                    android:src="@drawable/partyicon"
-                    app:tint="#D36FE4" />
+                    <ImageView
+                        android:id="@+id/ivPartyIcon"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/partyicon" />
+                </com.google.android.material.card.MaterialCardView>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toEndOf="@id/iconGlow"
                     android:layout_marginStart="16dp"
-                    android:layout_centerVertical="true"
                     android:orientation="vertical">
 
                     <TextView
@@ -92,12 +89,12 @@
                         android:id="@+id/tvPartyName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="מסיבת קיץ על הגג"
+                        android:text="מסיבת קיץ שלי"
                         android:textColor="#FFFFFF"
                         android:textSize="20sp"
                         android:textStyle="bold" />
                 </LinearLayout>
-            </RelativeLayout>
+            </LinearLayout>
 
             <!-- Info List -->
             <LinearLayout
@@ -169,7 +166,7 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!-- Upgraded Navigation Button -->
+            <!-- Navigation Button -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnNavigate"
                 android:layout_width="match_parent"
@@ -352,9 +349,7 @@
                     android:text="לא"
                     android:textColor="#FFFFFF"
                     app:backgroundTint="#333333"
-                    app:cornerRadius="26dp"
-                    app:iconGravity="textEnd"
-                    app:iconTint="#999999"/>
+                    app:cornerRadius="26dp"/>
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnYes"
@@ -365,9 +360,7 @@
                     android:text="כן"
                     android:textColor="#FFFFFF"
                     app:backgroundTint="#B14C6E"
-                    app:cornerRadius="26dp"
-                    app:iconGravity="textEnd"
-                    app:iconTint="#FFFFFF"/>
+                    app:cornerRadius="26dp"/>
             </LinearLayout>
 
             <!-- Contact Organizer -->
@@ -387,5 +380,4 @@
 
         </LinearLayout>
     </ScrollView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,6 +3,7 @@ package lior.razlevi.partylife;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
@@ -134,6 +135,7 @@ public class party_details extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Party party = snapshot.getValue(Party.class);
                 if (party != null) {
+                    // עדכון פרטי הטקסט
                     tvPartyName.setText(party.getName());
                     tvDate.setText(party.getDate());
                     tvTime.setText(party.getTime());
@@ -141,17 +143,33 @@ public class party_details extends AppCompatActivity {
                     tvAgeInfo.setText(party.getAge());
                     tvParkingInfo.setText(party.getParking());
                     tvDressCode.setText(party.getDressCode());
+
                     organizerPhone = party.getPhone();
                     fullAddress = (party.getFullAddress() != null) ? party.getFullAddress() : "";
-                    // תיקון: שימוש ב-getImageUrl()
-                    if (party.bringPartyImage() != null) {
-                        Glide.with(party_details.this).load(party.bringPartyImage()).into(ivPartyIcon);
+
+                    // טיפול בתמונה - המרה ל-Bitmap והצגה
+                    Bitmap partyBitmap = party.bringPartyImage();
+                    if (partyBitmap != null) {
+                        // אם קיימת תמונה - מציגים אותה
+                        ivPartyIcon.setImageBitmap(partyBitmap);
+
+                        // הגדרות לחיתוך מושלם בתוך העיגול
+                        ivPartyIcon.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                        ivPartyIcon.setClipToOutline(true);
+
+                    } else {
+                        // אם אין תמונה - מציגים את אייקון ברירת המחדל
+                        ivPartyIcon.setImageResource(R.drawable.partyicon);
+                        ivPartyIcon.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                        ivPartyIcon.setClipToOutline(true);
                     }
                 }
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError error) {}
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("PartyDetails", "Error loading party details: " + error.getMessage());
+            }
         });
     }
 

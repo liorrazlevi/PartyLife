@@ -25,12 +25,14 @@
 
     <TextView
         android:id="@+id/tvResultsCount"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="8dp"
         android:text="מצאנו 0 מסיבות שתואמות לחיפוש שלך"
-        android:textColor="#9575CD"
+        android:textColor="#B39DDB"
         android:textSize="14sp"
+        android:lineSpacingExtra="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/tvResultsHeader"
         app:layout_constraintTop_toBottomOf="@id/tvResultsHeader" />
 
