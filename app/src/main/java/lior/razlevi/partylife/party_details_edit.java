@@ -236,7 +236,7 @@ public class party_details_edit extends AppCompatActivity {
 
     private void setupPickers() {
         etDate.setOnClickListener(v -> {
-            new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
+            DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
                 // עדכון האובייקט calendar
                 calendar.set(Calendar.YEAR, year);
                 calendar.set(Calendar.MONTH, month);
@@ -244,7 +244,12 @@ public class party_details_edit extends AppCompatActivity {
 
                 etDate.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
                 etDate.setError(null);
-            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH)).show();
+            }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+
+            // חסימת תאריכים שעברו
+            datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis());
+
+            datePickerDialog.show();
         });
 
         etTime.setOnClickListener(v -> {
