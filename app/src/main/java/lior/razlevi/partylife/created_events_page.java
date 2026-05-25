@@ -33,7 +33,6 @@ public class created_events_page extends AppCompatActivity {
     private TextView tvEmptyState;
     private MaterialButton btnCreateEvent;
     private ImageView ivProfile;
-    
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
 

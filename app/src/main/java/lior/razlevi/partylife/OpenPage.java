@@ -76,10 +76,10 @@ public class OpenPage extends AppCompatActivity {
         if (firebaseUser == null) return;
         String uid = firebaseUser.getUid();
 
-        // פנייה לנתיב של המשתמש הספציפי ב-Database (בהנחה שזה נשמר תחת "Users")
+        // פנייה לנתיב של המשתמש הספציפי ב-Database
         userRef.child(uid).get().addOnCompleteListener(task -> {
             if (task.isSuccessful() && task.getResult().exists()) {
-                // שליפת השם המלא (וודאי שהמפתח ב-Firebase הוא אכן "fullName")
+                // שליפת השם המלא
                  String fullName = task.getResult().child("fullName").getValue(String.class);
                   tvWelcome.setText("איזה כיף שהגעת, "+ fullName);
             }

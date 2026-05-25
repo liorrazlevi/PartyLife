@@ -29,7 +29,7 @@ public class CityApiManager {
     public void fetchCities(CityCallback callback) {
 
         Log.d("LIORA", "fetchCities");
-        // יצירת Thread נפרד לעבודה ברקע - דרישה מסעיף 6.6 במחוון
+        // יצירת Thread נפרד לעבודה ברקע
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
 
@@ -55,7 +55,7 @@ Log.d("LIORA", "connection2");
                 reader.close();
 
                 Log.d("LIORA", "response: " + response.toString());
-                // 3. פענוח ה-JSON (Parsing) - דרישה מסעיף 6.2 במחוון
+                //  פענוח ה-JSON (Parsing)
                 List<String> cityNames = new ArrayList<>();
                 JSONObject jsonObject = new JSONObject(response.toString());
                 JSONArray records = jsonObject.getJSONObject("result").getJSONArray("records");
@@ -68,7 +68,7 @@ Log.d("LIORA", "connection2");
                     cityNames.add(cityName);
                 }
      Log.d("LIORA", "cityNames: " + cityNames);
-                // 4. חזרה ל-Main Thread כדי לעדכן את הממשק
+                //  חזרה ל-Main Thread כדי לעדכן את הממשק
                 handler.post(() -> callback.onCitiesLoaded(cityNames));
 
             } catch (Exception e) {

@@ -4,7 +4,7 @@ public class Guest {
     private String name;
     private String status;
     private String picture;
-    // למשל: "מגיע", "לא מגיע"
+
 
     public Guest() {}
 

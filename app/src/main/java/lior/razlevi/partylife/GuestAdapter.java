@@ -34,8 +34,7 @@ public class GuestAdapter extends RecyclerView.Adapter<GuestHolder> {
 Log.d("LIORA", "Guest: " + guest);
         holder.ivGuestIcon.setImageBitmap(convertStringToBitmap(guest.getPicture()));
 
-        // תיקון: בדיקה לפי מחרוזת (String) במקום isComing()
-        // אנחנו בודקים אם הסטטוס שווה למילה "מגיע"
+
         if (guest.getStatus() != null && guest.getStatus().equals("מגיע")) {
             holder.tvGuestStatus.setText("כן");
             holder.tvGuestStatus.setBackgroundResource(R.drawable.bg_status_green);

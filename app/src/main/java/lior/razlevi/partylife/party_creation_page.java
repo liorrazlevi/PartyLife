@@ -141,7 +141,7 @@ public class party_creation_page extends AppCompatActivity {
 
         String partyId = partyRef.push().getKey();
         if (partyId == null) return;
-Log.d("PartyLior", "PartyId: " + partyId);
+
         Party party = new Party(
                 partyId,
                 etPartyName.getText().toString().trim(),
@@ -156,15 +156,15 @@ Log.d("PartyLior", "PartyId: " + partyId);
                 etParking.getText().toString().trim()
                 ,etFullAddress.getText().toString().trim()
         );
-Log.d("PartyLior", "Party before: " + party);
+
         partyRef.child(partyId).setValue(party)
                 .addOnSuccessListener(aVoid -> {
-                    Log.d("PartyLior", "Party created: " + party);
+
                     Toast.makeText(this, "המסיבה נוצרה בהצלחה!", Toast.LENGTH_SHORT).show();
                     finish();
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("PartyLior", "Error creating party", e);
+
                     Toast.makeText(this, "שגיאה בשמירה: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }

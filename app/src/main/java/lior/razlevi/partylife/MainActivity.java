@@ -82,7 +82,7 @@ public static List<String> cities;
                     Auth.signIn(MainActivity.this, email, password, task -> {
                         if (task.isSuccessful()) {
 
-                            // אם ההתחברות הצליחה, נבדוק אם המשתמש רוצה שנזכור אותו
+                            //  נבדוק אם המשתמש רוצה שנזכור אותו
                             if (cbRememberMe.isChecked()) {
                                 saveLogedInUserInSharedPreferences(email, password);
                             } else {

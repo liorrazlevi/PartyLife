@@ -69,7 +69,7 @@ private  List<String> answered;
                     adapter = new GuestAdapter(guestList);
                     rvGuests.setAdapter(adapter);
                 } else {
-                    // אופציונלי: סינון תוך כדי הקלדה (לפני לחיצה על הצעה)
+                    //  סינון תוך כדי הקלדה
                     filterGuests(s.toString());
                 }
             }
@@ -148,6 +148,7 @@ private  List<String> answered;
                         }
                     }
                 }
+
                 setupGuest();
                 updateUI(countComing, countNotComing);
             }
@@ -175,13 +176,13 @@ private  List<String> answered;
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 confirmed_attendance_page.this,
-                android.R.layout.simple_list_item_1, // עיצוב שורת הרשימה (ברירת מחדל של אנדרואיד)
+                android.R.layout.simple_list_item_1,
                 answered
         );
 
         etSearchGuest.setAdapter(adapter);
 
-        // הגדרה: אחרי כמה תווים שהמשתמש מקליד תוצג הרשימה?
+
         etSearchGuest.setThreshold(2);
 
 
