@@ -22,6 +22,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+/**
+ * דף חיפוש מסיבות.
+ *   מאפשר למשתמש לסנן מסיבות לפי עיר, תאריך, שעה וטווח גילאים.
+ */
 public class PartySearchPage extends AppCompatActivity {
     private AutoCompleteTextView inputLocation;
     private EditText inputDate;
@@ -29,6 +33,7 @@ public class PartySearchPage extends AppCompatActivity {
     private AutoCompleteTextView inputAge;
     private com.google.android.material.button.MaterialButton btnSearch;
     private CardView cvProfile;
+    // משתנים לשמירת הזמן המדויק שנבחר לצורך בדיקת "זמן עבר"
     private int selectedHour;
     private int selectedMinute;
 
@@ -47,6 +52,8 @@ public class PartySearchPage extends AppCompatActivity {
             startActivity(new Intent(this, UserSettingActivity.class));
         });
 
+
+        // לחיצה על כפתור החיפוש
         btnSearch.setOnClickListener(v -> {
             if (validateFields()) {
                 performSearch();
@@ -60,13 +67,18 @@ public class PartySearchPage extends AppCompatActivity {
         });
     }
 
+    /**
+     * בדיקת תקינות השדות:
+     *    1. בודק שכל השדות מולאו.
+     *      2. מוודא שהמשתמש לא מנסה לחפש מסיבה בזמן שכבר עבר.
+     */
     private boolean validateFields() {
         String location = inputLocation.getText().toString().trim();
         String dateStr = inputDate.getText().toString().trim();
         String timeStr = inputTime.getText().toString().trim();
         String age = inputAge.getText().toString().trim();
 
-        // 1. קודם בודקים שהשדות לא ריקים
+
         if (location.isEmpty()) {
             Toast.makeText(this, "נא להזין עיר לחיפוש", Toast.LENGTH_SHORT).show();
             return false;
@@ -80,8 +92,8 @@ public class PartySearchPage extends AppCompatActivity {
             return false;
         }
 
-        // 2. עכשיו בודקים את לוגיקת ה"זמן עבר" (לפני שבודקים את הגיל!)
         try {
+            // יצירת אובייקט זמן מהבחירה של המשתמש
             Calendar selectedCalendar = Calendar.getInstance();
             String[] dateParts = dateStr.split("/");
             int day = Integer.parseInt(dateParts[0]);
@@ -104,7 +116,7 @@ public class PartySearchPage extends AppCompatActivity {
             return false;
         }
 
-        // 3. רק בסוף בודקים את הגיל
+
         if (age.isEmpty()) {
             Toast.makeText(this, "נא לבחור טווח גילאים", Toast.LENGTH_SHORT).show();
             return false;
@@ -114,9 +126,8 @@ public class PartySearchPage extends AppCompatActivity {
     }
 
 
+
     private void setupLocationSpinner() {
-
-
         // 2. יצירת האדאפטר
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, MainActivity.cities);
@@ -145,6 +156,10 @@ public class PartySearchPage extends AppCompatActivity {
         inputDate.setOnClickListener(v -> OpenDatePicker(v));
     }
 
+    /**
+     *  מעבר לדף התוצאות (PartyResultsActivity) ושליחת כל הקריטריונים שנבחרו.
+     *
+     */
     private void performSearch() {
         String location = inputLocation.getText().toString().trim();
         String date = inputDate.getText().toString();
@@ -154,7 +169,7 @@ public class PartySearchPage extends AppCompatActivity {
         Intent intent = new Intent(this, PartyResultsActivity.class);
         intent.putExtra("LOCATION", location);
         intent.putExtra("DATE", date);
-        intent.putExtra("TIME", time); // הוספנו את הזמן
+        intent.putExtra("TIME", time);
         intent.putExtra("AGE", age);
         startActivity(intent);
     }
@@ -191,6 +206,9 @@ public class PartySearchPage extends AppCompatActivity {
         datePickerDialog.show();
     }
 
+    /**
+     * פתיחת דיאלוג לבחירת שעה (TimePicker).
+     */
     public void OpenTimePicker(View v) {
         final Calendar c = Calendar.getInstance();
         int currentHour = c.get(Calendar.HOUR_OF_DAY);

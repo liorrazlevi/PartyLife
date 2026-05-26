@@ -39,6 +39,11 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
+
+/**
+ * דף עריכת פרטי מסיבה (צד המארגן).
+ *   מאפשר עדכון נתונים קיימים, שינוי תמונת האירוע ומעבר לרשימת האורחים.
+ */
 public class party_details_edit extends AppCompatActivity {
 
     private TextInputEditText etLocation, etDate, etTime, etParking, etDressCodeEdit, etPhone, etFullAddress;
@@ -47,13 +52,11 @@ public class party_details_edit extends AppCompatActivity {
     private TextView tvTitle;
     private ImageView ivSelectedPartyImage;
     private MaterialCardView cvPartyImage;
-
     private String partyId;
     private DatabaseReference mDatabase;
     private Uri imageUri;
     private String currentImageString;
     private Bitmap currentImageBitMap;
-
     private final Calendar calendar = Calendar.getInstance();
     private ActivityResultLauncher<Intent> galleryLauncher;
 
@@ -67,6 +70,7 @@ public class party_details_edit extends AppCompatActivity {
         setupPickers();
         setupGalleryLauncher();
 
+        // קבלת מזהה המסיבה לעריכה
         partyId = getIntent().getStringExtra("PARTY_ID");
         if (partyId == null) {
             Toast.makeText(this, "שגיאה: לא נמצא מזהה מסיבה", Toast.LENGTH_SHORT).show();
@@ -78,11 +82,13 @@ public class party_details_edit extends AppCompatActivity {
 
         loadPartyDetails();
 
+        // שינוי תמונה
         cvPartyImage.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             galleryLauncher.launch(intent);
         });
 
+        // שמירת שינויים שנעשו
         btnSaveChanges.setOnClickListener(v -> {
             if (validateInputs()) { // רק אם הכל תקין נמשיך לשמירה
                 if (imageUri != null) {
@@ -93,8 +99,9 @@ public class party_details_edit extends AppCompatActivity {
             }
         });
 
-        setupTextWatchers(); // אל תשכחי לקרוא לזה בסוף onCreate
+        setupTextWatchers();
 
+        // מעבר לדף רשימת האורחים (אישורי הגעה)
         btnViewEvents.setOnClickListener(v -> {
             Intent intent = new Intent(party_details_edit.this, confirmed_attendance_page.class);
             intent.putExtra("PARTY_ID", partyId);
@@ -124,6 +131,9 @@ public class party_details_edit extends AppCompatActivity {
         cvPartyImage = findViewById(R.id.cvPartyImage);
     }
 
+    /**
+     * טעינת פרטי המסיבה מה-Database ומילוי השדות בממשק.
+     */
     private void loadPartyDetails() {
         mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -143,7 +153,7 @@ public class party_details_edit extends AppCompatActivity {
                     currentImageString = party.getImageString();
                     currentImageBitMap = party.bringPartyImage();
 
-                    // --- עדכון ה-calendar בזמן הטעינה ---
+                    //  עדכון ה-calendar בזמן הטעינה
                     try {
                         String[] dateParts = party.getDate().split("/");
                         String[] timeParts = party.getTime().split(":");
@@ -174,6 +184,7 @@ public class party_details_edit extends AppCompatActivity {
         });
     }
 
+
     private void setupGalleryLauncher() {
         galleryLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -194,6 +205,10 @@ public class party_details_edit extends AppCompatActivity {
         );
     }
 
+    /**
+     *  הופכת את התמונה שנבחרה מהגלריה למחרוזת טקסט (Base64)
+     *   כדי שניתן יהיה לשמור אותה ב-Realtime Database, ולאחר מכן מבצעת את השמירה.
+     */
     private void convertUriAndSave() {
         try {
             InputStream inputStream = getContentResolver().openInputStream(imageUri);
@@ -211,6 +226,9 @@ public class party_details_edit extends AppCompatActivity {
         }
     }
 
+    /**
+     * שמירת השינויים ב-Firebase Database באמצעות Map של עדכונים.
+     */
     private void saveChanges(String imageString) {
         Map<String, Object> updates = new HashMap<>();
         updates.put("location", etLocation.getText().toString().trim());

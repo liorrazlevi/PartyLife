@@ -22,6 +22,10 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * דף המציג את רשימת אישורי ההגעה למסיבה ספציפית.
+ * * כולל מונה של מגיעים/לא מגיעים ואפשרות לחיפוש אורחים.
+ */
 public class confirmed_attendance_page extends AppCompatActivity {
 
     private TextView tvComingCount, tvNotComingCount;
@@ -43,18 +47,21 @@ private  List<String> answered;
         loadGuestsFromFirebase();
         setupRecyclerView();
 
+
+        // טיפול בבחירת שם מרשימת החיפוש האוטומטית
         etSearchGuest.setOnItemClickListener((parent, view, position, id) -> {
             String selectedName = parent.getItemAtPosition(position).toString();
             if (selectedName != null&& !selectedName.isEmpty()){
-                Log.d("LIORA", "selectedName: " + selectedName);
                 filterGuests(selectedName);
             }
           else{
-              Log.d("LIORA", "EmptyselectedName: " + selectedName);
                 setupRecyclerView();
             };
 
        });
+
+
+        // האזנה לשינויי טקסט בשדה החיפוש לצורך סינון בזמן אמת
         etSearchGuest.addTextChangedListener(new TextWatcher() {
 
             @Override
@@ -79,16 +86,13 @@ private  List<String> answered;
 
             }
 
-
-
-
         });
-
     }
 
-
+    /**
+     * פונקציה לסינון רשימת האורחים לפי שם.
+     */
     private void filterGuests(String name) {
-
         List<Guest> filteredList = new ArrayList<>();
         for (Guest guest : guestList) {
             if (guest.getName().toLowerCase().contains(name.toLowerCase())) {
@@ -105,8 +109,6 @@ private  List<String> answered;
         tvNotComingCount = findViewById(R.id.tvNotComingCount);
         rvGuests = findViewById(R.id.rvGuests);
         etSearchGuest = findViewById(R.id.etSearchGuest);
-
-
         partyId = getIntent().getStringExtra("PARTY_ID");
         guestList = new ArrayList<>();
         
@@ -119,12 +121,18 @@ private  List<String> answered;
         }
     }
 
+    /**
+     * הגדרת ה-RecyclerView (מנהל פריסה ואדפטר).
+     */
     private void setupRecyclerView() {
         rvGuests.setLayoutManager(new LinearLayoutManager(this));
         adapter = new GuestAdapter(guestList);
         rvGuests.setAdapter(adapter);
     }
 
+    /**
+     *שליפת נתוני האורחים מה-Firebase וחישוב כמות המגיעים והלא מגיעים.
+     */
     private void loadGuestsFromFirebase() {
         if (mDatabase == null) return;
 
@@ -149,8 +157,8 @@ private  List<String> answered;
                     }
                 }
 
-                setupGuest();
-                updateUI(countComing, countNotComing);
+                setupGuest(); // עדכון רשימת ההצעות לחיפוש
+                updateUI(countComing, countNotComing); // עדכון המונים בממשק
             }
 
             @Override
@@ -160,20 +168,23 @@ private  List<String> answered;
         });
     }
 
+    /**
+     * עדכון הטקסט של מוני המגיעים ורענון הרשימה.
+     */
     private void updateUI(int coming, int notComing) {
         tvComingCount.setText(String.valueOf(coming));
         tvNotComingCount.setText(String.valueOf(notComing));
         adapter.notifyDataSetChanged();
     }
-    private  void setupGuest(){
 
+    /**
+     *הכנת רשימת שמות האורחים עבור שדה החיפוש האוטומטי (AutoComplete).
+     */
+    private  void setupGuest(){
         answered=new ArrayList<>();
         for (Guest guest : guestList) {
             answered.add(guest.getName());
         }
-
-        Log.d("LIORA", "answered: " + answered);
-
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 confirmed_attendance_page.this,
                 android.R.layout.simple_list_item_1,
@@ -181,10 +192,6 @@ private  List<String> answered;
         );
 
         etSearchGuest.setAdapter(adapter);
-
-
         etSearchGuest.setThreshold(2);
-
-
     }
 }

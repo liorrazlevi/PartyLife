@@ -1,17 +1,26 @@
 package lior.razlevi.partylife;
 
+/**
+ * מחלקת מודל המייצגת אורח במסיבה.
+ *   משמשת לאחסון ושליפת נתוני אישורי הגעה מה-Firebase.
+ */
 public class Guest {
     private String name;
     private String status;
-    private String picture;
+    private String picture; // מחרוזת Base64 המייצגת את תמונת הפרופיל של האורח
 
-
+    /**
+     * בנאי ריק הנדרש על ידי Firebase כדי להמיר את הנתונים מהדאטה-בייס לאובייקט Java.
+     */
     public Guest() {}
 
+    /**
+     * בנאי ליצירת אובייקט אורח חדש עם פרטים התחלתיים.
+     */
     public Guest(String name, String status, String picture) {
         this.name = name;
         this.status = status;
-this.picture = picture;
+        this.picture = picture;
 
     }
 

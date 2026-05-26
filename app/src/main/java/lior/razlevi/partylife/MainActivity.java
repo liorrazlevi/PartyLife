@@ -27,6 +27,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *  מסך הכניסה הראשי של האפליקציה.
+ *   מנהל את תהליך ההתחברות, שמירת פרטי משתמש ("זכור אותי") וטעינת נתונים ראשוניים.
+ */
 public class MainActivity extends AppCompatActivity {
     private AppCompatButton loginButton;
     private AppCompatButton registerButton;
@@ -34,7 +38,9 @@ public class MainActivity extends AppCompatActivity {
     private EditText passwordInput;
     private MaterialCheckBox cbRememberMe;
     private SharedPreferences sp;
+
 public static List<String> cities;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +73,9 @@ public static List<String> cities;
 
     }
 
+    /**
+     *  ניהול תהליך ההתחברות מול Firebase Auth ובדיקת תקינות קלט.
+     */
     public void SingInforUsers() {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,7 +122,7 @@ public static List<String> cities;
         editor.apply();
     }
 
-    // טעינת פרטי התחברות מזיכרון
+    // טעינה אוטומטית של פרטי המשתמש אם בחר באפשרות "זכור אותי" בעבר.
     public void loadLastLoggedInUserData() {
         String email = sp.getString("email", "");
         String password = sp.getString("password", "");
@@ -133,6 +142,9 @@ public static List<String> cities;
         editor.apply();
     }
 
+    /**
+     * טיפול בשגיאות התחברות נפוצות מול Firebase.
+     */
     private void handleLoginError(Exception e) {
         if (e instanceof FirebaseAuthInvalidUserException ) {
             Toast.makeText(MainActivity.this, "אימייל שגויי. ניתן להירשם אם אין לך חשבון.", Toast.LENGTH_LONG).show();
@@ -146,23 +158,27 @@ public static List<String> cities;
             Toast.makeText(MainActivity.this, "שגיאה בהתחברות: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
+
+    /**
+     *  הפעלת מנהל ה-API לשליפת רשימת הערים המעודכנת.
+     */
     public  void getCities(){
-Log.d("LIORA", "getCities");
         cities=new ArrayList<>();
 
         CityApiManager apiManager;
         apiManager = new CityApiManager();
 
-        // קריאה למחלקה שיצרנו כדי להביא את הנתונים
+        // קריאה למחלקה כדי להביא את הנתונים
         apiManager.fetchCities(new CityApiManager.CityCallback() {
             @Override
             public void onCitiesLoaded(List<String> gotcities) {
                 cities = gotcities;
-                Log.d("LIORA", "Cities: " + cities);
 
             }
+
             @Override
             public void onError(String error) {
+                // רשימת גיבוי במקרה ששירות ה-API לא זמין
                 cities.add("תל אביב");
                 cities.add("חדרה");
                 cities.add("ראשון לציון");
@@ -170,8 +186,6 @@ Log.d("LIORA", "getCities");
                 cities.add("נתניה");
 
             }
-
-
     });
 
 }

@@ -33,7 +33,10 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.InputStream;
 
-
+/**
+ *  דף ההרשמה למערכת.
+ *   מנהל את יצירת החשבון החדש מול Firebase Auth ושמירת פרטי המשתמש הנוספים ב-Database.
+ */
 public class RegisterPage extends AppCompatActivity {
     private MaterialButton btnRegister;
     private TextInputEditText etFullName;
@@ -51,9 +54,14 @@ public class RegisterPage extends AppCompatActivity {
     private String encodedImage = ""; // יוצב כאן הסטרינג של התמונה
 
 
-
+    /**
+     *  מבצעת את תהליך ההרשמה מול Firebase Authentication.
+     *  1. שולפת את האימייל והסיסמה מהשדות.
+     *  2. קוראת לפעולת הרישום (signUp) ומאזינה לתוצאה.
+     *  3. במקרה של הצלחה: שומרת את פרטי המשתמש ב-Database ועוברת לדף הבית.
+     *   4. במקרה של כישלון: מנתחת את סוג השגיאה ומציגה חיווי מתאים למשתמש (אימייל קיים, סיסמה חלשה וכו').
+     */
     public void registerFB() {
-
         String fullName = etFullName.getText().toString();
         String email = etEmail.getText().toString();
         String password = etPassword.getText().toString();
@@ -75,7 +83,7 @@ public class RegisterPage extends AppCompatActivity {
                     etEmail.setError("כתובת האימייל לא תקינה");
                     etEmail.requestFocus();
                 } catch (FirebaseAuthUserCollisionException e) {
-                    // שגיאה קריטית: המשתמש כבר קיים!
+
                     Toast.makeText(RegisterPage.this, "האימייל הזה כבר רשום במערכת", Toast.LENGTH_LONG).show();
                 } catch (FirebaseNetworkException e) {
                     Toast.makeText(RegisterPage.this, "אין חיבור לאינטרנט", Toast.LENGTH_LONG).show();
@@ -84,7 +92,7 @@ public class RegisterPage extends AppCompatActivity {
                 }
             }
         });
-        //
+
     }
 
     @Override
@@ -95,11 +103,13 @@ public class RegisterPage extends AppCompatActivity {
         init();
         setupGalleryLauncher();
 
+       // בחירת תמונה מהגלריה
         fabAddPhoto.setOnClickListener(view -> {
-
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             galleryLauncher.launch(intent);
                 });
+
+        // לחיצה על כפתור ההרשמה
         btnRegister.setOnClickListener(view -> {
             String fullName = etFullName.getText().toString();
             String email = etEmail.getText().toString();
@@ -116,6 +126,9 @@ public class RegisterPage extends AppCompatActivity {
             }
 
         });
+
+
+        // מעבר חזרה לדף הכניסה
         tvLoginLink.setOnClickListener(view -> {
             startActivity(new Intent(this, MainActivity.class));
         });
@@ -141,6 +154,10 @@ public class RegisterPage extends AppCompatActivity {
 
     }
 
+
+    /**
+     *  שמירת פרטי המשתמש המורחבים ב-Realtime Database תחת ענף "Users".
+     */
     public void SaveUserInDBS() {
         FirebaseUser firebaseUser = Auth.getCurrentUser();
         if (firebaseUser == null) return;
@@ -149,16 +166,18 @@ public class RegisterPage extends AppCompatActivity {
         // שמירת ההמשתמש  במסד הנתונים
         userRef.child(uid).setValue(userProperties)
                 .addOnSuccessListener(aVoid -> {
-                    Log.d("MARIELA", "User saved successfully");
-                    // כאן אפשר לעבור מסך, אבל אנחנו עושים את זה למטה ב-OnClickListener
                 })
                 //כשלון בשמירה
                 .addOnFailureListener(e -> {
-                    Log.e("MARIELA", "Failed to save user", e);
                 });
 
     }
 
+
+    /**
+     *  הגדרת ה-Launcher לטיפול בתמונה שנבחרה:
+     *      המרת התמונה ל-Bitmap, דחיסה והמרה למחרוזת Base64.
+     */
     private void setupGalleryLauncher() {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         galleryLauncher = registerForActivityResult(
@@ -170,7 +189,6 @@ public class RegisterPage extends AppCompatActivity {
                             InputStream inputStream = getContentResolver().openInputStream(imageUri);
                             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
 
-                            // המרה של הביטמאפ לסטרינג (Base64)ByteArrayOutputStream baos = new ByteArrayOutputStream();
                             bitmap.compress(Bitmap.CompressFormat.JPEG, 50, baos); // דחיסה ל-50% כדי לחסוך מקום ב-Database
                             byte[] b = baos.toByteArray();
                             encodedImage = android.util.Base64.encodeToString(b, android.util.Base64.DEFAULT);

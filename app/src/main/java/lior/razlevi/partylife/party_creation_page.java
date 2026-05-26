@@ -40,6 +40,11 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+
+/**
+ * דף יצירת מסיבה חדשה.
+ *   מאפשר למארגן להזין פרטי אירוע, לבחור תמונה מהגלריה ולשמור את המידע ב-Database.
+ */
 public class party_creation_page extends AppCompatActivity {
 
     private TextInputEditText etPartyName, etDate, etTime, etDressCode, etPhone, etParking ,etFullAddress;
@@ -48,14 +53,12 @@ public class party_creation_page extends AppCompatActivity {
     private ImageView ivProfile, ivSelectedPartyImage;
     private MaterialCardView cvPartyImage;
     private TextView tvSubtitle;
-
     private Uri imageUri;
     private ActivityResultLauncher<Intent> galleryLauncher;
-    
     private FirebaseAuth mAuth;
     private DatabaseReference partyRef;
-
     private final Calendar calendar = Calendar.getInstance();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,16 +72,18 @@ public class party_creation_page extends AppCompatActivity {
         setupGalleryLauncher();
         setupTextWatchers();
        setupCity();
+
         ivProfile.setOnClickListener(view -> {
             startActivity(new Intent(this, UserSettingActivity.class));
         });
 
+            // לחיצה על כפתור היצירה
         btnCreate.setOnClickListener(v -> {
             if (validateInputs()) {
                 createParty();
             }
         });
-
+         // לחיצה לבחירת תמונה
         cvPartyImage.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             galleryLauncher.launch(intent);
@@ -91,6 +96,9 @@ public class party_creation_page extends AppCompatActivity {
         });
     }
 
+    /**
+     * הגדרת המנגנון לקבלת תמונה מהגלריה והצגתה.
+     */
     private void setupGalleryLauncher() {
         galleryLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -112,6 +120,9 @@ public class party_creation_page extends AppCompatActivity {
         );
     }
 
+    /**
+     * המרת התמונה שנבחרה למחרוזת (String) בפורמט Base64 לשמירה ב-Database.
+     */
     private String encodeImage(Uri uri) {
         try {
             InputStream inputStream = getContentResolver().openInputStream(uri);
@@ -127,6 +138,9 @@ public class party_creation_page extends AppCompatActivity {
         }
     }
 
+    /**
+     *איסוף כל הנתונים ויצירת אובייקט Party חדש ב-Firebase.
+     */
     private void createParty() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser == null) {
@@ -169,6 +183,9 @@ public class party_creation_page extends AppCompatActivity {
                 });
     }
 
+    /**
+     *הגדרת דיאלוגים לבחירת תאריך ושעה.
+     */
     private void setupPickers() {etDate.setOnClickListener(v -> {
         DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
             calendar.set(Calendar.YEAR, year);
@@ -196,11 +213,18 @@ public class party_creation_page extends AppCompatActivity {
         });
     }
 
+
+    /**
+     * מעדכנת את שדה הטקסט בתאריך או בשעה שנבחרו מתוך אובייקט ה-Calendar,
+     */
     private void updateLabel(TextInputEditText editText, String format) {
         SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.getDefault());
         editText.setText(sdf.format(calendar.getTime()));
     }
 
+    /**
+     * בדיקה שכל שדות החובה מולאו ושהזמן שנבחר אינו בעבר.
+     */
     private boolean validateInputs() {
         String partyName = etPartyName.getText().toString().trim();
         String location = etLocation.getText().toString().trim();
@@ -239,7 +263,7 @@ public class party_creation_page extends AppCompatActivity {
             return false;
         }
 
-        // --- תיקון בדיקת זמן עבר (איפוס שניות ומילי-שניות) ---
+        //  בדיקת זמן עבר (איפוס שניות ומילי-שניות)
         Calendar now = Calendar.getInstance();
 
         // יצירת עותקים להשוואה נקייה ללא שניות
@@ -255,7 +279,6 @@ public class party_creation_page extends AppCompatActivity {
             Toast.makeText(this, "לא ניתן ליצור מסיבה בזמן שכבר עבר", Toast.LENGTH_SHORT).show();
             return false;
         }
-        // --------------------------------------------------
 
         if (TextUtils.isEmpty(age)) {
            // etAge.setError("אנא בחר טווח גילים");
@@ -332,7 +355,6 @@ public class party_creation_page extends AppCompatActivity {
         cvPartyImage = findViewById(R.id.cvPartyImage);
         ivSelectedPartyImage = findViewById(R.id.ivSelectedPartyImage);
         tvSubtitle = findViewById(R.id.tvSubtitle);
-
         mAuth = FirebaseAuth.getInstance();
         partyRef = FirebaseDatabase.getInstance().getReference("Parties");
         
@@ -351,11 +373,9 @@ public class party_creation_page extends AppCompatActivity {
             public void afterTextChanged(android.text.Editable s) {}
         });
 
-        // אפשר להוסיף כאן TextWatcher דומה גם ל-etPartyName ו-etFullAddress
     }
 
     private  void setupCity(){
-
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 party_creation_page.this,
                 android.R.layout.simple_list_item_1, // עיצוב שורת הרשימה (ברירת מחדל של אנדרואיד)

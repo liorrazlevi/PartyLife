@@ -132,7 +132,6 @@
             app:boxCornerRadiusBottomStart="28dp"
             app:boxCornerRadiusBottomEnd="28dp"
             app:boxStrokeWidth="0dp"
-            app:helperText="לא ניתן לשנות אימייל המקושר לחשבון"
             app:helperTextTextColor="#999999"
             app:layout_constraintTop_toBottomOf="@id/tvEmailLabel">
 
@@ -142,7 +141,7 @@
                 android:layout_height="56dp"
                 android:inputType="textEmailAddress"
                 android:hint="israel@email.com"
-                android:textColorHint="#66FFFFFF"
+                android:textColorHint="#FFFFFF"
                 android:textColor="#FFFFFF"
                 android:textSize="14sp"
                 android:textAlignment="viewStart"
@@ -151,10 +150,10 @@
                 android:paddingStart="44dp"
                 android:paddingEnd="20dp"
                 android:background="@null"
-                android:focusable="false"
-                android:clickable="false"
-                android:cursorVisible="false"
-                android:alpha="0.7" />
+                android:focusable="true"
+                android:clickable="true"
+                android:cursorVisible="true"
+                />
         </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Phone Number -->

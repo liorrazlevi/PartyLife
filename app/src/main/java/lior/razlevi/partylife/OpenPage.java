@@ -19,6 +19,10 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+/**
+ *   דף הבית- המוצג לאחר התחברות מוצלחת.
+ *   מאפשר ניווט בין הפונקציות המרכזיות: יצירה, חיפוש, וניהול מסיבות, עריכת פרטי משתמש.
+ */
 public class OpenPage extends AppCompatActivity {
  private CardView cvCreateParty;
  private CardView cvPlanParty;
@@ -37,16 +41,19 @@ public class OpenPage extends AppCompatActivity {
         getFullName();
 
 
+        // מעבר לדף יצירת מסיבה
         cvCreateParty.setOnClickListener(view -> {
             startActivity(new Intent(this, party_creation_page.class));
         });
+        // מעבר לדף חיפוש מסיבה
         cvPlanParty.setOnClickListener(view -> {
             startActivity(new Intent(this, PartySearchPage.class));
         });
+        // מעבר להגדרות פרופיל משתמש
         ivSettings.setOnClickListener(view -> {
             startActivity(new Intent(this, UserSettingActivity.class));
         });
-
+        // מעבר לדף המסיבות שנוצרו על ידי המשתמש
         cvMyParties.setOnClickListener(view -> {
                     startActivity(new Intent(this, created_events_page.class));
 
@@ -58,6 +65,7 @@ public class OpenPage extends AppCompatActivity {
             return insets;
         });
     }
+
     public  void  init(){
         cvCreateParty = findViewById(R.id.cvCreateParty);
         cvPlanParty = findViewById(R.id.cvPlanParty);
@@ -66,12 +74,13 @@ public class OpenPage extends AppCompatActivity {
         tvWelcome=findViewById(R.id.tvWelcome);
         database = FirebaseDatabase.getInstance();
         userRef = database.getReference("Users");
-
-
-
     }
-    public void getFullName(){
 
+    /**
+     *  שליפת השם המלא של המשתמש מה-Database לפי ה-UID שלו.
+     *      מעדכן את כותרת ה"ברוך הבא" במסך.
+     */
+    public void getFullName(){
         FirebaseUser firebaseUser = Auth.getCurrentUser();
         if (firebaseUser == null) return;
         String uid = firebaseUser.getUid();
@@ -84,10 +93,6 @@ public class OpenPage extends AppCompatActivity {
                   tvWelcome.setText("איזה כיף שהגעת, "+ fullName);
             }
         });
-
-
-
-
     }
 }
 

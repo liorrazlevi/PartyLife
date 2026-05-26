@@ -1,17 +1,24 @@
 package lior.razlevi.partylife;
 
+/**
+ *  מחלקה המייצגת את תכונות המשתמש במערכת.
+ *   משמשת לארגון המידע האישי של המשתמש ושמירתו ב-Firebase Realtime Database.
+ */
 public class UserProperties {
     private  String userPhone;
     private String fullName;
     private String uid;
     private String profileImage;
 
+    // בנאי מלא ליצירת אובייקט משתמש עם כל הפרטים.
     public UserProperties(String userPhone, String uid, String fullName, String profileImage) {
         this.userPhone = userPhone;
         this.uid = uid;
         this.fullName = fullName;
         this.profileImage = profileImage;
     }
+
+    // בנאי ריק הנדרש על ידי Firebase לצורך המרת הנתונים
     public UserProperties(){
 
     }

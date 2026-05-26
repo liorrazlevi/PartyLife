@@ -37,6 +37,11 @@ import com.google.firebase.database.ValueEventListener;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
+/**
+ *  דף הגדרות משתמש.
+ *   מאפשר צפייה בפרטים הקיימים, עדכון מידע אישי (שם, טלפון וכו),
+ *  החלפת תמונת פרופיל ועדכון סיסמה מול Firebase Auth.
+ */
 public class UserSettingActivity extends AppCompatActivity {
 
     private TextInputEditText etEFullName;
@@ -64,13 +69,19 @@ public class UserSettingActivity extends AppCompatActivity {
         init();
         setupGalleryLauncher();
 
+
+
+        // לחיצה להחלפת תמונת פרופיל
         fabAddPhotoE.setOnClickListener(view -> {
 
             Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             galleryLauncher.launch(intent);
         });
 
-
+/**
+ *  טעינת הנתונים הקיימים:
+ *           שליפת פרטי המשתמש מה-Realtime Database והצגתם בשדות.
+ */
         FirebaseUser firebaseUser = Auth.getCurrentUser();
         if (firebaseUser != null) {
             String uid = firebaseUser.getUid();
@@ -82,8 +93,7 @@ public class UserSettingActivity extends AppCompatActivity {
                         etEFullName.setText(userProperties.getFullName());
                         etEEmail.setText(firebaseUser.getEmail());
 
-                        // --- השורה שמתקנת את בעיית התמונה ---
-                        // אנחנו שומרים את הסטרינג של התמונה הקיימת בתוך המשתנה שלנו
+                        // שמירת התמונה במשתנה string
                         encodedImage = userProperties.getProfileImage();
 
                         // הצגת התמונה ב-ImageView
@@ -94,6 +104,9 @@ public class UserSettingActivity extends AppCompatActivity {
                 }
             });
         }
+
+
+        // כפתור שמירת השינויים
         btEnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -115,8 +128,6 @@ public class UserSettingActivity extends AppCompatActivity {
                     etEPhone.setError("נא למלא מספר טלפון");
                     return;
                 }
-
-
 
                 if (!password.isEmpty()) {
                     if (!password.equals(confirmPassword)) {
@@ -152,11 +163,13 @@ public class UserSettingActivity extends AppCompatActivity {
         userRef = database.getReference("Users");
     }
 
+    /**
+     * עדכון הפרטים ב-Realtime Database ובמידת הצורך גם עדכון האימייל ב-Auth.
+     */
     private void updateUserInfo(String fullName, String email, String phone) {
         FirebaseUser firebaseUser = Auth.getCurrentUser();
         if (firebaseUser == null) return;
 
-        // Update email in Firebase Auth if it has changed
         if (!email.equals(firebaseUser.getEmail())) {
             Auth.updateEmail(email, new OnCompleteListener<Void>() {
                 @Override
@@ -165,24 +178,19 @@ public class UserSettingActivity extends AppCompatActivity {
                         Toast.makeText(UserSettingActivity.this, "נשלח אימייל לאימות כתובת המייל החדשה.", Toast.LENGTH_LONG).show();
                     } else {
                         Toast.makeText(UserSettingActivity.this, "שגיאה בעדכון כתובת המייל.", Toast.LENGTH_SHORT).show();
-                        Log.e(TAG, "Failed to update email", task.getException());
                     }
                 }
             });
         }
 
-
-        // Update user properties in Realtime Database
         String uid = firebaseUser.getUid();
         UserProperties userProperties = new UserProperties(phone, uid, fullName,encodedImage);
 
         userRef.child(uid).setValue(userProperties)
                 .addOnSuccessListener(aVoid -> {
-                    Log.d(TAG, "User properties updated successfully.");
                     Toast.makeText(UserSettingActivity.this, "הפרטים עודכנו בהצלחה", Toast.LENGTH_SHORT).show();
                 })
                 .addOnFailureListener(e -> {
-                    Log.e(TAG, "Failed to update user properties", e);
                     Toast.makeText(UserSettingActivity.this, "שגיאה בעדכון הפרטים", Toast.LENGTH_SHORT).show();
                 });
     }
@@ -227,6 +235,9 @@ public class UserSettingActivity extends AppCompatActivity {
         );
     }
 
+    /**
+     * פונקציית עזר להמרת מחרוזת התמונה מה-DB חזרה לתמונה ויזואלית (Bitmap).
+     */
     public Bitmap convertStringToBitmap(String imageString) {
         if (imageString != null && !imageString.isEmpty()) {
             try {

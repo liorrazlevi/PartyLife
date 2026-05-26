@@ -25,6 +25,10 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * דף המציג את כל המסיבות שהמשתמש הנוכחי יצר.
+ *  מאפשר צפייה ברשימה, מעבר לעריכה, יצירת מסיבה חדשה או מחיקת מסיבה קיימת.
+ */
 public class created_events_page extends AppCompatActivity {
 
     private RecyclerView rvEvents;
@@ -45,7 +49,8 @@ public class created_events_page extends AppCompatActivity {
 
         rvEvents.setLayoutManager(new LinearLayoutManager(this));
         partyList = new ArrayList<>();
-        
+
+        // הגדרת האדפטר עם פונקציית לחיצה למעבר לעריכת מסיבה
         adapter = new PartyAdapter(partyList, party -> {
             Intent intent = new Intent(created_events_page.this, party_details_edit.class);
             intent.putExtra("PARTY_ID", party.getPartyId());
@@ -59,11 +64,13 @@ public class created_events_page extends AppCompatActivity {
 
         rvEvents.setAdapter(adapter);
 
+        // מעבר לדף יצירת מסיבה חדשה
         btnCreateEvent.setOnClickListener(v -> {
             Intent intent = new Intent(created_events_page.this, party_creation_page.class);
             startActivity(intent);
         });
 
+        // מעבר לדף עריכת פרופיל המשתמש
         ivProfile.setOnClickListener(v -> {
             Intent intent = new Intent(created_events_page.this, UserSettingActivity.class);
             startActivity(intent);
@@ -72,6 +79,9 @@ public class created_events_page extends AppCompatActivity {
         loadUserParties();
     }
 
+    /**
+     * הצגת דיאלוג אישור לפני מחיקת מסיבה.
+     */
     private void showDeleteDialog(Party party) {
         new AlertDialog.Builder(this)
                 .setTitle("מחיקת מסיבה")
@@ -83,6 +93,9 @@ public class created_events_page extends AppCompatActivity {
                 .show();
     }
 
+    /**
+     * מחיקת מסיבה מה-Firebase Database וניקוי נתוני אישורי ההגעה שלה.
+     */
     private void deleteParty(Party party) {
         // מחיקת המסיבה מהענף Parties
         mDatabase.child(party.getPartyId()).removeValue().addOnCompleteListener(task -> {
@@ -106,6 +119,9 @@ public class created_events_page extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference("Parties");
     }
 
+    /**
+     * שליפת כל המסיבות מהדאטה-בייס וסינון אלו שנוצרו על ידי המשתמש המחובר בלבד.
+     */
     private void loadUserParties() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser == null) return;

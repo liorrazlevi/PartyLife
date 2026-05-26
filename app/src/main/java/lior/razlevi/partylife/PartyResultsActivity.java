@@ -27,6 +27,12 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * דף תוצאות החיפוש.
+ * שולף את כל המסיבות מה-Firebase ומציג רק את אלו שמתאימות
+ *   לקריטריונים שהמשתמש הזין בדף החיפוש.
+ */
 public class PartyResultsActivity extends AppCompatActivity implements PartyAdapter.OnPartyClickListener {
 
     private RecyclerView rvPartyResults;
@@ -35,7 +41,6 @@ public class PartyResultsActivity extends AppCompatActivity implements PartyAdap
     private PartyAdapter partyAdapter;
     private List<Party> partyList;
     private ProgressBar progressBar;
-    
     private DatabaseReference mDatabase;
     private String searchLocation, searchDate, searchAge, searchTime;
 
@@ -47,9 +52,9 @@ public class PartyResultsActivity extends AppCompatActivity implements PartyAdap
 
         init();
 
-        Log.d("LIORA","in onCreate");
+
         progressBar.setVisibility( View.VISIBLE);
-        // 1. קבלת נתוני החיפוש מה-Intent (כולל הזמן שנוסף)
+        // קבלת נתוני החיפוש שנשלחו מהדף הקודם (PartySearchPage)
         searchLocation = getIntent().getStringExtra("LOCATION");
         searchDate = getIntent().getStringExtra("DATE");
         searchAge = getIntent().getStringExtra("AGE");
@@ -62,13 +67,13 @@ public class PartyResultsActivity extends AppCompatActivity implements PartyAdap
         if (searchAge == null) searchAge = "";
         if (searchTime == null) searchTime = "";
 
-        // 2. אתחול רשימה ואדפטרא
+        // הגדרת רשימת התצוגה והאדפטר
         partyList = new ArrayList<>();
         partyAdapter = new PartyAdapter(partyList, this);
         rvPartyResults.setLayoutManager(new LinearLayoutManager(this));
         rvPartyResults.setAdapter(partyAdapter);
 
-        // 3. התחברות ל-Firebase וטעינת נתונים
+        //  התחברות ל-Firebase וטעינת נתונים
         mDatabase = FirebaseDatabase.getInstance().getReference("Parties");
         loadFilteredParties();
 
@@ -86,6 +91,9 @@ public class PartyResultsActivity extends AppCompatActivity implements PartyAdap
         progressBar = findViewById(R.id.progressBar);
     }
 
+    /**
+     * שליפת כל המסיבות מהשרת וביצוע סינון לפי 4 פרמטרים.
+     */
     private void loadFilteredParties() {
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
@@ -93,50 +101,41 @@ public class PartyResultsActivity extends AppCompatActivity implements PartyAdap
                 partyList.clear();
 
                 for (DataSnapshot data : snapshot.getChildren()) {
-                    // 1. קבלת האובייקט מה-Snapshot
                     Party party = data.getValue(Party.class);
 
                     if (party != null) {
-                        // 2. יצירת משתני עזר עם הגנה למקרה שב-Firebase חסר נתון
+                        // חילוץ נתוני המסיבה מהשרת
                         String pLocation = party.getLocation() != null ? party.getLocation() : "";
                         String pDate = party.getDate() != null ? party.getDate() : "";
                         String pAge = party.getAge() != null ? party.getAge() : "";
                         String pTime = party.getTime() != null ? party.getTime() : "";
 
-                        // 3. בדיקה שהכל תואם בדיוק (כפי שביקשת)
-                        // השתמשתי ב-contains למיקום כי זה יותר בטוח, וב-equals לשאר
+                    // בדיקת התאמה למיקום, תאריך וגיל
                         boolean matchesLocation = pLocation.contains(searchLocation);
                         boolean matchesDate = pDate.equals(searchDate);
                         boolean matchesAge = pAge.equals(searchAge);
                        // המרת שעת החיפוש ושעת המסיבה מה-Firebase לדקות
                         int searchMinutes = timeToMinutes(searchTime);
-                        Log.d("LIORA","searchMinutes"+searchMinutes);
                         int partyMinutes = timeToMinutes(pTime);
-                        Log.d("LIORA","partyMinutes"+partyMinutes);
 
 
                         boolean matchesTime;
                         if (searchMinutes == -1 || partyMinutes == -1) {
                             // אם יש בעיה בפורמט, נחזור להשוואה מדויקת
-                            Log.d("LIORA","error in time conversion"+party.getName());
                             matchesTime = pTime.equals(searchTime);
                         } else {
                             // הבדיקה: האם המסיבה בטווח של השעה שביקשתי ועד שעה קדימה
-                            Log.d("LIORA","error in time1 conversion"+party.getName());
                             matchesTime = (partyMinutes >= searchMinutes) && (partyMinutes <= searchMinutes + 60);
-                            Log.d("LIORA","error in time2 conversion"+ partyMinutes + " " + searchMinutes+matchesTime);
                         }
 
-                        // 4. הוספה לרשימה רק אם כל התנאים מתקיימים
+                        //  הוספה לרשימה רק אם כל התנאים מתקיימים
                         if (matchesLocation && matchesDate && matchesAge && matchesTime) {
-                            Log.d("LIORA","found party " +party);
                             partyList.add(party);
                         }
                     }
                 }
-                updateUI();
+                updateUI(); // עדכון הממשק בהתאם לתוצאות
               progressBar.setVisibility(View.GONE);
-                Log.d("LIORA","finished loading");
             }
 
             @Override
@@ -148,6 +147,9 @@ public class PartyResultsActivity extends AppCompatActivity implements PartyAdap
         });
     }
 
+    /**
+     *  עדכון הממשק: הצגת הודעת "לא נמצאו תוצאות" או עדכון הרשימה.
+     */
     private void updateUI() {
         if (partyList.isEmpty()) {
             llEmptyState.setVisibility(View.VISIBLE);
@@ -159,7 +161,7 @@ public class PartyResultsActivity extends AppCompatActivity implements PartyAdap
 
             // הודעה מגניבה שמסבירה על טווח השעה
             String message = "מצאנו " + partyList.size() + " מסיבות בשבילך!\n";
-            message += "💡 הצגנו תוצאות בטווח של עד שעה מהזמן שביקשת, כדי שלא תפספסו אף חגיגה.";
+            message += "💡 מוצגות תוצאות בטווח של עד שעה מהזמן שביקשת, כדי שלא תפספסו אף חגיגה.";
 
             tvResultsCount.setText(message);
             partyAdapter.notifyDataSetChanged();
@@ -168,10 +170,16 @@ public class PartyResultsActivity extends AppCompatActivity implements PartyAdap
 
     @Override
     public void onPartyClick(Party party) {
+        // מעבר לדף פרטי המסיבה בעת לחיצה על תוצאה
         Intent intent = new Intent(this, party_details.class);
         intent.putExtra("PARTY_ID", party.getPartyId());
         startActivity(intent);
     }
+
+    /**
+     * פונקציית עזר להמרת מחרוזת זמן (HH:mm) למספר דקות כולל מתחילת היום.
+     *       מאפשרת לבצע השוואות מתמטיות בין שעות.
+     */
     private int timeToMinutes(String timeStr) {
         try {
             if (timeStr == null || !timeStr.contains(":")) return -1;

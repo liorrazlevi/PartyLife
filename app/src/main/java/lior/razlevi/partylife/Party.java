@@ -4,6 +4,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
 
+/**
+ * מחלקה המייצגת מסיבה.
+ *   משמשת לשמירה ושליפה של פרטי המסיבה מול ה-Firebase Database.
+ */
 public class Party {
     private String partyId;
     private String name;
@@ -13,13 +17,15 @@ public class Party {
     private String age;
     private String dressCode;
     private String phone;
-    private String imageString; 
+    private String imageString; // מחרוזת Base64 המייצגת את תמונת האירוע
     private String creatorId;
     private String parking;
     private String fullAddress;
 
+    // בנאי ריק הנדרש עבור עבודה עם Firebase.
     public Party() {}
 
+    // בנאי מלא ליצירת אובייקט מסיבה עם כל הפרטים.
     public Party(String partyId, String name, String location, String date, String time, String age, String dressCode, String phone,
                  String imageString, String creatorId, String parking, String fullAddress) {
         this.partyId = partyId;
@@ -46,7 +52,7 @@ public class Party {
     public String getPhone() { return phone; }
     public String getFullAddress() { return fullAddress; }
     
-    // פעולה זו מחזירה את ה-Bitmap עבור Glide
+    // פונקציה להמרת מחרוזת התמונה ל-Bitmap לצורך הצגתה בממשק.
     public Bitmap bringPartyImage() {
         return convertStringToBitmap(imageString); 
     }
@@ -67,8 +73,10 @@ public class Party {
     public void setCreatorId(String creatorId) { this.creatorId = creatorId; }
     public void setParking(String parking) { this.parking = parking; }
     public void setFullAddress(String fullAddress) { this.fullAddress = fullAddress; }
-    
-    // הפעולה המתוקנת להמרת הסטרינג ל-Bitmap
+
+    /**
+     * פונקציית עזר המבצעת את ההמרה הטכנית ממחרוזת Base64 לאובייקט Bitmap.
+     */
     public Bitmap convertStringToBitmap(String imageString) {
         if (imageString != null && !imageString.isEmpty()) {
             try {
@@ -83,15 +91,9 @@ public class Party {
         }
         return null;
     }
+
     public String toString() {
-
-
        return this.partyId + " " + this.name + " " + this.location + " " + this.date + " " + this.time + " " + this.age + " " + this.dressCode + " " + this.phone + " "  + " " +
                this.creatorId + " " + this.parking + " " + this.fullAddress;
-
-
-
-
-
     }
 }

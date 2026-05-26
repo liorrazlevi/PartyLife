@@ -24,13 +24,17 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+/**
+ * דף פרטי המסיבה (צד האורח).
+ *   מאפשר צפייה בפרטים, אישור הגעה (מגיע/לא מגיע), יצירת קשר עם המארגן
+ *  * וניווט ליעד (תחת מגבלת זמן).
+ */
 public class party_details extends AppCompatActivity {
 
     private TextView tvPartyName, tvDate, tvTime, tvLocation, tvAgeInfo, tvParkingInfo, tvDressCode;
     private ImageView ivPartyIcon;
     private MaterialButton btnNavigate, btnYes, btnNo, btnContact;
     private  String fullAddress;
-
     private String partyId;
     private DatabaseReference mDatabase;
     private FirebaseAuth mAuth;
@@ -43,6 +47,7 @@ public class party_details extends AppCompatActivity {
 
         init();
 
+        // קבלת מזהה המסיבה שנשלח מהדף הקודם
         partyId = getIntent().getStringExtra("PARTY_ID");
         if (partyId == null) {
             Toast.makeText(this, "שגיאה: לא נמצא מזהה מסיבה", Toast.LENGTH_SHORT).show();
@@ -52,13 +57,13 @@ public class party_details extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
-
         loadPartyDetails();
         checkUserAttendance();
 
+        // הגדרת לוגיקת כפתור הניווט
         btnNavigate.setOnClickListener(v -> {
             try {
-                // 1. יצירת פורמט לקריאת התאריך והשעה (ודאי שהפורמט תואם למה ששמור ב-Firebase)
+                // פורמט לקריאת התאריך והשעה לצורך חישוב הזמן שנותר
                 java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm", java.util.Locale.getDefault());
 
                 // חיבור מחרוזת התאריך והשעה של המסיבה
@@ -74,14 +79,14 @@ public class party_details extends AppCompatActivity {
 
                     // בדיקה: האם המסיבה רחוקה יותר מ-24 שעות מעכשיו?
                     if (partyTimeMillis - currentTime > twentyFourHoursInMillis) {
-                        // הצגת דיאלוג התראה
+                        // חסימת ניווט למען פרטיות המארגן
                         new AlertDialog.Builder(party_details.this)
                                 .setTitle("מיקום מדויק טרם נחשף")
                                 .setMessage("למען פרטיות המסיבה, המיקום המדויק והניווט יהיו זמינים רק 24 שעות לפני תחילת האירוע.")
                                 .setPositiveButton("הבנתי", null)
                                 .show();
                     } else {
-                        // ניווט (הקוד המקורי שלך)
+                        // פתיחת Google Maps לניווט לכתובת המסיבה
                         String address = tvLocation.getText().toString() + " " + (fullAddress != null ? fullAddress : "");
                         Uri gmmIntentUri = Uri.parse("google.navigation:q=" + address);
                         Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
@@ -90,6 +95,7 @@ public class party_details extends AppCompatActivity {
                         if (mapIntent.resolveActivity(getPackageManager()) != null) {
                             startActivity(mapIntent);
                         } else {
+                            // גיבוי במידה ואפליקציית המפות לא מותקנת
                             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.google.com/maps/search/?api=1&query=" + address)));
                         }
                     }
@@ -129,6 +135,9 @@ public class party_details extends AppCompatActivity {
         btnContact = findViewById(R.id.btnContact);
     }
 
+    /**
+     * שליפת כל פרטי המסיבה מה-Firebase והצגתם בממשק.
+     */
     private void loadPartyDetails() {
         mDatabase.child("Parties").child(partyId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -173,6 +182,9 @@ public class party_details extends AppCompatActivity {
         });
     }
 
+    /**
+     * בדיקה האם המשתמש כבר אישר הגעה בעבר ועדכון עיצוב הכפתורים בהתאם.
+     */
     private void checkUserAttendance() {
         if (mAuth.getCurrentUser() == null) return;
         String userId = mAuth.getCurrentUser().getUid();
@@ -194,21 +206,19 @@ public class party_details extends AppCompatActivity {
                 });
     }
 
+    /**
+     *   עדכון של סטטוס ההגעה של המשתמש ב-Firebase.
+     */
     private void updateAttendance(String status) {
         if (mAuth.getCurrentUser() == null) return;
         String userId = mAuth.getCurrentUser().getUid();
-Log.d("LIORA", "User ID: " + userId);
         mDatabase.child("Users").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String userName = snapshot.child("fullName").getValue(String.class);
                 String picture = snapshot.child("profileImage").getValue(String.class);
-
-                Log.d("LIORA", "User Name: " + userName + " Picture URL: " + picture.substring(0, Math.min(picture.length(), 10)));
                 if (userName == null) userName = "אורח";
-
                 Guest guestStatus = new Guest(userName, status,picture);
-Log.d("LIORA", "Guest Status: " + guestStatus);
                 mDatabase.child("Attendance").child(partyId).child(userId)
                         .setValue(guestStatus)
                         .addOnCompleteListener(task -> {

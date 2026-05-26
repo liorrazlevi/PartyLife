@@ -8,6 +8,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import java.util.List;
 
+/**
+ *  אדפטר לניהול תצוגת רשימת המסיבות בתוך RecyclerView.
+ * תומך בהצגת נתונים, לחיצה למעבר לפרטים, ואפשרות למחיקת פריט.
+ */
 public class PartyAdapter extends RecyclerView.Adapter<PartyHolder> {
 
     private final List<Party> partyList;
@@ -15,10 +19,16 @@ public class PartyAdapter extends RecyclerView.Adapter<PartyHolder> {
     private OnDeleteClickListener deleteListener;
     private boolean showDeleteButton = false;
 
+    /**
+     *  ממשק (Interface) לטיפול בלחיצה על מסיבה לצפייה בפרטים.
+     */
     public interface OnPartyClickListener {
         void onPartyClick(Party party);
     }
 
+    /**
+     * ממשק לטיפול בלחיצה על כפתור המחיקה.
+     */
     public interface OnDeleteClickListener {
         void onDeleteClick(Party party);
     }
@@ -45,14 +55,13 @@ public class PartyAdapter extends RecyclerView.Adapter<PartyHolder> {
     public void onBindViewHolder(@NonNull PartyHolder holder, int position) {
         Party party = partyList.get(position);
         holder.tvEventTitle.setText(party.getName());
-
         String dateTime = party.getDate() + " | " + party.getTime();
         holder.tvEventDate.setText(dateTime);
-
         holder.tvEventStatus.setText(party.getLocation());
         holder.tvEventStatus.setTextColor(0xFF9575CD);
 
-        // הצגת כפתור המחיקה וטיפול בלחיצה
+        // ניהול כפתור המחיקה
+        //  יוצג רק אם האופציה הופעלה
         if (showDeleteButton && holder.ivDeleteParty != null) {
             holder.ivDeleteParty.setVisibility(View.VISIBLE);
             holder.ivDeleteParty.setOnClickListener(v -> {
@@ -64,6 +73,10 @@ public class PartyAdapter extends RecyclerView.Adapter<PartyHolder> {
             holder.ivDeleteParty.setVisibility(View.GONE);
         }
 
+        /**
+         * טעינת תמונת המסיבה:
+         *           שימוש בספריית Glide לטעינה יעילה של ה-Bitmap והצגת תמונת ברירת מחדל במקרה של שגיאה.
+         */
         if (party.bringPartyImage()  != null) {
             Glide.with(holder.itemView.getContext())
                     .load(party.bringPartyImage() )
