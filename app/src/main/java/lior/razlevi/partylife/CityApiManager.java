@@ -44,7 +44,6 @@ public class CityApiManager {
                 //  יצירת חיבור HTTP
                 URL url = new URL(API_URL);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                Log.d("LIORA", "connection");
                 connection.setRequestMethod("GET");
 
 
